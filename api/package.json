@@ -1,0 +1,9 @@
+{
+  "name": "skb-bhv-stripe-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Serverless Stripe-koppeling voor de SKB BHV website (Vercel functions).",
+  "dependencies": {
+    "stripe": "^16.12.0"
+  }
+}
