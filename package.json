@@ -4,6 +4,7 @@
   "private": true,
   "description": "Serverless Stripe-koppeling voor de SKB BHV website (Vercel functions).",
   "dependencies": {
-    "stripe": "^16.12.0"
+    "stripe": "^16.12.0",
+    "resend": "^4.0.1"
   }
 }
