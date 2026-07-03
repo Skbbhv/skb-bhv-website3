@@ -1791,7 +1791,6 @@
     </div>
     <div style="width:100%;border-top:1px solid rgba(255,255,255,0.12);padding-top:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;font-size:12px;color:#8a9198;">
       <span>SKB BHV is onderdeel van Zuurman B.V. · vestiging Goordelaan 19, 9591 CB Onstwedde · KVK 86597396</span>
-      <span>Demo-omgeving · geen echte betalingen</span>
     </div>
   </div>
 </footer>
@@ -1928,7 +1927,7 @@ const PACKAGES = {
   combi: {name:'BHV Theorie + Praktijk', price:179, certTitle:'BHV THEORIE- EN PRAKTIJKOPLEIDING', pasType:'Theorie + Praktijk'},
 };
 
-/* ============ VOORTGANG BEWAREN (persistent storage) ============ */
+/* ============ VOORTGANG BEWAREN (browser localStorage) ============ */
 const STORAGE_KEY = 'skb-bestelling-v1';
 
 async function saveProgress(){
@@ -1941,7 +1940,7 @@ async function saveProgress(){
       invoiceNumber: state.invoiceNumber,
       savedAt: new Date().toISOString(),
     };
-    await window.storage.set(STORAGE_KEY, JSON.stringify(payload), false);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
   }catch(e){
     console.error('Opslaan van voortgang mislukt', e);
   }
@@ -1949,9 +1948,9 @@ async function saveProgress(){
 
 async function loadProgress(){
   try{
-    const result = await window.storage.get(STORAGE_KEY, false);
-    if(!result) return false;
-    const payload = JSON.parse(result.value);
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return false;
+    const payload = JSON.parse(raw);
     if(payload && payload.order && payload.order.pkg){
       state.order = payload.order;
       state.buyer = payload.buyer || state.buyer;
@@ -1973,7 +1972,7 @@ function clearProgress(){
   state.roster = [];
   state.activeIndex = null;
   state.invoiceNumber = null;
-  window.storage.delete(STORAGE_KEY, false).catch(()=>{});
+  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
   goTo('home');
 }
 
@@ -2984,15 +2983,15 @@ function downloadPas(){
 /* ============ COOKIEMELDING ============ */
 async function initCookieNotice(){
   try{
-    const result = await window.storage.get('skb-cookie-dismissed', false);
-    if(result && result.value === 'true') return; // al eerder bevestigd
+    const dismissed = localStorage.getItem('skb-cookie-dismissed');
+    if(dismissed === 'true') return; // al eerder bevestigd
   }catch(e){ /* nog niet eerder bevestigd — toon de melding */ }
   document.getElementById('cookieNotice').style.display = 'flex';
 }
 
 async function dismissCookieNotice(){
   document.getElementById('cookieNotice').style.display = 'none';
-  try{ await window.storage.set('skb-cookie-dismissed', 'true', false); }catch(e){ /* niet erg, toont dan mogelijk nogmaals */ }
+  try{ localStorage.setItem('skb-cookie-dismissed', 'true'); }catch(e){ /* niet erg, toont dan mogelijk nogmaals */ }
 }
 
 /* init */
