@@ -91,7 +91,7 @@ function invoiceHtml(session) {
       <hr style="border:none;border-top:1px solid #E1E4E9;margin:24px 0;">
       <p style="font-size:12px;color:#8b939b;">
         SKB BHV — onderdeel van Zuurman B.V.<br>
-        Goordelaan 19, 9591 CB Onstwedde · KVK 86597396<br>
+        Goordelaan 19, 9591 CB Onstwedde · KVK 86597396 · BTW NL864018228B01<br>
         Vragen? Mail info@skbbhv.nl
       </p>
     </div>
