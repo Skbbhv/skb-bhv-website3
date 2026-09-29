@@ -11,7 +11,7 @@
 //
 // Vereist: Vercel KV gekoppeld (KV_REST_API_URL, KV_REST_API_TOKEN) en voor e-mail RESEND_API_KEY.
 
-import { kv } from '@vercel/kv';
+import { kv } from './_lib/kv.js';
 import {
   normalizeEmail, isValidEmail, getAccount, verifyPassword, createSession, getBearerToken,
   getSessionEmail, publicAccount, getOrdersForEmail, generatePassword, setNewPassword,
