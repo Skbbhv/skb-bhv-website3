@@ -10,6 +10,7 @@
 // Vereist environment variables: RESEND_API_KEY, SITE_URL (en optioneel FROM_EMAIL, NOTIFY_EMAIL)
 
 import { Resend } from 'resend';
+import { COMPANY_FOOTER_HTML } from './_lib/accounts.js';
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 const FROM_EMAIL = process.env.FROM_EMAIL || 'SKB BHV <onboarding@resend.dev>';
@@ -52,9 +53,7 @@ export default async function handler(req, res) {
         </p>
         <hr style="border:none;border-top:1px solid #E1E4E9;margin:24px 0;">
         <p style="font-size:12px;color:#8b939b;">
-          SKB BHV — onderdeel van Zuurman B.V.<br>
-          Goordelaan 19, 9591 CB Onstwedde · KVK 86597396<br>
-          Vragen? Mail info@skbbhv.nl
+          ${COMPANY_FOOTER_HTML}
         </p>
       </div>
     </div>`;
