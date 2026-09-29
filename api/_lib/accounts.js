@@ -12,7 +12,7 @@
 //   forgot:<email>           → blokkeert 'wachtwoord vergeten' 5 minuten na een verzoek
 
 import crypto from 'crypto';
-import { kv } from '@vercel/kv';
+import { kv } from './kv.js';
 import { Resend } from 'resend';
 
 export const SESSION_TTL = 60 * 60 * 24 * 30; // 30 dagen ingelogd blijven
