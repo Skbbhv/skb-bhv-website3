@@ -11,7 +11,7 @@ let clientPromise = null;
 
 function getClient() {
   if (!clientPromise) {
-    const url = process.env.REDIS_URL;
+         const url = process.env.REDIS_URL || process.env.Redis_REDIS_URL;  
     if (!url) throw new Error('REDIS_URL ontbreekt: koppel de Redis-database aan dit project in Vercel.');
     const client = createClient({ url });
     client.on('error', (err) => console.error('Redis-fout:', err));
