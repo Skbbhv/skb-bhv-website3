@@ -32,13 +32,12 @@
   "email": "info@skbbhv.nl",
   "parentOrganization": {
     "@type": "Organization",
-    "name": "Zuurman B.V.",
-    "taxID": "NL864018228B01"
+    "name": "Oibase B.V."
   }
 }
 </script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Public+Sans:wght@400;500;600;700&family=Archivo+Black&family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
 
   :root{
     --blue:#0A5CA8;
@@ -713,6 +712,148 @@
     nav.main.mobile-open{display:flex;}
     nav.main button{width:100%;text-align:left;padding:13px 14px;}
   }
+
+  /* =====================================================================
+     HUISSTIJL 2026 — rustiger, zakelijker. Overschrijft alleen de
+     website-weergave; certificaat (.cert-*) en pasje (.pas-*) blijven gelijk.
+     ===================================================================== */
+  :root{
+    --dark:#0B1F33;
+    --ink:#111418;
+    --ink-soft:#4A525B;
+    --line:#E3E6EA;
+    --bg:#F5F6F8;
+    --green-text:#007A31;
+    --radius:14px;
+    --shadow:0 18px 40px rgba(11,31,51,0.10);
+    --font-body:'Public Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+    --font-head:'Archivo',system-ui,sans-serif;
+  }
+  body{font-family:var(--font-body);font-size:16px;line-height:1.55;}
+  button,.btn,input,select,textarea{font-family:var(--font-body);}
+  h1,h2,h3,.display{
+    font-family:var(--font-head);text-transform:none;letter-spacing:-0.015em;font-weight:800;
+  }
+  h4{font-family:var(--font-head);letter-spacing:-0.01em;}
+
+  /* header */
+  header.site{box-shadow:0 1px 0 var(--line);}
+  .header-inner{padding:16px 24px;}
+  nav.main{gap:4px;}
+  nav.main button{font-size:14.5px;font-weight:500;color:#3F4750;padding:10px 12px;}
+  nav.main button.active{color:var(--blue);background:#EEF4FB;}
+  nav.main .nav-account{display:none;}
+  .header-login svg{flex-shrink:0;}
+  .btn{border-radius:8px;font-weight:600;font-size:15px;padding:12px 20px;min-height:44px;}
+  .btn-outline{border-color:#D5DAE0;background:var(--white);}
+  .btn svg{flex-shrink:0;}
+  .menu-toggle{color:var(--dark);}
+
+  /* labels en cijfers: geen typemachine-letter meer op de site */
+  .eyebrow,.section-head .eyebrow{
+    font-family:var(--font-body);font-size:13px;font-weight:700;letter-spacing:0.08em;color:var(--blue);
+  }
+  .eyebrow::before,.section-head .eyebrow::before{display:none;}
+  .hero-stat b,.feature .num,.price-row .amount,.stat-strip .stat b,.sq-cat,.q-count,.pill,
+  .timer-pill,.qty-stepper input,.qty-total,.lr-ref,.roster-num,.result-score,.reason-list .rn,
+  .panel .step-label,.review-item .rev-cat,.option .letter{
+    font-family:var(--font-body);font-variant-numeric:tabular-nums;
+  }
+  .price-row .amount,.result-score,.stat-strip .stat b,.hero-stat b{font-family:var(--font-head);font-weight:800;}
+  .step .n{font-family:var(--font-head);font-weight:800;font-size:20px;color:var(--blue);}
+  .feature .num{font-weight:700;letter-spacing:0.06em;}
+
+  /* hero */
+  .hero{padding-top:72px;gap:64px;}
+  .hero h1{font-size:56px;line-height:1.05;color:var(--dark);}
+  .hero p.lead{font-size:18.5px;color:var(--ink-soft);}
+  .hero-card{background:var(--dark);border-radius:18px;}
+  .hero-card h3{font-size:22px;}
+  .hero-stat b{color:#6FD39A;}
+
+  /* secties en kaarten */
+  section{padding:80px 0;}
+  .section-head h2{font-size:40px;line-height:1.1;}
+  .section-head p{font-size:17px;}
+  .feature,.price-card,.audience-card,.faq-item,.sq-item,.panel,.side-card,.exam-card{border-color:var(--line);box-shadow:none;}
+  .feature h3,.price-card h3,.audience-card h3{font-family:var(--font-head);}
+  .price-card.featured{border-width:2px;box-shadow:0 18px 40px rgba(10,92,168,0.12);}
+  .price-list li::before{color:var(--green-text);}
+  .tag{background:var(--blue);}
+
+  /* beeldkaarten: vlak en rustig in plaats van verlopen met emoji */
+  .photo-card::before,.photo-hero::before{background:linear-gradient(0deg, rgba(0,0,0,0.18), rgba(0,0,0,0) 60%), var(--pc-a, var(--blue));}
+  .photo-hero::before{background:var(--dark);}
+  .photo-card.a{--pc-a:#0A5CA8;}
+  .photo-card.b{--pc-a:#0B1F33;}
+  .photo-card.c{--pc-a:#00733A;}
+  .photo-card.d{--pc-a:#B3141F;}
+  .photo-card .pc-icon,.photo-hero .ph-icons{opacity:1;color:#ffffff;}
+  .photo-card .pc-icon svg,.photo-hero .ph-icons svg{display:block;}
+  .audience-card .icon,.start-screen .big-icon{
+    width:52px;height:52px;border-radius:12px;background:#EEF4FB;color:var(--blue);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .start-screen .big-icon{margin:0 auto 12px;}
+
+  /* banners */
+  .law-banner,.cookie-notice,footer{background:var(--dark);}
+  .cta-band{background:var(--dark);position:relative;overflow:hidden;}
+  .cta-band .btn-primary{background:#ffffff !important;color:var(--dark) !important;}
+
+  /* status-kleuren met voldoende contrast */
+  .pill,.result-badge.pass,.roster-status.passed,.discount-note{color:var(--green-text);}
+  .result-score.pass,.sq-opt.sq-correct{color:var(--green-text);}
+
+  footer{color:#B9C3CE;}
+  .lock-note svg{flex-shrink:0;}
+  .cookie-notice .btn-outline,.law-banner .btn-outline,.cta-band .btn-outline,.hero-card .btn-outline{background:transparent;}
+
+  @media(max-width:920px){
+    .hero h1{font-size:38px;}
+    .section-head h2{font-size:30px;}
+    .header-login{display:none;}
+    nav.main .nav-account{display:block;color:var(--blue);font-weight:600;}
+  }
+
+  /* ---------- INLOGGEN / MIJN OMGEVING ---------- */
+  .login-wrap{display:grid;grid-template-columns:1fr minmax(0,440px);gap:56px;align-items:center;padding:72px 0 96px;}
+  .login-intro h2{font-size:40px;line-height:1.1;color:var(--dark);margin-bottom:16px;}
+  .login-intro p{font-size:17px;color:var(--ink-soft);line-height:1.6;max-width:520px;}
+  .login-points{list-style:none;padding:0;margin:24px 0 0;display:flex;flex-direction:column;gap:12px;max-width:520px;}
+  .login-points li{display:flex;gap:10px;font-size:15px;color:var(--ink);line-height:1.5;}
+  .login-points li::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--blue);margin-top:8px;flex-shrink:0;}
+  .login-panel{padding:34px;}
+  .login-sub{font-size:14.5px;color:var(--ink-soft);margin:0 0 22px;}
+  .form-msg{min-height:20px;font-size:14px;margin:0 0 12px;color:var(--red);}
+  .form-msg.ok{color:var(--green-text);}
+  .link-btn{background:none;border:none;color:var(--blue);font-weight:600;font-size:14.5px;padding:12px 0 0;cursor:pointer;display:block;margin:0 auto;}
+  .link-btn:hover{text-decoration:underline;}
+  .spinner{width:44px;height:44px;border-radius:50%;border:4px solid var(--line);border-top-color:var(--blue);margin:0 auto;animation:spin 0.9s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .dash-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px;}
+  .dash-account{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end;}
+  .dash-account select{height:36px;border:1.5px solid var(--line);border-radius:8px;padding:0 10px;font-size:13.5px;background:var(--white);max-width:280px;}
+  .btn-sm{min-height:36px;padding:7px 14px;font-size:13.5px;}
+  .account-banner{display:flex;gap:16px;align-items:center;background:#EEF4FB;border:1px solid #C9DCF0;border-radius:14px;padding:18px 22px;margin-bottom:20px;flex-wrap:wrap;}
+  .ab-icon{width:40px;height:40px;border-radius:10px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .ab-text{flex:1;min-width:240px;font-size:14.5px;color:#1D3B5C;line-height:1.55;}
+  .ab-creds{display:flex;gap:22px;flex-wrap:wrap;margin-top:8px;}
+  .cred-pw{font-family:'JetBrains Mono',monospace;font-size:16px;letter-spacing:0.5px;background:#fff;padding:2px 8px;border-radius:6px;}
+  .pw-panel{margin-bottom:20px;}
+  .course-card{display:flex;gap:18px;align-items:center;background:var(--dark);color:#fff;border-radius:14px;padding:22px 24px;margin-bottom:26px;flex-wrap:wrap;}
+  .cc-icon{width:52px;height:52px;border-radius:12px;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .cc-text{flex:1;min-width:220px;}
+  .cc-text h3{color:#fff;font-size:20px;margin-bottom:4px;}
+  .cc-text p{color:#C5CFD9;font-size:14px;margin:0;line-height:1.5;}
+  .course-card .btn-primary{background:#fff;color:var(--dark);}
+  .course-card .btn-primary:hover{background:#E6EEF7;}
+  @media(max-width:920px){
+    .login-wrap{grid-template-columns:1fr;gap:28px;padding:40px 0 64px;}
+    .login-intro h2{font-size:30px;}
+    .dash-right{align-items:flex-start;}
+    .dash-account{justify-content:flex-start;}
+  }
 </style>
 </head>
 <body>
@@ -729,11 +870,12 @@
       <button onclick="goTo('faq')" data-view="faq">FAQ</button>
       <button onclick="goTo('about')" data-view="about">Over ons</button>
       <button onclick="goTo('contact')" data-view="contact">Contact</button>
-      <button onclick="goTo('dashboard')" data-view="dashboard">Mijn dashboard</button>
+      <button onclick="goTo('dashboard')" data-view="dashboard" class="nav-account">Mijn omgeving</button>
     </nav>
     <div style="display:flex;align-items:center;gap:10px;">
-      <button class="btn btn-primary" onclick="goTo('pricing')">Start cursus</button>
-      <button class="menu-toggle" id="menuToggle" onclick="toggleMobileNav()" aria-label="Menu">☰</button>
+      <button class="btn btn-outline header-login" onclick="goTo('dashboard')"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Mijn omgeving</button>
+      <button class="btn btn-primary" onclick="goTo('pricing')">Direct bestellen</button>
+      <button class="menu-toggle" id="menuToggle" onclick="toggleMobileNav()" aria-label="Menu openen" aria-controls="mainNav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
     </div>
   </div>
 </header>
@@ -745,11 +887,11 @@
     <section class="hero">
       <div>
         <div class="eyebrow">Erkend BHV-examen · 75 vragen · 80% om te slagen</div>
-        <h1>Word <span class="accent">BHV’er</span> vanuit je eigen dashboard.</h1>
-        <p class="lead">SKB BHV leidt je stap voor stap door de examenstof: eerste hulp, reanimatie &amp; AED, brandbestrijding en ontruiming. Beantwoord 75 vragen, haal 80% en download direct je certificaat.</p>
+        <h1>BHV-certificering, <span class="accent">online geregeld.</span></h1>
+        <p class="lead">Leg het BHV-examen online af, in je eigen tempo en op elk apparaat. Haal 80% en download direct je certificaat. Voor werkgevers regel je het hele team vanuit één omgeving, met de praktijkdag desgewenst op jullie eigen locatie.</p>
         <div class="hero-cta">
           <button class="btn btn-primary" onclick="goTo('pricing')">Bekijk pakketten</button>
-          <button class="btn btn-outline" onclick="goTo('dashboard')">Ik heb al betaald →</button>
+          <button class="btn btn-outline" onclick="goTo('dashboard')">Naar mijn omgeving</button>
         </div>
         <p style="margin:-8px 0 20px;">
           <a href="#" onclick="goTo('why');return false;" style="color:var(--blue);font-weight:600;font-size:14px;text-decoration:none;">Waarom is BHV eigenlijk verplicht? →</a>
@@ -776,12 +918,12 @@
     <section id="dit-is-skb-bhv">
       <div class="section-head">
         <div class="eyebrow">Dit is SKB BHV</div>
-        <h2>Onderdeel van Zuurman B.V. — praktisch, betaalbaar, landelijk</h2>
-        <p>SKB BHV is de online BHV-opleider van Zuurman B.V., gevestigd aan Goordelaan 19 in Onstwedde. We maken BHV-certificering toegankelijk: een helder online examen tegen een eerlijke prijs, met de mogelijkheid om de praktijk — reanimatie, AED-gebruik en brandbestrijding — gewoon bij u op locatie te laten verzorgen.</p>
+        <h2>Onderdeel van Oibase B.V. — praktisch, betaalbaar, landelijk</h2>
+        <p>SKB BHV is de online BHV-opleider van Oibase B.V., gevestigd aan Goordelaan 19 in Onstwedde. We maken BHV-certificering toegankelijk: een helder online examen tegen een eerlijke prijs, met de mogelijkheid om de praktijk — reanimatie, AED-gebruik en brandbestrijding — gewoon bij u op locatie te laten verzorgen.</p>
       </div>
 
       <div class="photo-hero">
-        <div class="ph-icons"><span>🫀</span><span>🧯</span><span>🚪</span></div>
+        <div class="ph-icons"><span><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21.2l8.8-8.8a5.5 5.5 0 0 0 0-7.8z"/><path d="M3.5 12h4l2-3 3 6 2-3h6"/></svg></span><span><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.4-.5-2-1-3-1.1-2.1-.2-4 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.2.4-2.3 1-3.2.3 1.2 1.2 2.2 2.5 2.7z"/></svg></span><span><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 4h3a2 2 0 0 1 2 2v14M2 20h3M13 20h9M10 12v.01"/><path d="M13 4.6v16.2a.6.6 0 0 1-.8.6L5 19.9V5.6a1 1 0 0 1 .7-1l6.5-1.6a.6.6 0 0 1 .8.6z"/></svg></span></div>
         <div class="ph-caption">
           <b>Eén examen, alle kerntaken van een BHV'er</b>
           <span>Eerste hulp, reanimatie &amp; AED, brandbestrijding en ontruiming — getoetst in 75 vragen, verdeeld over 5 onderdelen van elk 8 minuten.</span>
@@ -790,22 +932,22 @@
 
       <div class="photo-grid">
         <div class="photo-card a">
-          <div class="pc-icon">🖥️</div>
+          <div class="pc-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M2 20h20"/></svg></div>
           <div class="pc-caption"><b>Online theorie-examen</b><span>In je eigen tempo, vanaf elk apparaat</span></div>
         </div>
         <div class="photo-card c">
-          <div class="pc-icon">🚑</div>
+          <div class="pc-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M12 10.5v6M9 13.5h6"/></svg></div>
           <div class="pc-caption"><b>Praktijk op locatie</b><span>Reanimatie, AED en blussen bij u op de zaak</span></div>
         </div>
         <div class="photo-card b">
-          <div class="pc-icon">🪪</div>
+          <div class="pc-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2"/><path d="M14 10h5M14 14h3"/></svg></div>
           <div class="pc-caption"><b>Certificaat &amp; pasje</b><span>Direct digitaal, met optioneel een BHV-pasje</span></div>
         </div>
       </div>
 
       <div class="trustline" style="margin-top:22px;">
-        <span><b>Zuurman B.V.</b>&nbsp;— Goordelaan 19, Onstwedde</span>
-        <span><b>KVK</b>&nbsp;86597396</span>
+        <span><b>Oibase B.V.</b>&nbsp;— Goordelaan 19, Onstwedde</span>
+        <span><b>KVK</b>&nbsp;42117378</span>
         <span><b>info@skbbhv.nl</b></span>
       </div>
     </section>
@@ -865,7 +1007,7 @@
       </div>
 
       <div class="photo-hero">
-        <div class="ph-icons"><span>⏱️</span><span>🔥</span><span>❤️</span></div>
+        <div class="ph-icons"><span><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.4-.5-2-1-3-1.1-2.1-.2-4 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.2.4-2.3 1-3.2.3 1.2 1.2 2.2 2.5 2.7z"/></svg></span><span><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21.2l8.8-8.8a5.5 5.5 0 0 0 0-7.8z"/><path d="M3.5 12h4l2-3 3 6 2-3h6"/></svg></span></div>
         <div class="ph-caption">
           <b>De eerste minuten bepalen de afloop</b>
           <span>Bij brand of een circulatiestilstand telt elke minuut. Een opgeleide BHV'er overbrugt de tijd tot de hulpdiensten arriveren.</span>
@@ -899,13 +1041,13 @@
       </div>
       <div class="audience-grid">
         <div class="audience-card">
-          <div class="icon">🏢</div>
+          <div class="icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="1"/><path d="M9 22v-4h6v4M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01"/></svg></div>
           <h3>Voor bedrijven</h3>
           <p>De wettelijke plicht, de boetes bij het ontbreken ervan, en waarom een goede BHV-organisatie ook gewoon goed ondernemerschap is — inclusief wat het combipakket met praktijkdag op locatie voor jouw team kan betekenen.</p>
           <button class="btn btn-outline btn-block" onclick="goTo('why-business')">Lees meer voor bedrijven →</button>
         </div>
         <div class="audience-card">
-          <div class="icon">🙋</div>
+          <div class="icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></div>
           <h3>Voor particulieren</h3>
           <p>Waarom een BHV-certificaat ook zonder werkgeversverplichting waardevol is: als levensreddende vaardigheid, als sterk punt op je cv en als bron van zelfvertrouwen in noodsituaties.</p>
           <button class="btn btn-outline btn-block" onclick="goTo('why-individuals')">Lees meer voor particulieren →</button>
@@ -965,15 +1107,15 @@
 
       <div class="photo-grid">
         <div class="photo-card b">
-          <div class="pc-icon">🏢</div>
+          <div class="pc-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="1"/><path d="M9 22v-4h6v4M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01"/></svg></div>
           <div class="pc-caption"><b>Voor het hele team</b><span>Eén bestelling, meerdere deelnemers</span></div>
         </div>
         <div class="photo-card a">
-          <div class="pc-icon">📋</div>
+          <div class="pc-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="18" rx="2"/><path d="M9 2h6v4H9zM9 12h6M9 16h4"/></svg></div>
           <div class="pc-caption"><b>RI&amp;E-proof</b><span>Aantoonbaar opgeleide BHV'ers</span></div>
         </div>
         <div class="photo-card c">
-          <div class="pc-icon">📍</div>
+          <div class="pc-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
           <div class="pc-caption"><b>Op locatie</b><span>Praktijk gewoon bij u op de zaak</span></div>
         </div>
       </div>
@@ -1038,15 +1180,15 @@
 
       <div class="photo-grid">
         <div class="photo-card d">
-          <div class="pc-icon">❤️</div>
+          <div class="pc-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21.2l8.8-8.8a5.5 5.5 0 0 0 0-7.8z"/><path d="M3.5 12h4l2-3 3 6 2-3h6"/></svg></div>
           <div class="pc-caption"><b>Overal bruikbaar</b><span>Thuis, onderweg, bij de sportclub</span></div>
         </div>
         <div class="photo-card a">
-          <div class="pc-icon">💪</div>
+          <div class="pc-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
           <div class="pc-caption"><b>Zelfvertrouwen</b><span>Weten hoe je moet handelen</span></div>
         </div>
         <div class="photo-card b">
-          <div class="pc-icon">📄</div>
+          <div class="pc-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg></div>
           <div class="pc-caption"><b>Sterk op je cv</b><span>Een certificaat dat opvalt</span></div>
         </div>
       </div>
@@ -1136,14 +1278,14 @@
       <div class="section-head" style="max-width:760px;">
         <div class="eyebrow">Over ons</div>
         <h2 style="font-size:36px;">Veiligheid toegankelijk maken, zonder gedoe</h2>
-        <p style="font-size:16px;">SKB BHV is een handelsnaam van Zuurman B.V., gevestigd in Emmen. We geloven dat een BHV-certificaat niet duur, ingewikkeld of tijdrovend hoeft te zijn — terwijl de kennis die je opdoet er wél toe doet als het erop aankomt.</p>
+        <p style="font-size:16px;">SKB BHV is een handelsnaam van Oibase B.V., gevestigd in Emmen. We geloven dat een BHV-certificaat niet duur, ingewikkeld of tijdrovend hoeft te zijn — terwijl de kennis die je opdoet er wél toe doet als het erop aankomt.</p>
       </div>
 
       <div class="photo-hero">
-        <div class="ph-icons"><span>📍</span><span>🤝</span></div>
+        <div class="ph-icons"><span><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg></span><span><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg></span></div>
         <div class="ph-caption">
           <b>Vanuit Emmen, actief door heel Nederland</b>
-          <span>Zuurman B.V. verzorgt online examens en praktijkdagen op locatie voor particulieren en bedrijven in het hele land.</span>
+          <span>Oibase B.V. verzorgt online examens en praktijkdagen op locatie voor particulieren en bedrijven in het hele land.</span>
         </div>
       </div>
 
@@ -1168,8 +1310,8 @@
       <div class="law-banner" style="margin-top:44px;">
         <div class="sweep thin"></div>
         <div class="eyebrow" style="color:#8fc2ef;">Bedrijfsgegevens</div>
-        <h3>SKB BHV — onderdeel van Zuurman B.V.</h3>
-        <p>Goordelaan 19, 9591 CB Onstwedde · KVK 86597396 · BTW NL864018228B01 · info@skbbhv.nl</p>
+        <h3>SKB BHV — onderdeel van Oibase B.V.</h3>
+        <p>Goordelaan 19, 9591 CB Onstwedde · KVK 42117378 · info@skbbhv.nl</p>
       </div>
 
       <div class="cta-band">
@@ -1218,11 +1360,10 @@
           <h2 style="font-size:16px;">Contactgegevens</h2>
           <div style="font-size:13.5px;color:var(--ink-soft);line-height:1.8;margin-top:14px;">
             <b style="color:var(--dark);">SKB BHV</b><br>
-            onderdeel van Zuurman B.V.<br>
+            onderdeel van Oibase B.V.<br>
             Goordelaan 19<br>
             9591 CB Onstwedde<br>
-            KVK 86597396<br>
-            BTW NL864018228B01<br><br>
+            KVK 42117378<br><br>
             <b style="color:var(--dark);">E-mail</b><br>
             info@skbbhv.nl
           </div>
@@ -1243,7 +1384,7 @@
       </div>
       <div class="legal-text">
         <h4>1. Wie we zijn</h4>
-        <p>SKB BHV is een handelsnaam en onderdeel van Zuurman B.V., gevestigd aan Goordelaan 19, 9591 CB Onstwedde, ingeschreven bij de Kamer van Koophandel onder nummer 86597396, btw-identificatienummer NL864018228B01. In deze voorwaarden wordt met "SKB BHV" steeds Zuurman B.V. bedoeld.</p>
+        <p>SKB BHV is een handelsnaam en onderdeel van Oibase B.V., gevestigd aan Goordelaan 19, 9591 CB Onstwedde, ingeschreven bij de Kamer van Koophandel onder nummer 42117378. In deze voorwaarden wordt met "SKB BHV" steeds Oibase B.V. bedoeld.</p>
         <h4>2. Toepasselijkheid</h4>
         <p>Deze voorwaarden gelden voor iedere aanbieding, bestelling en overeenkomst tussen SKB BHV en de klant, tenzij schriftelijk anders overeengekomen.</p>
         <h4>3. Het examen en certificaat</h4>
@@ -1257,7 +1398,7 @@
         <h4>7. Aansprakelijkheid</h4>
         <p>SKB BHV spant zich in om actuele en zorgvuldige examenstof aan te bieden, maar aanvaardt geen aansprakelijkheid voor schade die voortvloeit uit het gebruik van de opgedane kennis in noodsituaties. De klant blijft zelf verantwoordelijk voor correct handelen in de praktijk.</p>
         <h4>8. Klachten</h4>
-        <p>Klachten over een bestelling of het examen kunnen gemeld worden via info@skbbhv.nl, of per post aan Zuurman B.V., Goordelaan 19, 9591 CB Onstwedde. SKB BHV reageert binnen 5 werkdagen.</p>
+        <p>Klachten over een bestelling of het examen kunnen gemeld worden via info@skbbhv.nl, of per post aan Oibase B.V., Goordelaan 19, 9591 CB Onstwedde. SKB BHV reageert binnen 5 werkdagen.</p>
       </div>
     </section>
   </main>
@@ -1274,13 +1415,13 @@
       </div>
       <div class="legal-text">
         <h4>Wie is verantwoordelijk voor je gegevens?</h4>
-        <p>SKB BHV is een handelsnaam van Zuurman B.V., gevestigd aan Goordelaan 19, 9591 CB Onstwedde. Zuurman B.V. is verwerkingsverantwoordelijke voor de gegevens die via deze website worden verzameld.</p>
+        <p>SKB BHV is een handelsnaam van Oibase B.V., gevestigd aan Goordelaan 19, 9591 CB Onstwedde. Oibase B.V. is verwerkingsverantwoordelijke voor de gegevens die via deze website worden verzameld.</p>
         <h4>Welke gegevens verzamelen we?</h4>
         <p>Bij een bestelling verzamelen we naam, e-mailadres, en (indien van toepassing) bedrijfsnaam van de besteller, en naam en geboortedatum van elke deelnemer — nodig om het certificaat en eventuele BHV-pasje op de juiste naam te zetten. Bij een aanvraag voor een praktijkdag op locatie verzamelen we ook adresgegevens en een telefoonnummer.</p>
         <h4>Waarvoor gebruiken we deze gegevens?</h4>
         <p>Uitsluitend om je bestelling te verwerken, het examen en dashboard te laten functioneren, en certificaten/pasjes/facturen op de juiste naam te genereren. We gebruiken je gegevens niet voor marketingdoeleinden zonder aparte toestemming.</p>
         <h4>Waar worden gegevens opgeslagen?</h4>
-        <p>Je bestelling en examenvoortgang worden bewaard in je eigen browser, zodat je bestelling niet verloren gaat als je de pagina sluit. Betalingen worden veilig verwerkt door Stripe. Wanneer je voor meerdere deelnemers bestelt en een persoonlijke examenlink aanmaakt, worden de naam, geboortedatum en het examenresultaat van die deelnemer ook opgeslagen in een beveiligde database (Vercel), zodat de link ook op een ander apparaat werkt. Facturen en certificaatmails worden verstuurd via Resend. Met al deze partijen zijn passende afspraken over de verwerking van jouw gegevens gemaakt.</p>
+        <p>Na een bestelling maken we een account voor je aan, zodat je met je e-mailadres en wachtwoord kunt inloggen op Mijn omgeving. Je bestelling, de deelnemersgegevens en de examenvoortgang worden daarvoor opgeslagen in een beveiligde database (Vercel); je wachtwoord bewaren we alleen versleuteld. Daarnaast houdt je browser een kopie bij, zodat je voortgang niet verloren gaat als je de pagina sluit. Betalingen worden veilig verwerkt door Stripe. Wanneer je voor meerdere deelnemers bestelt en een persoonlijke examenlink aanmaakt, worden de naam, geboortedatum en het examenresultaat van die deelnemer ook opgeslagen in een beveiligde database (Vercel), zodat de link ook op een ander apparaat werkt. Facturen en certificaatmails worden verstuurd via Resend. Met al deze partijen zijn passende afspraken over de verwerking van jouw gegevens gemaakt.</p>
         <h4>Hoe lang bewaren we gegevens?</h4>
         <p>We bewaren gegevens niet langer dan nodig voor het doel waarvoor ze zijn verzameld, en in elk geval niet langer dan wettelijk verplicht (bijvoorbeeld voor facturatie). Persoonlijke examenlinks verlopen automatisch na 90 dagen.</p>
         <h4>Jouw rechten</h4>
@@ -1296,7 +1437,7 @@
     <section style="padding-top:52px;padding-bottom:70px;">
       <div class="invoice-toolbar">
         <span class="breadcrumb-back" onclick="goTo('dashboard')">← Terug naar dashboard</span>
-        <button class="btn btn-primary" onclick="window.print()">🖨️ Print / download als PDF</button>
+        <button class="btn btn-primary" onclick="window.print()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> Print / download als PDF</button>
       </div>
       <div class="invoice-sheet" id="invoiceSheet">
         <div class="invoice-head">
@@ -1313,7 +1454,7 @@
         <div class="invoice-parties">
           <div>
             <span class="k">Van</span>
-            <p>SKB BHV — onderdeel van Zuurman B.V.<br>Goordelaan 19<br>9591 CB Onstwedde<br>KVK 86597396 · BTW NL864018228B01</p>
+            <p>SKB BHV — onderdeel van Oibase B.V.<br>Goordelaan 19<br>9591 CB Onstwedde<br>KVK 42117378</p>
           </div>
           <div>
             <span class="k">Aan</span>
@@ -1330,6 +1471,46 @@
           <div class="grand"><span class="k">Totaal</span><span class="v" id="invTotal">—</span></div>
         </div>
         <p class="invoice-footnote">Deze factuur is automatisch gegenereerd bij bestelling. Vragen? Mail info@skbbhv.nl.</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- =================== ADMIN (verborgen, alleen via geheime link) =================== -->
+<div class="view" id="view-admin">
+  <main>
+    <section style="padding-top:52px;padding-bottom:80px;max-width:640px;margin:0 auto;">
+      <div class="section-head">
+        <div class="eyebrow">Beheer</div>
+        <h2 style="font-size:28px;">Handmatig een examenlogin aanmaken</h2>
+        <p>Maak hier direct een persoonlijke examenlink aan voor iemand, en verstuur die meteen per e-mail — buiten de normale bestelling om. Alleen voor eigen gebruik.</p>
+      </div>
+
+      <div class="panel">
+        <div class="field"><label>Beheerderswachtwoord</label><input id="adminPassword" type="password" placeholder="Wachtwoord" autocomplete="off"></div>
+        <div class="field-row">
+          <div class="field"><label>Voornaam</label><input id="adminFirst" type="text" placeholder="Voornaam"></div>
+          <div class="field"><label>Achternaam</label><input id="adminLast" type="text" placeholder="Achternaam"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Geboortedatum</label><input id="adminBirthdate" type="date"></div>
+          <div class="field"><label>Pakket</label>
+            <select id="adminPkg">
+              <option value="basis">BHV Basisexamen</option>
+              <option value="herhaling">BHV Herhaling</option>
+              <option value="combi">BHV Theorie + Praktijk</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label style="display:flex;align-items:center;gap:10px;font-weight:500;cursor:pointer;">
+            <input type="checkbox" id="adminPasje" style="width:auto;">
+            <span>Ook een BHV-pasje toekennen</span>
+          </label>
+        </div>
+        <div class="field"><label>E-mailadres (hier wordt de examenlink direct naartoe gestuurd)</label><input id="adminEmail" type="email" placeholder="naam@voorbeeld.nl"></div>
+        <button class="btn btn-primary btn-block" onclick="adminCreateLogin()">Aanmaken en versturen →</button>
+        <div id="adminResult" style="margin-top:16px;font-size:13.5px;"></div>
       </div>
     </section>
   </main>
@@ -1394,7 +1575,7 @@
           <div class="qty-total">Totaal: <span id="total-combi">€179,-</span></div>
           <div class="discount-note" id="discount-combi" style="display:none;"></div>
           <button class="btn btn-primary btn-block" onclick="startCheckout('combi')">Kies theorie + praktijk</button>
-          <p class="on-location-note">📍 Liever op uw eigen locatie? Vink dit bij de bestelgegevens aan (+ €395,- locatietoeslag, eenmalig per bestelling) — we nemen na aankoop contact op om een praktijkdatum in te plannen.</p>
+          <p class="on-location-note">Liever op uw eigen locatie? Vink dit bij de bestelgegevens aan (+ €395,- locatietoeslag, eenmalig per bestelling) — we nemen na aankoop contact op om een praktijkdatum in te plannen.</p>
         </div>
 
         <div class="price-card">
@@ -1476,6 +1657,12 @@
               <div class="field"><label>Opmerkingen (optioneel)</label><input id="inpLocNotes" type="text" placeholder="Bijv. beschikbare ruimte, bijzonderheden op locatie"></div>
             </div>
           </div>
+          <div class="field" id="priorTrainingOption" style="display:none;">
+            <label style="display:flex;align-items:flex-start;gap:10px;font-weight:500;cursor:pointer;">
+              <input type="checkbox" id="inpPriorTraining" style="width:auto;margin-top:3px;">
+              <span>Ik verklaar dat ik eerder een <b>BHV-basisopleiding</b> heb afgerond en nu een herhaling volg.</span>
+            </label>
+          </div>
           <div class="field pasje-option">
             <label style="display:flex;align-items:flex-start;gap:10px;font-weight:500;cursor:pointer;">
               <input type="checkbox" id="inpPasje" style="width:auto;margin-top:3px;" onchange="recalcOrderSummary()">
@@ -1490,10 +1677,10 @@
 
         <div id="checkoutStep2" style="display:none;">
           <div class="demo-banner" style="background:#EEF5FC;border-color:#B9D6EE;color:var(--blue-dark);">
-            🔒 Je wordt na het klikken op "Betaal veilig" doorgestuurd naar <b>Stripe Checkout</b> — een beveiligde betaalpagina waar je kiest tussen iDEAL, creditcard of Bancontact. Wij slaan zelf geen betaalgegevens op.
+            Je wordt na het klikken op "Betaal veilig" doorgestuurd naar <b>Stripe Checkout</b> — een beveiligde betaalpagina waar je kiest tussen iDEAL, creditcard of Bancontact. Wij slaan zelf geen betaalgegevens op.
           </div>
           <button class="btn btn-primary btn-block" id="payBtn" onclick="submitPayment()">Betaal veilig via Stripe <span id="payAmountLabel"></span></button>
-          <div class="lock-note">🔒 Versleutelde verbinding · verwerkt door Stripe</div>
+          <div class="lock-note"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Versleutelde verbinding · verwerkt door Stripe</div>
           <button class="btn btn-outline btn-block" style="margin-top:10px;" onclick="goCheckoutStep(1)">← Terug</button>
         </div>
       </div>
@@ -1518,9 +1705,45 @@
 <div class="view" id="view-processing">
   <main>
     <div class="result-wrap">
-      <div style="font-size:44px;">⏳</div>
+      <div class="spinner" aria-hidden="true"></div>
       <h2 style="margin-top:14px;font-size:22px;" id="processingTitle">Betaling wordt verwerkt…</h2>
       <p style="color:var(--ink-soft);" id="processingSubtitle">Een moment geduld, dit duurt maar even.</p>
+    </div>
+  </main>
+</div>
+
+<!-- =================== INLOGGEN =================== -->
+<div class="view" id="view-login">
+  <main>
+    <div class="login-wrap">
+      <div class="login-intro">
+        <div class="eyebrow">Mijn omgeving</div>
+        <h2>Log in op je persoonlijke omgeving</h2>
+        <p>Hier vul je de deelnemers in, start je de cursusvragen en download je certificaten, pasjes en facturen.</p>
+        <ul class="login-points">
+          <li>Je inloggegevens ontvang je per e-mail direct na je bestelling.</li>
+          <li>Deelnemers die een persoonlijke examenlink kregen, hoeven niet in te loggen: de link in hun e-mail volstaat.</li>
+        </ul>
+      </div>
+      <div class="panel login-panel">
+        <form id="loginForm" onsubmit="submitLogin(event)" novalidate>
+          <h2 style="font-size:24px;margin-bottom:6px;">Inloggen</h2>
+          <p class="login-sub">Gebruik het e-mailadres van je bestelling.</p>
+          <div class="field"><label for="loginEmail">E-mailadres</label><input id="loginEmail" type="email" autocomplete="username" placeholder="naam@bedrijf.nl" required></div>
+          <div class="field"><label for="loginPassword">Wachtwoord</label><input id="loginPassword" type="password" autocomplete="current-password" required></div>
+          <p class="form-msg" id="loginMsg" role="alert"></p>
+          <button type="submit" class="btn btn-primary btn-block" id="loginBtn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Inloggen</button>
+          <button type="button" class="link-btn" onclick="showForgot(true)">Wachtwoord vergeten?</button>
+        </form>
+        <form id="forgotForm" onsubmit="submitForgot(event)" style="display:none;" novalidate>
+          <h2 style="font-size:24px;margin-bottom:6px;">Nieuw wachtwoord</h2>
+          <p class="login-sub">Vul je e-mailadres in. Je ontvangt binnen enkele minuten een nieuw wachtwoord.</p>
+          <div class="field"><label for="forgotEmail">E-mailadres</label><input id="forgotEmail" type="email" autocomplete="email" placeholder="naam@bedrijf.nl" required></div>
+          <p class="form-msg" id="forgotMsg" role="status"></p>
+          <button type="submit" class="btn btn-primary btn-block" id="forgotBtn">Stuur nieuw wachtwoord</button>
+          <button type="button" class="link-btn" onclick="showForgot(false)">Terug naar inloggen</button>
+        </form>
+      </div>
     </div>
   </main>
 </div>
@@ -1533,14 +1756,51 @@
         <span class="q-count" id="dashWelcome">WELKOM TERUG</span>
         <h2 id="dashName">Jouw dashboard</h2>
       </div>
-      <span class="pill" id="dashPackagePill">Pakket: Basisexamen</span>
+      <div class="dash-right">
+        <span class="pill" id="dashPackagePill">Pakket: Basisexamen</span>
+        <div class="dash-account" id="dashAccount" style="display:none;">
+          <label class="sr-only" for="orderSelect">Kies bestelling</label>
+          <select id="orderSelect" onchange="switchOrder(this.value)" style="display:none;"></select>
+          <button class="btn btn-outline btn-sm" onclick="togglePasswordPanel()">Wachtwoord wijzigen</button>
+          <button class="btn btn-outline btn-sm" onclick="logout()">Uitloggen</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="account-banner" id="credentialsBanner" style="display:none;" role="status">
+      <div class="ab-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/></svg></div>
+      <div class="ab-text">
+        <b>Je account is aangemaakt.</b> Hiermee log je voortaan in op Mijn omgeving, ook op een ander apparaat. We hebben deze gegevens ook naar je e-mail gestuurd.
+        <div class="ab-creds"><span>E-mailadres: <b id="credEmail"></b></span><span>Wachtwoord: <b id="credPassword" class="cred-pw"></b></span></div>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="dismissCredentials()">Ik heb ze bewaard</button>
+    </div>
+
+    <div class="panel pw-panel" id="pwPanel" style="display:none;">
+      <form onsubmit="submitPasswordChange(event)" novalidate>
+        <h2 style="font-size:18px;margin-bottom:14px;">Wachtwoord wijzigen</h2>
+        <div class="field-row">
+          <div class="field"><label for="pwCurrent">Huidig wachtwoord</label><input id="pwCurrent" type="password" autocomplete="current-password"></div>
+          <div class="field"><label for="pwNext">Nieuw wachtwoord (min. 8 tekens)</label><input id="pwNext" type="password" autocomplete="new-password"></div>
+        </div>
+        <p class="form-msg" id="pwMsg" role="alert"></p>
+        <div style="display:flex;gap:10px;"><button type="submit" class="btn btn-primary">Opslaan</button><button type="button" class="btn btn-outline" onclick="togglePasswordPanel()">Annuleren</button></div>
+      </form>
     </div>
 
     <!-- Roster: deelnemers in deze bestelling -->
     <div class="exam-card" id="rosterView">
+      <div class="course-card" id="courseCard">
+        <div class="cc-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg></div>
+        <div class="cc-text">
+          <h3>Cursusvragen</h3>
+          <p>75 vragen in 5 onderdelen: EHBO, reanimatie &amp; AED, brandbestrijding, ontruiming en wet- &amp; regelgeving. Met 80% of meer ben je geslaagd.</p>
+        </div>
+        <button class="btn btn-primary" id="courseBtn" onclick="openCourseQuestions()">Naar de cursusvragen</button>
+      </div>
       <div id="onLocationBanner" class="location-request-card" style="display:none;margin-bottom:20px;">
         <div class="lr-head">
-          <span>📍 Offerteaanvraag praktijkdag op locatie</span>
+          <span>Offerteaanvraag praktijkdag op locatie</span>
           <span class="lr-ref" id="lrReference">—</span>
         </div>
         <p>We nemen binnen 1 werkdag contact op via je e-mailadres om de praktijkdag en offerte te bevestigen. Het theorie-examen hieronder kun je alvast online afronden.</p>
@@ -1551,7 +1811,7 @@
           <div><span class="k">Telefoon</span><span class="v" id="lrPhone">—</span></div>
         </div>
         <div class="lr-notes" id="lrNotesWrap" style="display:none;"><span class="k">Opmerkingen</span><span class="v" id="lrNotes">—</span></div>
-        <button class="btn btn-primary" style="margin-top:16px;" onclick="emailLocationRequest()">📧 Aanvraag mailen naar SKB BHV</button>
+        <button class="btn btn-primary" style="margin-top:16px;" onclick="emailLocationRequest()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg> Aanvraag mailen naar SKB BHV</button>
         <p style="font-size:11.5px;color:var(--ink-soft);margin:8px 0 0;">Opent je eigen e-mailprogramma met alle aanvraaggegevens al ingevuld, klaar om te versturen naar info@skbbhv.nl.</p>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:6px;">
@@ -1563,16 +1823,16 @@
       </p>
       <div id="rosterList"></div>
       <div id="rosterOwnerToolbar" style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:18px;border-top:1px solid var(--line);flex-wrap:wrap;gap:10px;">
-        <button class="btn btn-outline" onclick="goTo('invoice')">📄 Bekijk factuur</button>
-        <button class="btn btn-outline" onclick="emailOrderToSkb()">📧 Bestelgegevens mailen naar SKB BHV</button>
-        <button class="btn btn-outline" onclick="clearProgress()" style="color:var(--red);border-color:#F3C6CA;">Bestelling wissen</button>
+        <button class="btn btn-outline" onclick="goTo('invoice')"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg> Bekijk factuur</button>
+        <button class="btn btn-outline" onclick="emailOrderToSkb()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg> Bestelgegevens mailen naar SKB BHV</button>
+        <button class="btn btn-outline" id="clearOrderBtn" onclick="clearProgress()" style="color:var(--red);border-color:#F3C6CA;">Bestelling wissen</button>
       </div>
     </div>
 
     <!-- Klaar-om-te-starten scherm voor de actieve deelnemer -->
     <div class="exam-card" id="examStart" style="display:none;">
       <div class="start-screen">
-        <div class="big-icon">📋</div>
+        <div class="big-icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="18" rx="2"/><path d="M9 2h6v4H9zM9 12h6M9 16h4"/></svg></div>
         <h2 style="font-size:22px;">Klaar voor het examen, <span id="examStartName">deelnemer</span>?</h2>
         <p style="color:var(--ink-soft);max-width:460px;margin:10px auto 26px;">
           75 vragen, verdeeld over 5 onderdelen van elk 15 vragen. Voor elk onderdeel heb je <b>8 minuten</b>; is de tijd om, dan gaat het examen automatisch door naar het volgende onderdeel. Je hebt minimaal 60 vragen goed (80%) nodig om te slagen. Elke vraag moet beantwoord worden voordat je verder kunt.
@@ -1818,7 +2078,7 @@
       </div>
     </div>
     <div style="width:100%;border-top:1px solid rgba(255,255,255,0.12);padding-top:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;font-size:12px;color:#8a9198;">
-      <span>SKB BHV is onderdeel van Zuurman B.V. · vestiging Goordelaan 19, 9591 CB Onstwedde · KVK 86597396 · BTW NL864018228B01</span>
+      <span>SKB BHV is onderdeel van Oibase B.V. · vestiging Goordelaan 19, 9591 CB Onstwedde · KVK 42117378</span>
     </div>
   </div>
 </footer>
@@ -1948,6 +2208,10 @@ let state = {
   locationSurcharge: 395,
   nextPasNummer: 500, // oplopend pasnummer, gedeeld over alle bestellingen
   invoiceNumber: null,
+  orderId: null, // Stripe checkout-sessie-id van de bestelling die nu open staat
+  auth: null, // { token, email, first, last, company } als de klant is ingelogd
+  accountOrders: [], // alle bestellingen van de ingelogde klant
+  newCredentials: null, // { email, password } — alleen direct na aanmaken account
 };
 
 const PACKAGES = {
@@ -1967,12 +2231,14 @@ async function saveProgress(){
       roster: state.roster,
       nextPasNummer: state.nextPasNummer,
       invoiceNumber: state.invoiceNumber,
+      orderId: state.orderId,
       savedAt: new Date().toISOString(),
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
   }catch(e){
     console.error('Opslaan van voortgang mislukt', e);
   }
+  scheduleOrderSync();
 }
 
 async function loadProgress(){
@@ -1986,6 +2252,7 @@ async function loadProgress(){
       state.roster = payload.roster || [];
       state.nextPasNummer = payload.nextPasNummer || state.nextPasNummer;
       state.invoiceNumber = payload.invoiceNumber || null;
+      state.orderId = payload.orderId || null;
       return true;
     }
     return false;
@@ -2001,6 +2268,7 @@ function clearProgress(){
   state.roster = [];
   state.activeIndex = null;
   state.invoiceNumber = null;
+  state.orderId = null;
   try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
   goTo('home');
 }
@@ -2032,7 +2300,7 @@ function updateQtyTotal(pkgKey){
   if(noteEl){
     if(discount > 0){
       noteEl.style.display = 'block';
-      noteEl.textContent = `🎉 ${Math.round(discount*100)}% groepskorting toegepast (vanaf ${discount===0.10?25:10} deelnemers)`;
+      noteEl.textContent = `${Math.round(discount*100)}% groepskorting toegepast (vanaf ${discount===0.10?25:10} deelnemers)`;
     } else {
       noteEl.style.display = 'none';
     }
@@ -2048,7 +2316,8 @@ const PAGE_TITLES = {
   'pricing': 'Cursus & prijzen — SKB BHV',
   'checkout': 'Afrekenen — SKB BHV',
   'processing': 'Betaling verwerken — SKB BHV',
-  'dashboard': 'Mijn dashboard — SKB BHV',
+  'dashboard': 'Mijn omgeving — SKB BHV',
+  'login': 'Inloggen — SKB BHV',
   'result': 'Examenresultaat — SKB BHV',
   'certificate': 'Mijn certificaat — SKB BHV',
   'pas': 'Mijn BHV-pasje — SKB BHV',
@@ -2058,9 +2327,12 @@ const PAGE_TITLES = {
   'terms': 'Algemene voorwaarden — SKB BHV',
   'privacy': 'Privacyverklaring — SKB BHV',
   'invoice': 'Factuur — SKB BHV',
+  'admin': 'Beheer — SKB BHV',
 };
 
 function goTo(view){
+  if(view==='dashboard' && !canOpenDashboard()) view = 'login';
+  if(view==='login' && state.auth) view = 'dashboard';
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+view).classList.add('active');
   state.view = view;
@@ -2072,6 +2344,7 @@ function goTo(view){
   document.getElementById('mainNav').classList.remove('mobile-open'); // sluit mobiel menu na navigeren
   window.scrollTo({top:0, behavior:'smooth'});
   if(view==='dashboard') renderDashboardHeader();
+  if(view==='login') prepareLoginView();
   if(view==='certificate') fitCertificate();
   if(view==='pas') fitPasCard();
   if(view==='invoice') renderInvoice();
@@ -2096,6 +2369,8 @@ function startCheckout(pkgKey){
   document.getElementById('locationOption').style.display = (pkgKey==='combi') ? 'block' : 'none';
   document.getElementById('inpOnLocation').checked = false;
   document.getElementById('locationForm').style.display = 'none';
+  document.getElementById('priorTrainingOption').style.display = (pkgKey==='herhaling') ? 'block' : 'none';
+  document.getElementById('inpPriorTraining').checked = false;
   document.getElementById('inpPasje').checked = false;
   document.getElementById('pasjeTypeLabel').textContent = p.pasType;
 
@@ -2186,6 +2461,17 @@ function goCheckoutStep(step){
     return;
   }
 
+  if(state.order.pkg === 'herhaling'){
+    const declared = document.getElementById('inpPriorTraining').checked;
+    if(!declared){
+      backToStep1('Vink de verklaring aan dat je eerder een BHV-basisopleiding hebt afgerond, om verder te gaan met het herhalingspakket.');
+      return;
+    }
+    state.order.priorTrainingDeclared = true;
+  } else {
+    state.order.priorTrainingDeclared = false;
+  }
+
   if(state.order.onLocation){
     const postcode = document.getElementById('inpLocPostcode').value.trim();
     const city = document.getElementById('inpLocCity').value.trim();
@@ -2224,6 +2510,7 @@ async function submitPayment(){
         onLocation: state.order.onLocation,
         buyer: state.buyer,
         locationRequest: state.order.locationRequest,
+        priorTrainingDeclared: state.order.priorTrainingDeclared || false,
       }),
     });
     const data = await response.json();
@@ -2271,7 +2558,26 @@ async function handleStripeReturn(){
         withPasje: data.withPasje,
       };
       state.buyer = data.buyer;
-      buildRoster();
+      state.orderId = data.orderId || null;
+      const acc = data.account;
+      if(acc && acc.sessionToken){
+        setAuth({ token: acc.sessionToken, email: acc.email, first: data.buyer.first, last: data.buyer.last, company: data.buyer.company });
+      }
+      if(acc && acc.password){
+        state.newCredentials = { email: acc.email, password: acc.password };
+      }
+      if(acc && acc.savedOrder && Array.isArray(acc.savedOrder.roster)){
+        // Deze bestelling was al eerder geopend: ga verder met de bewaarde deelnemers.
+        state.roster = acc.savedOrder.roster;
+        state.invoiceNumber = acc.savedOrder.invoiceNumber || null;
+        state.nextPasNummer = acc.savedOrder.nextPasNummer || state.nextPasNummer;
+        state.activeIndex = null;
+        state.participantMode = false;
+        saveProgress();
+      } else {
+        buildRoster();
+      }
+      if(state.auth) refreshAccountOrders();
       goTo('dashboard');
       showToast('Betaling gelukt — welkom! Vul hieronder de deelnemersgegevens in.');
     }catch(err){
@@ -2409,6 +2715,7 @@ function renderDashboardHeader(){
   let pillText = p ? `Pakket: ${p.name} × ${state.order.qty}` : 'Nog geen pakket gekozen';
   if(state.order.onLocation) pillText += ' · op locatie';
   document.getElementById('dashPackagePill').textContent = pillText;
+  renderAccountBar();
   renderRoster();
 }
 
@@ -2606,7 +2913,7 @@ function renderRoster(){
           // ongeldig maken terwijl hij die nog in de adresbalk heeft staan.
           actions.innerHTML = `<button class="btn btn-primary" onclick="goExamStart(${idx})">${p.status==='failed' ? 'Opnieuw proberen' : 'Start examen'}</button>`;
         } else {
-          const linkBtn = p.token ? `<button class="btn btn-outline" onclick="copyParticipantLink(${idx})">🔗 Kopieer link</button>` : '';
+          const linkBtn = p.token ? `<button class="btn btn-outline" onclick="copyParticipantLink(${idx})"><svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7'/><path d='M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7'/></svg> Kopieer link</button>` : '';
           actions.innerHTML = `<button class="btn btn-outline" onclick="editParticipant(${idx})">Bewerken</button>${linkBtn}<button class="btn btn-primary" onclick="goExamStart(${idx})">${p.status==='failed' ? 'Opnieuw proberen' : 'Start examen'}</button>`;
         }
       } else if(p.status==='passed'){
@@ -3149,6 +3456,13 @@ async function dismissCookieNotice(){
   initCookieNotice();
 
   const params = new URLSearchParams(window.location.search);
+
+  if(params.get('admin')){
+    // Geheime beheerpagina — alleen bereikbaar met de juiste link, niet gelinkt in het menu.
+    goTo('admin');
+    return;
+  }
+
   const participantToken = params.get('p');
   if(participantToken){
     // Iemand opent hier zijn eigen, persoonlijke examenlink — dit heeft voorrang op alles.
@@ -3156,19 +3470,388 @@ async function dismissCookieNotice(){
     return;
   }
 
+  // Eerst de lokaal bewaarde bestelling inlezen, zodat een succesvolle betaling of
+  // ingelogde sessie die daarna kan overschrijven.
+  let restored = false;
+  try{ restored = await loadProgress(); }catch(e){ /* geen opgeslagen bestelling */ }
+
   if(params.get('payment')){
     // Klant komt terug van Stripe Checkout — dit heeft voorrang op eerder opgeslagen voortgang.
+    await restoreSession();
     await handleStripeReturn();
     return;
   }
 
-  try{
-    const restored = await loadProgress();
-    if(restored){
-      showToast('Eerdere bestelling gevonden — je voortgang is hersteld. Ga naar "Mijn dashboard" om verder te gaan.');
-    }
-  }catch(e){ /* geen opgeslagen bestelling — geen probleem */ }
+  const loggedIn = await restoreSession();
+  if(params.get('login')){
+    history.replaceState({}, '', window.location.pathname);
+    goTo(loggedIn ? 'dashboard' : 'login');
+    return;
+  }
+  if(loggedIn) return;
+
+  if(restored && canOpenDashboard()){
+    showToast('Eerdere bestelling gevonden — je voortgang is hersteld. Ga naar "Mijn omgeving" om verder te gaan.');
+  }
 })();
+
+
+/* ============ MIJN OMGEVING: INLOGGEN EN ACCOUNT ============ */
+var AUTH_KEY = 'skb-sessie-v1';
+
+function canOpenDashboard(){
+  if(state.participantMode) return true;   // persoonlijke examenlink
+  if(state.auth) return true;              // ingelogd
+  // Bestellingen van vóór de accounts (alleen in deze browser, zonder orderId) blijven bereikbaar.
+  return !!(state.order && state.order.pkg && !state.orderId);
+}
+
+function setAuth(auth){
+  state.auth = auth;
+  try{ localStorage.setItem(AUTH_KEY, JSON.stringify(auth)); }catch(e){}
+}
+
+function clearAuth(){
+  state.auth = null;
+  state.accountOrders = [];
+  state.newCredentials = null;
+  try{ localStorage.removeItem(AUTH_KEY); }catch(e){}
+}
+
+async function accountApi(action, payload){
+  const headers = { 'Content-Type': 'application/json' };
+  if(state.auth && state.auth.token) headers['Authorization'] = 'Bearer ' + state.auth.token;
+  const response = await fetch('/api/account', {
+    method: 'POST', headers, body: JSON.stringify(Object.assign({ action }, payload || {})),
+  });
+  let data = {};
+  try{ data = await response.json(); }catch(e){}
+  if(response.status === 401 && action !== 'login'){
+    clearAuth();
+  }
+  if(!response.ok){
+    const err = new Error(data.error || 'Er ging iets mis.');
+    err.status = response.status;
+    throw err;
+  }
+  return data;
+}
+
+// Leest een bestelling uit de database in de pagina-state.
+function loadServerOrder(rec){
+  if(!rec || !rec.order) return;
+  const p = PACKAGES[rec.order.pkg] || PACKAGES.basis;
+  const discount = getDiscountRate(rec.order.qty || 1);
+  state.order = {
+    pkg: rec.order.pkg, qty: rec.order.qty || 1, basePrice: p.price,
+    unitPrice: Math.round(p.price * (1-discount) * 100)/100, discount: discount,
+    total: rec.order.total || 0, onLocation: !!rec.order.onLocation,
+    locationRequest: rec.order.locationRequest || null, withPasje: !!rec.order.withPasje,
+    createdAt: rec.createdAt,
+  };
+  state.buyer = rec.buyer || state.buyer;
+  state.orderId = rec.id;
+  state.activeIndex = null;
+  state.participantMode = false;
+  if(Array.isArray(rec.roster) && rec.roster.length){
+    state.roster = rec.roster;
+    state.invoiceNumber = rec.invoiceNumber || state.invoiceNumber;
+    state.nextPasNummer = rec.nextPasNummer || state.nextPasNummer;
+    saveProgress();
+  } else {
+    buildRoster(); // eerste keer: lege deelnemerslijst klaarzetten (slaat zelf op)
+  }
+}
+
+function applyAccountData(data){
+  const a = data.account || {};
+  state.auth = Object.assign({}, state.auth || {}, { email: a.email, first: a.first, last: a.last, company: a.company });
+  setAuth(state.auth);
+  state.accountOrders = data.orders || [];
+}
+
+// Herstelt een eerdere inlogsessie in deze browser. Geeft true terug als dat lukt.
+async function restoreSession(){
+  let saved = null;
+  try{ saved = JSON.parse(localStorage.getItem(AUTH_KEY) || 'null'); }catch(e){}
+  if(!saved || !saved.token) return false;
+  state.auth = saved;
+  try{
+    const data = await accountApi('me');
+    applyAccountData(data);
+    // Open de bestelling die in deze browser stond, anders de nieuwste.
+    const match = state.orderId && state.accountOrders.find(o => o.id === state.orderId);
+    if(match){
+      // Lokale voortgang is minstens zo recent als die op de server; stuur hem mee.
+      scheduleOrderSync();
+    } else if(state.accountOrders.length){
+      loadServerOrder(state.accountOrders[0]);
+    }
+    return true;
+  }catch(err){
+    if(err.status !== 401) console.warn('Sessie herstellen mislukt:', err);
+    if(err.status === 401) clearAuth();
+    return false;
+  }
+}
+
+async function refreshAccountOrders(){
+  try{
+    const data = await accountApi('me');
+    applyAccountData(data);
+    if(state.view === 'dashboard') renderAccountBar();
+  }catch(e){ /* niet erg: het keuzemenu blijft dan even leeg */ }
+}
+
+function prepareLoginView(){
+  showForgot(false);
+  document.getElementById('loginMsg').textContent = '';
+  const emailEl = document.getElementById('loginEmail');
+  if(!emailEl.value && state.buyer && state.buyer.email) emailEl.value = state.buyer.email;
+  setTimeout(()=> (emailEl.value ? document.getElementById('loginPassword') : emailEl).focus(), 50);
+}
+
+function showForgot(show){
+  document.getElementById('loginForm').style.display = show ? 'none' : 'block';
+  document.getElementById('forgotForm').style.display = show ? 'block' : 'none';
+  if(show){
+    document.getElementById('forgotMsg').textContent = '';
+    document.getElementById('forgotEmail').value = document.getElementById('loginEmail').value;
+    document.getElementById('forgotEmail').focus();
+  }
+}
+
+async function submitLogin(evt){
+  evt.preventDefault();
+  const msg = document.getElementById('loginMsg');
+  const btn = document.getElementById('loginBtn');
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  msg.className = 'form-msg';
+  if(!email || !password){ msg.textContent = 'Vul je e-mailadres en wachtwoord in.'; return; }
+  btn.disabled = true; msg.textContent = '';
+  try{
+    const data = await accountApi('login', { email, password });
+    setAuth({ token: data.token, email: data.account.email });
+    applyAccountData(data);
+    if(state.accountOrders.length){
+      loadServerOrder(state.accountOrders[0]);
+    }
+    document.getElementById('loginPassword').value = '';
+    goTo('dashboard');
+    showToast('Je bent ingelogd.');
+  }catch(err){
+    msg.textContent = err.status ? err.message : 'Kon geen verbinding maken met de server.';
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+async function submitForgot(evt){
+  evt.preventDefault();
+  const msg = document.getElementById('forgotMsg');
+  const btn = document.getElementById('forgotBtn');
+  const email = document.getElementById('forgotEmail').value.trim();
+  if(!email){ msg.className = 'form-msg'; msg.textContent = 'Vul je e-mailadres in.'; return; }
+  btn.disabled = true;
+  try{
+    const data = await accountApi('forgot', { email });
+    msg.className = 'form-msg ok';
+    msg.textContent = data.message || 'Als dit e-mailadres bij ons bekend is, ontvang je een nieuw wachtwoord.';
+  }catch(err){
+    msg.className = 'form-msg';
+    msg.textContent = 'Er ging iets mis. Probeer het later opnieuw of mail info@skbbhv.nl.';
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+async function logout(){
+  try{ await accountApi('logout'); }catch(e){ /* sessie is lokaal toch al weg */ }
+  clearAuth();
+  // Bestelling ook uit deze browser halen, zodat niemand anders op dit apparaat erbij kan.
+  state.order = { pkg:null, qty:1, unitPrice:0, total:0, onLocation:false, locationRequest:null, withPasje:false };
+  state.buyer = { first:'', last:'', email:'', company:'' };
+  state.roster = [];
+  state.activeIndex = null;
+  state.invoiceNumber = null;
+  state.orderId = null;
+  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+  goTo('home');
+  showToast('Je bent uitgelogd.');
+}
+
+function renderAccountBar(){
+  const bar = document.getElementById('dashAccount');
+  const show = !!state.auth && !state.participantMode;
+  bar.style.display = show ? 'flex' : 'none';
+
+  const creds = state.newCredentials;
+  const banner = document.getElementById('credentialsBanner');
+  banner.style.display = (creds && !state.participantMode) ? 'flex' : 'none';
+  if(creds){
+    document.getElementById('credEmail').textContent = creds.email;
+    document.getElementById('credPassword').textContent = creds.password;
+  }
+
+  const clearBtn = document.getElementById('clearOrderBtn');
+  if(clearBtn) clearBtn.style.display = state.orderId ? 'none' : ''; // bestellingen met account staan veilig op de server
+
+  const course = document.getElementById('courseCard');
+  if(course) course.style.display = state.participantMode ? 'none' : 'flex';
+
+  const select = document.getElementById('orderSelect');
+  if(!show || state.accountOrders.length < 2){ select.style.display = 'none'; return; }
+  select.innerHTML = '';
+  state.accountOrders.forEach(o=>{
+    const opt = document.createElement('option');
+    const name = (PACKAGES[o.order.pkg] || {}).name || 'Bestelling';
+    opt.value = o.id;
+    opt.textContent = `${formatDateNL(o.createdAt)} · ${name} × ${o.order.qty}`;
+    if(o.id === state.orderId) opt.selected = true;
+    select.appendChild(opt);
+  });
+  select.style.display = 'block';
+}
+
+function switchOrder(orderId){
+  const rec = state.accountOrders.find(o => o.id === orderId);
+  if(!rec) return;
+  loadServerOrder(rec);
+  renderDashboardHeader();
+}
+
+function dismissCredentials(){
+  state.newCredentials = null;
+  document.getElementById('credentialsBanner').style.display = 'none';
+}
+
+function togglePasswordPanel(){
+  const panel = document.getElementById('pwPanel');
+  const open = panel.style.display === 'none';
+  panel.style.display = open ? 'block' : 'none';
+  document.getElementById('pwMsg').textContent = '';
+  document.getElementById('pwCurrent').value = '';
+  document.getElementById('pwNext').value = '';
+  if(open) document.getElementById('pwCurrent').focus();
+}
+
+async function submitPasswordChange(evt){
+  evt.preventDefault();
+  const msg = document.getElementById('pwMsg');
+  msg.className = 'form-msg';
+  const current = document.getElementById('pwCurrent').value;
+  const next = document.getElementById('pwNext').value;
+  if(next.length < 8){ msg.textContent = 'Kies een nieuw wachtwoord van minimaal 8 tekens.'; return; }
+  try{
+    await accountApi('change-password', { current, next });
+    togglePasswordPanel();
+    dismissCredentials();
+    showToast('Je wachtwoord is gewijzigd.');
+  }catch(err){
+    msg.textContent = err.message;
+  }
+}
+
+// Bewaart de voortgang van de open bestelling ook op de server, zodat de klant op elk
+// apparaat verder kan. Wacht even zodat snelle wijzigingen samen worden verstuurd.
+var orderSyncTimer = null;
+function scheduleOrderSync(){
+  if(!state.auth || !state.auth.token || !state.orderId || state.participantMode) return;
+  clearTimeout(orderSyncTimer);
+  orderSyncTimer = setTimeout(async ()=>{
+    try{
+      await accountApi('save-order', {
+        orderId: state.orderId,
+        roster: state.roster,
+        invoiceNumber: state.invoiceNumber,
+        nextPasNummer: state.nextPasNummer,
+      });
+      const cached = state.accountOrders.find(o => o.id === state.orderId);
+      if(cached){ cached.roster = state.roster; cached.invoiceNumber = state.invoiceNumber; cached.nextPasNummer = state.nextPasNummer; }
+    }catch(err){
+      console.warn('Voortgang kon niet op de server worden bewaard:', err);
+    }
+  }, 800);
+}
+
+// De knop "Naar de cursusvragen": opent het examen voor de juiste deelnemer.
+function openCourseQuestions(){
+  const roster = state.roster || [];
+  if(!roster.length){
+    showToast('Er is nog geen pakket aan je omgeving gekoppeld.');
+    goTo('pricing');
+    return;
+  }
+  const canStart = (p)=> p.status==='ready' || p.status==='failed';
+  // Voorkeur: de eerste deelnemer (meestal de besteller zelf), anders de eerstvolgende die klaarstaat.
+  let idx = canStart(roster[0]) ? 0 : roster.findIndex(canStart);
+  if(idx >= 0){ goExamStart(idx); return; }
+
+  const setupIdx = roster.findIndex(p => p.status==='setup');
+  if(setupIdx >= 0){
+    showToast('Vul eerst naam en geboortedatum van de deelnemer in en klik op Opslaan. Daarna kun je starten.');
+    const el = document.getElementById(`rf-first-${setupIdx}`);
+    if(el){ el.scrollIntoView({behavior:'smooth', block:'center'}); el.focus(); }
+    return;
+  }
+  if(roster.some(p => p.status==='progress')){
+    showToast('Het examen is al gestart. Open het via de deelnemer in de lijst hieronder.');
+    return;
+  }
+  showToast('Alle deelnemers in deze bestelling zijn geslaagd. Je certificaten staan in de lijst hieronder.');
+}
+
+/* ============ BEHEER: handmatig een examenlogin aanmaken ============ */
+async function adminCreateLogin(){
+  const resultEl = document.getElementById('adminResult');
+  resultEl.style.color = 'var(--ink-soft)';
+  resultEl.textContent = 'Bezig...';
+
+  const payload = {
+    adminPassword: document.getElementById('adminPassword').value,
+    first: document.getElementById('adminFirst').value.trim(),
+    last: document.getElementById('adminLast').value.trim(),
+    birthdate: document.getElementById('adminBirthdate').value,
+    pkg: document.getElementById('adminPkg').value,
+    withPasje: document.getElementById('adminPasje').checked,
+    onLocation: false,
+    sendToEmail: document.getElementById('adminEmail').value.trim(),
+  };
+
+  if(!payload.first || !payload.last || !payload.birthdate || !payload.sendToEmail){
+    resultEl.style.color = 'var(--red)';
+    resultEl.textContent = 'Vul naam, geboortedatum en e-mailadres in.';
+    return;
+  }
+
+  try{
+    const response = await fetch('/api/admin-create-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await response.json();
+    if(!response.ok){
+      resultEl.style.color = 'var(--red)';
+      resultEl.textContent = data.error || 'Er ging iets mis.';
+      return;
+    }
+    resultEl.style.color = 'var(--green)';
+    resultEl.innerHTML = data.emailSent
+      ? `Gelukt — de examenlink is verstuurd naar ${payload.sendToEmail}.`
+      : `Let op: link aangemaakt, maar de e-mail kon niet worden verstuurd. Kopieer 'm handmatig: <br><code style="font-size:12px;">${data.link}</code>`;
+    // formulier leegmaken voor de volgende persoon, wachtwoord laten staan
+    document.getElementById('adminFirst').value = '';
+    document.getElementById('adminLast').value = '';
+    document.getElementById('adminBirthdate').value = '';
+    document.getElementById('adminPasje').checked = false;
+    document.getElementById('adminEmail').value = '';
+  }catch(err){
+    resultEl.style.color = 'var(--red)';
+    resultEl.textContent = 'Kon geen verbinding maken met de server.';
+  }
+}
 
 async function initFromParticipantLink(token){
   goTo('processing');
