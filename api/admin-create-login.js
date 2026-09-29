@@ -9,7 +9,7 @@
 //   RESEND_API_KEY, SITE_URL  (en optioneel FROM_EMAIL)
 
 import crypto from 'crypto';
-import { kv } from '@vercel/kv';
+import { kv } from './_lib/kv.js';
 import { Resend } from 'resend';
 import { PACKAGE_NAMES, COMPANY_FOOTER_HTML, escapeHtml, isValidEmail, normalizeEmail } from './_lib/accounts.js';
 
