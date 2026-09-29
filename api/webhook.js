@@ -15,6 +15,7 @@
 
 import Stripe from 'stripe';
 import { Resend } from 'resend';
+import { ensureAccountForStripeSession, COMPANY_FOOTER_HTML } from './_lib/accounts.js';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
@@ -90,9 +91,7 @@ function invoiceHtml(session) {
       </p>
       <hr style="border:none;border-top:1px solid #E1E4E9;margin:24px 0;">
       <p style="font-size:12px;color:#8b939b;">
-        SKB BHV — onderdeel van Zuurman B.V.<br>
-        Goordelaan 19, 9591 CB Onstwedde · KVK 86597396 · BTW NL864018228B01<br>
-        Vragen? Mail info@skbbhv.nl
+        ${COMPANY_FOOTER_HTML}
       </p>
     </div>
   </div>`;
@@ -145,6 +144,13 @@ export default async function handler(req, res) {
       const session = event.data.object;
       console.log('✅ Betaling voltooid:', session.id, session.metadata);
       await sendInvoiceEmail(session);
+      // Maakt het klantaccount aan (en mailt de inloggegevens), ook als de klant
+      // na het betalen niet meer terugkomt op de website.
+      try {
+        await ensureAccountForStripeSession(session);
+      } catch (err) {
+        console.error('Account aanmaken vanuit webhook mislukt:', err);
+      }
       break;
     }
     case 'checkout.session.expired': {
