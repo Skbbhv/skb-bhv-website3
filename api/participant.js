@@ -7,7 +7,7 @@
 // Vereist environment variables (worden automatisch gezet zodra je de KV-database koppelt):
 //   KV_REST_API_URL, KV_REST_API_TOKEN
 
-import { kv } from '@vercel/kv';
+   import { kv } from './_lib/kv.js';
 
 const TTL_SECONDS = 60 * 60 * 24 * 90; // links blijven 90 dagen geldig
 
