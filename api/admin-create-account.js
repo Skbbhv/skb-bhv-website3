@@ -13,6 +13,7 @@
 // RESEND_API_KEY, FROM_EMAIL, SITE_URL
 
 import crypto from 'crypto';
+import { kv } from './_lib/kv.js';
 import { checkAdmin } from './_lib/admin.js';
 import { Resend } from 'resend';
 import {
