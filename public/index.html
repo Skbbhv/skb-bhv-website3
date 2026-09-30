@@ -1483,12 +1483,16 @@
       <div class="section-head">
         <div class="eyebrow">Beheer</div>
         <h2 style="font-size:28px;">Beheer</h2>
-        <p>Alleen voor eigen gebruik. Vul eerst je beheerderswachtwoord in en kies daarna wat je wilt doen.</p>
+        <p>Alleen voor eigen gebruik. Log eerst in met je beheerdersgegevens en kies daarna wat je wilt doen.</p>
       </div>
 
-      <div class="panel" style="margin-bottom:20px;">
-        <div class="field" style="margin-bottom:0;"><label for="adminPassword">Beheerderswachtwoord</label><input id="adminPassword" type="password" placeholder="Wachtwoord" autocomplete="off"></div>
-      </div>
+      <form class="panel" style="margin-bottom:20px;" onsubmit="return false;" autocomplete="on">
+        <h2 style="font-size:20px;margin-bottom:14px;">Beheerder</h2>
+        <div class="field-row" style="margin-bottom:0;">
+          <div class="field" style="margin-bottom:0;"><label for="adminEmailLogin">E-mailadres</label><input id="adminEmailLogin" name="username" type="email" placeholder="jouw@email.nl" autocomplete="username" onchange="rememberAdminEmail()"></div>
+          <div class="field" style="margin-bottom:0;"><label for="adminPassword">Wachtwoord</label><input id="adminPassword" name="password" type="password" placeholder="Wachtwoord" autocomplete="current-password"></div>
+        </div>
+      </form>
 
       <!-- Klantaccount voor contante betaling -->
       <div class="panel" style="margin-bottom:20px;">
@@ -2396,6 +2400,7 @@ function goTo(view){
   window.scrollTo({top:0, behavior:'smooth'});
   if(view==='dashboard') renderDashboardHeader();
   if(view==='login') prepareLoginView();
+  if(view==='admin') prefillAdminEmail();
   if(view==='certificate') fitCertificate();
   if(view==='pas') fitPasCard();
   if(view==='invoice') renderInvoice();
@@ -3854,6 +3859,16 @@ function openCourseQuestions(){
 }
 
 
+/* ============ BEHEER: e-mailadres van de beheerder onthouden (alleen in deze browser) ============ */
+function rememberAdminEmail(){
+  try{ localStorage.setItem('skb-beheer-email', document.getElementById('adminEmailLogin').value.trim()); }catch(e){}
+}
+function prefillAdminEmail(){
+  const el = document.getElementById('adminEmailLogin');
+  if(!el || el.value) return;
+  try{ el.value = localStorage.getItem('skb-beheer-email') || ''; }catch(e){}
+}
+
 /* ============ BEHEER: klantaccount aanmaken na contante betaling ============ */
 function updateAccTotal(){
   const pkg = document.getElementById('accPkg').value;
@@ -3871,6 +3886,7 @@ async function adminCreateAccount(){
   const resultEl = document.getElementById('accResult');
   const btn = document.getElementById('accBtn');
   const payload = {
+    adminEmail: document.getElementById('adminEmailLogin').value.trim(),
     adminPassword: document.getElementById('adminPassword').value,
     first: document.getElementById('accFirst').value.trim(),
     last: document.getElementById('accLast').value.trim(),
@@ -3883,7 +3899,7 @@ async function adminCreateAccount(){
     paymentMethod: document.getElementById('accPayment').value,
   };
   resultEl.style.color = 'var(--red)';
-  if(!payload.adminPassword){ resultEl.textContent = 'Vul eerst bovenaan je beheerderswachtwoord in.'; return; }
+  if(!payload.adminEmail || !payload.adminPassword){ resultEl.textContent = 'Vul eerst bovenaan je beheerders-e-mailadres en wachtwoord in.'; return; }
   if(!payload.first || !payload.last || !payload.email){ resultEl.textContent = 'Vul voornaam, achternaam en e-mailadres in.'; return; }
 
   btn.disabled = true;
@@ -3935,6 +3951,7 @@ async function adminCreateLogin(){
   resultEl.textContent = 'Bezig...';
 
   const payload = {
+    adminEmail: document.getElementById('adminEmailLogin').value.trim(),
     adminPassword: document.getElementById('adminPassword').value,
     first: document.getElementById('adminFirst').value.trim(),
     last: document.getElementById('adminLast').value.trim(),
