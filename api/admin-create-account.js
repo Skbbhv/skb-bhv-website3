@@ -13,7 +13,7 @@
 // RESEND_API_KEY, FROM_EMAIL, SITE_URL
 
 import crypto from 'crypto';
-import { kv } from './_lib/kv.js';
+import { checkAdmin } from './_lib/admin.js';
 import { Resend } from 'resend';
 import {
   PACKAGE_NAMES, COMPANY_FOOTER_HTML, escapeHtml, isValidEmail, normalizeEmail,
@@ -35,12 +35,6 @@ function getDiscountRate(qty) {
 
 const PAYMENT_LABELS = { contant: 'Contant', overboeking: 'Bankoverschrijving', pin: 'Pin', anders: 'Anders' };
 
-function safeEqual(a, b) {
-  const ha = crypto.createHash('sha256').update(String(a)).digest();
-  const hb = crypto.createHash('sha256').update(String(b)).digest();
-  return crypto.timingSafeEqual(ha, hb);
-}
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -48,26 +42,10 @@ export default async function handler(req, res) {
   }
   res.setHeader('Cache-Control', 'no-store');
 
-  const adminPassword = process.env.ADMIN_PASSWORD;
-  if (!adminPassword) {
-    return res.status(500).json({ error: 'ADMIN_PASSWORD is nog niet ingesteld in Vercel.' });
-  }
-
   try {
-    const ip = String(req.headers['x-forwarded-for'] || 'onbekend').split(',')[0].trim();
-    const failKey = `adminfail:${ip}`;
-    if (((await kv.get(failKey)) || 0) >= 10) {
-      return res.status(429).json({ error: 'Te veel mislukte pogingen. Probeer het over 15 minuten opnieuw.' });
-    }
-
     const body = req.body || {};
-    if (!safeEqual(body.adminPassword || '', adminPassword)) {
-      await kv.incr(failKey);
-      await kv.expire(failKey, 15 * 60);
-      return res.status(401).json({ error: 'Beheerderswachtwoord klopt niet.' });
-    }
-    await kv.del(failKey);
-
+    const denied = await checkAdmin(req, body);
+    if (denied) return res.status(denied.status).json({ error: denied.error });
     const first = String(body.first || '').trim();
     const last = String(body.last || '').trim();
     const company = String(body.company || '').trim();
