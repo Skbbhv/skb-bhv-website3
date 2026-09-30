@@ -4,24 +4,19 @@
 // Stripe-bestelling om.
 //
 // Vereist environment variables:
-//   ADMIN_PASSWORD      het beheerderswachtwoord (zelf kiezen, minimaal 12 tekens)
+//   ADMIN_EMAIL, ADMIN_PASSWORD   inloggegevens van de beheerder (zie api/_lib/admin.js)
 //   KV_REST_API_URL, KV_REST_API_TOKEN   (Vercel KV)
 //   RESEND_API_KEY, SITE_URL  (en optioneel FROM_EMAIL)
 
 import crypto from 'crypto';
 import { kv } from './_lib/kv.js';
 import { Resend } from 'resend';
+import { checkAdmin } from './_lib/admin.js';
 import { PACKAGE_NAMES, COMPANY_FOOTER_HTML, escapeHtml, isValidEmail, normalizeEmail } from './_lib/accounts.js';
 
 const TTL_SECONDS = 60 * 60 * 24 * 90; // gelijk aan api/participant.js
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 const FROM_EMAIL = process.env.FROM_EMAIL || 'SKB BHV <onboarding@resend.dev>';
-
-function safeEqual(a, b) {
-  const ha = crypto.createHash('sha256').update(String(a)).digest();
-  const hb = crypto.createHash('sha256').update(String(b)).digest();
-  return crypto.timingSafeEqual(ha, hb);
-}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -29,24 +24,10 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const adminPassword = process.env.ADMIN_PASSWORD;
-  if (!adminPassword) {
-    return res.status(500).json({ error: 'ADMIN_PASSWORD is nog niet ingesteld in Vercel.' });
-  }
-
   try {
-    const ip = String(req.headers['x-forwarded-for'] || 'onbekend').split(',')[0].trim();
-    const failKey = `adminfail:${ip}`;
-    if (((await kv.get(failKey)) || 0) >= 10) {
-      return res.status(429).json({ error: 'Te veel mislukte pogingen. Probeer het later opnieuw.' });
-    }
-
     const body = req.body || {};
-    if (!safeEqual(body.adminPassword || '', adminPassword)) {
-      await kv.incr(failKey);
-      await kv.expire(failKey, 15 * 60);
-      return res.status(401).json({ error: 'Beheerderswachtwoord klopt niet.' });
-    }
+    const denied = await checkAdmin(req, body);
+    if (denied) return res.status(denied.status).json({ error: denied.error });
 
     const first = String(body.first || '').trim();
     const last = String(body.last || '').trim();
@@ -105,7 +86,6 @@ export default async function handler(req, res) {
       }
     }
 
-    await kv.del(failKey);
     return res.status(200).json({ ok: true, link, emailSent });
   } catch (err) {
     console.error('admin-create-login error:', err);
