@@ -67,7 +67,9 @@ export default async function handler(req, res) {
     let total = unitPrice * qty;
     if (withPasje) total += PASJE_PRICE * qty;
     if (onLocation) total += LOCATION_SURCHARGE;
-    total = Math.round(total * 100) / 100;
+           const subtotalEx = Math.round(total * 100) / 100;
+       const vat = Math.round(subtotalEx * 0.21 * 100) / 100;
+       total = Math.round((subtotalEx + vat) * 100) / 100;
 
     // 1) Bestelling vastleggen
     const orderId = `handmatig_${Date.now()}_${crypto.randomBytes(4).toString('hex')}`;
