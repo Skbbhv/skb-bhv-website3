@@ -101,6 +101,7 @@ export default async function handler(req, res) {
       success_url: `${siteUrl}/?payment=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${siteUrl}/?payment=cancelled`,
       metadata,
+               ...(withPasje ? { shipping_address_collection: { allowed_countries: ['NL', 'BE'] } } : {}),
       // Zet automatische facturatie aan als je facturen via Stripe wilt laten genereren i.p.v. de eigen factuurpagina:
       // invoice_creation: { enabled: true },
     });
