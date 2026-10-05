@@ -2945,12 +2945,12 @@ function renderRoster(){
         <input class="rf-first" type="text" placeholder="Voornaam" value="${p.first||''}" id="rf-first-${idx}">
         <input class="rf-last" type="text" placeholder="Achternaam" value="${p.last||''}" id="rf-last-${idx}">
         <input class="rf-birth" type="date" value="${p.birthdate||''}" id="rf-birth-${idx}">
-        <input class="rf-email" type="email" placeholder="E-mail deelnemer (voor examenlink)" value="${p.email||''}" id="rf-email-${idx}">
+        <input class="rf-email" type="email" placeholder="E-mail deelnemer (voor examenlink)" value="${p.email||''}" id="rf-email-${idx}" oninput="updateSaveLabel(${idx})">
       `;
       row.appendChild(form);
       const actions = document.createElement('div');
       actions.className = 'roster-actions';
-      actions.innerHTML = `<button class="btn btn-primary" onclick="saveParticipant(${idx})">Opslaan</button>`;
+      actions.innerHTML = `<button class="btn btn-primary" id="rf-save-${idx}" onclick="saveParticipant(${idx})">${saveButtonLabel(p.email)}</button>`;
       row.appendChild(actions);
     } else {
       const info = document.createElement('div');
@@ -3043,6 +3043,16 @@ async function createParticipantLink(idx){
     const hint = document.getElementById(`link-hint-${idx}`);
     if(hint) hint.textContent = 'Persoonlijke link kon niet worden aangemaakt (nog geen database gekoppeld?).';
   }
+}
+
+// Knoptekst: met een e-mailadres (en ingelogd) wordt de examenlink ook verstuurd.
+function saveButtonLabel(email){
+  return (email && state.auth) ? 'Opslaan en versturen' : 'Opslaan';
+}
+function updateSaveLabel(idx){
+  const btn = document.getElementById('rf-save-'+idx);
+  const el = document.getElementById('rf-email-'+idx);
+  if(btn && el) btn.textContent = saveButtonLabel(el.value.trim());
 }
 
 async function mailParticipantLink(idx){
