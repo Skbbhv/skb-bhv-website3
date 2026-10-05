@@ -26,7 +26,7 @@ export const PACKAGE_NAMES = {
 };
 
 export const COMPANY_FOOTER_HTML =
-  'SKB BHV — onderdeel van Oibase B.V.<br>Goordelaan 19, 9591 CB Onstwedde · KVK 42117378<br>Vragen? Mail info@skbbhv.nl';
+    Onstwedde · KVK 42117378 · BTW NL869807729B01<br> 
 
 export function normalizeEmail(email) {
   return String(email || '').trim().toLowerCase();
