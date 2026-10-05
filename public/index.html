@@ -481,6 +481,7 @@
   .roster-form input:focus{outline:none;border-color:var(--blue);background:var(--white);}
   .roster-form input.rf-first, .roster-form input.rf-last{width:130px;}
   .roster-form input.rf-birth{width:150px;}
+  .roster-form input.rf-email{width:250px;}
   .roster-status{
     font-size:11px;font-weight:700;padding:5px 11px;border-radius:20px;text-transform:uppercase;letter-spacing:0.4px;flex-shrink:0;
   }
@@ -1877,7 +1878,7 @@
         <span class="q-count" id="rosterCount">0 van 0 klaar</span>
       </div>
       <p style="color:var(--ink-soft);font-size:13.5px;margin:0 0 22px;">
-        Vul per deelnemer naam en geboortedatum in — die staan straks op het certificaat. Elke deelnemer maakt zijn of haar eigen examen: 75 vragen, 5 onderdelen van elk 8 minuten, minimaal 80% nodig om te slagen.
+        Vul per deelnemer naam en geboortedatum in — die staan straks op het certificaat. Vul je ook het e-mailadres van de deelnemer in, dan krijgt die automatisch een eigen examenlink per mail. Elke deelnemer maakt zijn of haar eigen examen: 75 vragen, 5 onderdelen van elk 8 minuten, minimaal 80% nodig om te slagen.
       </p>
       <div id="rosterList"></div>
       <div id="rosterOwnerToolbar" style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:18px;border-top:1px solid var(--line);flex-wrap:wrap;gap:10px;">
@@ -2944,6 +2945,7 @@ function renderRoster(){
         <input class="rf-first" type="text" placeholder="Voornaam" value="${p.first||''}" id="rf-first-${idx}">
         <input class="rf-last" type="text" placeholder="Achternaam" value="${p.last||''}" id="rf-last-${idx}">
         <input class="rf-birth" type="date" value="${p.birthdate||''}" id="rf-birth-${idx}">
+        <input class="rf-email" type="email" placeholder="E-mail deelnemer (voor examenlink)" value="${p.email||''}" id="rf-email-${idx}">
       `;
       row.appendChild(form);
       const actions = document.createElement('div');
@@ -2954,7 +2956,8 @@ function renderRoster(){
       const info = document.createElement('div');
       info.className = 'roster-info';
       const scoreLine = (p.status!=='ready') ? ` · Score: ${p.pct}% (${p.correct}/${p.total})` : '';
-      info.innerHTML = `<div class="rname">${p.first} ${p.last}</div><div class="rmeta">Geboren ${formatDateNL(p.birthdate)}${scoreLine}</div>`;
+      const mailLine = p.email ? ` · ${escapeHtmlText(p.email)}${p.linkMailed ? ' (link gemaild)' : ''}` : '';
+      info.innerHTML = `<div class="rname">${escapeHtmlText(p.first)} ${escapeHtmlText(p.last)}</div><div class="rmeta">Geboren ${formatDateNL(p.birthdate)}${mailLine}${scoreLine}</div>`;
       row.appendChild(info);
 
       const [label, cls] = statusMap[p.status] || ['—','setup'];
@@ -2973,7 +2976,8 @@ function renderRoster(){
           actions.innerHTML = `<button class="btn btn-primary" onclick="goExamStart(${idx})">${p.status==='failed' ? 'Opnieuw proberen' : 'Start examen'}</button>`;
         } else {
           const linkBtn = p.token ? `<button class="btn btn-outline" onclick="copyParticipantLink(${idx})"><svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7'/><path d='M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7'/></svg> Kopieer link</button>` : '';
-          actions.innerHTML = `<button class="btn btn-outline" onclick="editParticipant(${idx})">Bewerken</button>${linkBtn}<button class="btn btn-primary" onclick="goExamStart(${idx})">${p.status==='failed' ? 'Opnieuw proberen' : 'Start examen'}</button>`;
+          const mailBtn = (p.token && p.email && state.auth) ? `<button class="btn btn-outline" onclick="mailParticipantLink(${idx})">Link mailen</button>` : '';
+          actions.innerHTML = `<button class="btn btn-outline" onclick="editParticipant(${idx})">Bewerken</button>${linkBtn}${mailBtn}<button class="btn btn-primary" onclick="goExamStart(${idx})">${p.status==='failed' ? 'Opnieuw proberen' : 'Start examen'}</button>`;
         }
       } else if(p.status==='passed'){
         const pasBtn = p.pasNumber ? `<button class="btn btn-outline" onclick="viewPasFor(${idx})">Bekijk pasje</button>` : '';
@@ -3010,12 +3014,14 @@ function copyParticipantLink(idx){
 async function createParticipantLink(idx){
   const p = state.roster[idx];
   try{
+    const headers = { 'Content-Type': 'application/json' };
+    if(state.auth && state.auth.token) headers['Authorization'] = 'Bearer ' + state.auth.token;
     const response = await fetch('/api/participant', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({
         action: 'create',
-        first: p.first, last: p.last, birthdate: p.birthdate,
+        first: p.first, last: p.last, birthdate: p.birthdate, email: p.email || '',
         pkg: state.order.pkg, withPasje: state.order.withPasje, onLocation: state.order.onLocation,
         buyerEmail: state.buyer.email,
       }),
@@ -3023,8 +3029,11 @@ async function createParticipantLink(idx){
     if(response.ok){
       const data = await response.json();
       state.roster[idx].token = data.token;
+      state.roster[idx].linkMailed = !!data.emailSent;
       saveProgress();
       renderRoster();
+      if(data.emailSent) showToast(`De examenlink is gemaild naar ${p.email}.`);
+      else if(p.email && state.auth) showToast('De examenlink kon niet worden gemaild. Gebruik "Kopieer link" om hem zelf te sturen.');
     } else {
       const hint = document.getElementById(`link-hint-${idx}`);
       if(hint) hint.textContent = 'Persoonlijke link kon niet worden aangemaakt (nog geen database gekoppeld?).';
@@ -3036,14 +3045,42 @@ async function createParticipantLink(idx){
   }
 }
 
+async function mailParticipantLink(idx){
+  const p = state.roster[idx];
+  if(!p.token || !p.email) return;
+  try{
+    const response = await fetch('/api/participant', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (state.auth ? state.auth.token : '') },
+      body: JSON.stringify({ action: 'send-link', token: p.token }),
+    });
+    const data = await response.json().catch(()=>({}));
+    if(response.ok && data.emailSent){
+      p.linkMailed = true; saveProgress(); renderRoster();
+      showToast(`De examenlink is opnieuw gemaild naar ${p.email}.`);
+    } else {
+      showToast(data.error || 'De examenlink kon niet worden gemaild. Gebruik "Kopieer link" om hem zelf te sturen.');
+    }
+  }catch(err){
+    showToast('Kon geen verbinding maken met de server.');
+  }
+}
+
 function saveParticipant(idx){
   const first = document.getElementById('rf-first-'+idx).value.trim();
   const last = document.getElementById('rf-last-'+idx).value.trim();
   const birth = document.getElementById('rf-birth-'+idx).value;
+  const emailEl = document.getElementById('rf-email-'+idx);
+  const email = emailEl ? emailEl.value.trim() : '';
   if(!first || !last || !birth){
     alert('Vul voornaam, achternaam en geboortedatum in — die staan straks op het certificaat.');
     return;
   }
+  if(email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    alert('Het e-mailadres van de deelnemer klopt niet.');
+    return;
+  }
+  state.roster[idx].email = email;
   state.roster[idx].first = first;
   state.roster[idx].last = last;
   state.roster[idx].birthdate = birth;
