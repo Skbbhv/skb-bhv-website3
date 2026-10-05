@@ -76,6 +76,17 @@ export default async function handler(req, res) {
       });
     }
 
+           // Alle prijzen zijn exclusief btw: tel 21% btw op als aparte regel.
+       const subtotalCents = line_items.reduce((sum, li) => sum + li.price_data.unit_amount * li.quantity, 0);
+       const vatCents = Math.round(subtotalCents * 0.21);
+       line_items.push({
+         price_data: {
+           currency: 'eur',
+           product_data: { name: 'Btw (21%)' },
+           unit_amount: vatCents,
+         },
+         quantity: 1,
+       });
     // Stripe metadata mag alleen strings bevatten en is beperkt in lengte (500 tekens per veld).
     const metadata = {
       pkg,
