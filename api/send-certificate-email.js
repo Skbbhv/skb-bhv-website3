@@ -47,7 +47,8 @@ export default async function handler(req, res) {
           <tr><td style="padding:6px 0;color:#4B535C;">Certificaatnummer</td><td style="padding:6px 0;text-align:right;font-weight:bold;">${certNumber || '—'}</td></tr>
           ${pasNumber ? `<tr><td style="padding:6px 0;color:#4B535C;">Pasnummer</td><td style="padding:6px 0;text-align:right;font-weight:bold;">${pasNumber}</td></tr>` : ''}
         </table>
-        <p>Download je certificaat${pasNumber ? ' en BHV-pasje' : ''} via je dashboard:</p>
+                   ${pasNumber ? '<p>Je fysieke <b>BHV-pasje</b> wordt per post naar je verstuurd. Een digitale versie staat al in je omgeving.</p>' : ''}
+           <p>Download je certificaat${pasNumber ? ' en digitale BHV-pasje' : ''} via je omgeving:</p>
         <p style="text-align:center;margin:26px 0;">
           <a href="${siteUrl}" style="background:#0A5CA8;color:#fff;text-decoration:none;padding:12px 26px;border-radius:8px;font-weight:bold;display:inline-block;">Naar mijn dashboard</a>
         </p>
