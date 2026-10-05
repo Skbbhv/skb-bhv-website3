@@ -57,6 +57,9 @@ function invoiceHtml(session) {
   const invoiceNumber = `SKB-F-${new Date().getFullYear()}-${session.id.slice(-6).toUpperCase()}`;
   const dateStr = new Date().toLocaleDateString('nl-NL', { day: '2-digit', month: 'long', year: 'numeric' });
 
+    const ship = session.shipping_details || (session.collected_information && session.collected_information.shipping_details);
+  const addr = ship && ship.address;
+  const shipHtml = addr ? `<br><b>Verzendadres pasjes:</b> ${[ship.name, addr.line1, addr.line2, `${addr.postal_code || ''} ${addr.city || ''}`.trim(), addr.country].filter(Boolean).join(', ')}` : '';
   const rows = [];
   rows.push(`<tr><td style="padding:8px 0;">${pkg.name}</td><td style="padding:8px 0;text-align:right;">× ${qty}</td></tr>`);
   if (withPasje) rows.push(`<tr><td style="padding:8px 0;">BHV-pasje</td><td style="padding:8px 0;text-align:right;">× ${qty}</td></tr>`);
@@ -87,7 +90,7 @@ function invoiceHtml(session) {
         <b>Factuurnummer:</b> ${invoiceNumber}<br>
         <b>Factuurdatum:</b> ${dateStr}<br>
         <b>Besteller:</b> ${meta.buyerFirst || ''} ${meta.buyerLast || ''}${meta.buyerCompany ? ' — ' + meta.buyerCompany : ''}<br>
-        <b>E-mail:</b> ${meta.buyerEmail || session.customer_email || ''}
+                <b>E-mail:</b> ${meta.buyerEmail || session.customer_email || ''}${shipHtml}
       </p>
       <hr style="border:none;border-top:1px solid #E1E4E9;margin:24px 0;">
       <p style="font-size:12px;color:#8b939b;">
