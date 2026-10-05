@@ -83,7 +83,7 @@ function invoiceHtml(session) {
         <tbody>${rows.join('')}</tbody>
       </table>
       <table style="width:100%;margin-top:10px;">
-        <tr><td>Totaal betaald</td><td style="text-align:right;font-weight:bold;font-size:18px;">${formatEuro(session.amount_total)}</td></tr>
+        <tr><td>Totaal betaald (incl. 21% btw) </td><td style="text-align:right;font-weight:bold;font-size:18px;">${formatEuro(session.amount_total)}</td></tr>
       </table>
       <hr style="border:none;border-top:1px solid #E1E4E9;margin:24px 0;">
       <p style="font-size:13px;color:#4B535C;">
