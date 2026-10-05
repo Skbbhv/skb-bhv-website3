@@ -856,6 +856,48 @@
     .dash-right{align-items:flex-start;}
     .dash-account{justify-content:flex-start;}
   }
+
+  /* ---------- CERTIFICAAT (huisstijl, kleurenlogo) ---------- */
+  .cert-sheet.c2{overflow:hidden;border:none;border-radius:0;background:#ffffff;box-shadow:0 18px 40px rgba(11,31,51,0.12);font-family:'Public Sans',Arial,sans-serif;color:#111418;display:flex;flex-direction:column;}
+  .c2-band{display:flex;height:16px;flex-shrink:0;}
+  .c2-band .r{background:#E01A2B;width:32%;}
+  .c2-band .w{background:#ffffff;width:16%;}
+  .c2-band .g{background:#00953C;width:52%;}
+  .c2-frame{flex:1;min-height:0;margin:22px 40px 22px;border:3px solid #0A5CA8;outline:1px solid #0A5CA8;outline-offset:-12px;padding:28px 80px 36px;display:flex;flex-direction:column;align-items:center;}
+  .c2-head{text-align:center;}
+  .c2-logo{height:78px;width:auto;display:block;margin:0 auto 12px;}
+  .c2-title{font-family:'Archivo',Arial,sans-serif;font-weight:800;font-size:54px;letter-spacing:10px;text-transform:uppercase;color:#0B1F33;line-height:1;}
+  .c2-subtitle{font-family:'Archivo',Arial,sans-serif;font-weight:700;font-size:20px;letter-spacing:6px;text-transform:uppercase;color:#0A5CA8;margin-top:12px;}
+  .c2-main{text-align:center;margin-top:12px;}
+  .c2-line{font-size:18px;color:#4A525B;margin:3px 0;}
+  .c2-line b{color:#0B1F33;}
+  .c2-name{font-family:'Archivo',Arial,sans-serif;font-weight:800;font-size:50px;color:#0B1F33;padding:2px 40px 8px;margin:6px auto 6px;border-bottom:2px solid #0B1F33;display:inline-block;min-width:520px;}
+  .c2-exam{font-family:'Archivo',Arial,sans-serif;font-weight:800;font-size:28px;letter-spacing:2px;color:#0A5CA8;text-transform:uppercase;margin:6px 0;}
+  .c2-pass{display:inline-block;margin-top:10px;background:#00953C;color:#fff;font-family:'Archivo',Arial,sans-serif;font-weight:800;font-size:24px;letter-spacing:4px;padding:10px 40px;border-radius:6px;}
+  .c2-details{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%;margin-top:18px;border-top:1px solid #D5DAE0;border-bottom:1px solid #D5DAE0;}
+  .c2-details > div{display:flex;flex-direction:column;align-items:center;gap:4px;padding:11px 8px;border-right:1px solid #D5DAE0;}
+  .c2-details > div:last-child{border-right:none;}
+  .c2-details .k{font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:#4A525B;font-weight:600;}
+  .c2-details .v{font-family:'Archivo',Arial,sans-serif;font-size:21px;font-weight:700;color:#0B1F33;}
+  .c2-topics{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px 26px;margin-top:12px;}
+  .c2-topics-label{font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:#4A525B;font-weight:600;width:100%;text-align:center;}
+  .c2-topic{display:inline-flex;align-items:center;gap:7px;font-size:17px;font-weight:600;color:#0B1F33;}
+  .c2-sign{display:flex;justify-content:space-between;align-items:flex-end;width:100%;margin-top:auto;padding-top:8px;}
+  .c2-signature{width:340px;text-align:center;}
+  .c2-script{font-family:'Archivo',Arial,sans-serif;font-style:italic;font-weight:600;font-size:34px;color:#0B1F33;}
+  .c2-sigline{height:1px;background:#0B1F33;margin:6px 0 8px;}
+  .c2-sigcap{font-size:14px;color:#4A525B;}
+  .c2-seal{width:124px;height:124px;border-radius:50%;border:4px solid #0A5CA8;display:flex;align-items:center;justify-content:center;}
+  .c2-seal-inner{width:102px;height:102px;border-radius:50%;border:2px solid #0A5CA8;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#0A5CA8;text-align:center;}
+  .c2-seal .t1{font-family:'Archivo',Arial,sans-serif;font-weight:800;font-size:19px;}
+  .c2-seal .t2{font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;}
+  .c2-seal .t3{font-size:10px;font-weight:600;color:#00953C;}
+  .c2-footer{background:#0B1F33;color:#C5CFD9;font-size:14px;text-align:center;padding:14px 20px;flex-shrink:0;}
+
+  /* ---------- BHV-PASJE: kleurenlogo op wit ---------- */
+  .pas-topbar{background:#ffffff !important;border-bottom:1px solid var(--line);}
+  .pas-topbar .skb-logo-img{height:40px !important;filter:none !important;}
+  .pas-post-note{max-width:640px;margin:18px auto 0;font-size:14.5px;color:var(--ink-soft);text-align:center;line-height:1.55;}
 </style>
 </head>
 <body>
@@ -943,7 +985,7 @@
         </div>
         <div class="photo-card b">
           <div class="pc-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2"/><path d="M14 10h5M14 14h3"/></svg></div>
-          <div class="pc-caption"><b>Certificaat &amp; pasje</b><span>Direct digitaal, met optioneel een BHV-pasje</span></div>
+          <div class="pc-caption"><b>Certificaat &amp; pasje</b><span>Certificaat direct digitaal, BHV-pasje per post</span></div>
         </div>
       </div>
 
@@ -1066,7 +1108,7 @@
         <div class="feature"><div class="num">02</div><h3>Eerlijke, transparante prijs</h3><p>Vanaf €79 per persoon — ruim onder het marktgemiddelde voor een BHV-traject.</p></div>
         <div class="feature"><div class="num">03</div><h3>Praktijk op locatie mogelijk</h3><p>Kies het combipakket en wij komen bij jullie langs voor reanimatie, AED en blussen.</p></div>
         <div class="feature"><div class="num">04</div><h3>Onbeperkt herkansen</h3><p>Niet gehaald? Direct opnieuw proberen, zonder wachttijd en zonder extra kosten.</p></div>
-        <div class="feature"><div class="num">05</div><h3>Certificaat én pasje</h3><p>Digitaal certificaat inbegrepen, met optioneel een persoonlijk BHV-pasje.</p></div>
+        <div class="feature"><div class="num">05</div><h3>Certificaat én pasje</h3><p>Digitaal certificaat inbegrepen, met optioneel een persoonlijk BHV-pasje dat we per post opsturen.</p></div>
         <div class="feature" style="background:var(--dark);border-color:var(--dark);">
           <div class="num" style="color:var(--green);">06</div>
           <h3 style="color:#fff;">Voor 1 of voor 50 mensen</h3>
@@ -1258,6 +1300,10 @@
         <details class="faq-item">
           <summary>Heb ik recht op herroeping (bedenktijd) bij een online examen?</summary>
           <p>Voor digitale diensten die direct geleverd worden — zoals toegang tot een online examen — vervalt het wettelijke herroepingsrecht zodra je expliciet instemt met directe levering en de uitvoering start. Heb je toch een vraag over je bestelling, neem dan contact op; we denken graag met je mee.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Hoe ontvang ik mijn BHV-pasje?</summary>
+          <p>Heb je een BHV-pasje besteld, dan sturen we dat per post naar het verzendadres dat je bij het betalen hebt opgegeven, zodra het examen is behaald. In je omgeving vind je ook direct een digitale versie van het pasje.</p>
         </details>
         <details class="faq-item">
           <summary>Wat gebeurt er met mijn voortgang als ik de pagina sluit?</summary>
@@ -1531,7 +1577,7 @@
           </div>
           <div class="field" style="display:flex;flex-direction:column;justify-content:flex-end;gap:10px;">
             <label style="display:flex;align-items:center;gap:10px;font-weight:500;cursor:pointer;margin:0;">
-              <input type="checkbox" id="accPasje" style="width:auto;" onchange="updateAccTotal()"><span>BHV-pasje per deelnemer (€12,50)</span>
+              <input type="checkbox" id="accPasje" style="width:auto;" onchange="updateAccTotal()"><span>BHV-pasje per deelnemer (€12,50, per post)</span>
             </label>
             <label style="display:flex;align-items:center;gap:10px;font-weight:500;cursor:pointer;margin:0;">
               <input type="checkbox" id="accLocation" style="width:auto;" onchange="updateAccTotal()"><span>Praktijkdag op locatie (€395)</span>
@@ -1725,7 +1771,7 @@
           <div class="field pasje-option">
             <label style="display:flex;align-items:flex-start;gap:10px;font-weight:500;cursor:pointer;">
               <input type="checkbox" id="inpPasje" style="width:auto;margin-top:3px;" onchange="recalcOrderSummary()">
-              <span>Voeg voor elke deelnemer een <b>BHV-pasje</b> toe — €12,50 p.p. Met naam, geboortedatum, behaaldatum en een uniek pasnummer, type <b id="pasjeTypeLabel">Theorie</b>.</span>
+              <span>Voeg voor elke deelnemer een <b>BHV-pasje</b> toe — €12,50 p.p. Met naam, geboortedatum, behaaldatum en een uniek pasnummer. Het pasje wordt na het behalen van het examen <b>per post verstuurd</b> naar het verzendadres dat je bij het betalen opgeeft. Type <b id="pasjeTypeLabel">Theorie</b>.</span>
             </label>
           </div>
           <p style="font-size:12.5px;color:var(--ink-soft);margin:-6px 0 18px;">
@@ -1753,7 +1799,7 @@
         <div class="summary-row"><span>BTW (21%, reeds inbegrepen)</span><span id="sumVat">—</span></div>
         <div class="summary-row total"><span>Totaal</span><span id="sumTotal">€79,-</span></div>
         <div style="margin-top:20px;font-size:13px;color:var(--ink-soft);line-height:1.6;">
-          Inbegrepen per deelnemer: examen van 75 vragen, onbeperkt herkansen, digitaal certificaat. Optioneel BHV-pasje: €12,50 p.p. Bestel je voor meerdere personen, dan voeg je hun gegevens na betaling toe in je dashboard.
+          Inbegrepen per deelnemer: examen van 75 vragen, onbeperkt herkansen, digitaal certificaat. Optioneel BHV-pasje: €12,50 p.p., per post verstuurd. Bestel je voor meerdere personen, dan voeg je hun gegevens na betaling toe in je dashboard.
         </div>
       </div>
     </div>
@@ -1977,106 +2023,57 @@
         <h2>Gefeliciteerd, je bent geslaagd</h2>
       </div>
       <div class="cert-outer">
-        <div class="cert-sheet" id="certificateSheet">
-          <div class="cert-corner"></div>
-          <div class="cert-corner-ring"></div>
-
-          <div class="cert-badge">
-            <div class="stars">★ ★ ★ ★ ★</div>
-            <div class="num">1</div>
-            <div class="lbl">JAAR</div>
-            <div class="geldig">GELDIG</div>
-          </div>
-
-          <div class="cert-head">
-            <img class="skb-logo-img" alt="SKB BHV logo" style="height:64px;width:auto;margin:0 auto;display:block;">
-            <div class="cert-title">BHV Certificaat</div>
-          </div>
-
-          <div class="cert-body">
-            <div class="cert-checklist">
-              <div class="cert-check-item">
-                <div class="cert-check-icon">🛡️</div>
-                <div class="cert-check-text"><b>PROFESSIONEEL</b><span>Erkend en gecertificeerd volgens de geldende richtlijnen</span></div>
-                <div class="cert-check-mark">✓</div>
-              </div>
-              <div class="cert-check-item">
-                <div class="cert-check-icon">👥</div>
-                <div class="cert-check-text"><b>DESKUNDIG</b><span>Praktische en realistische examinering op examenniveau</span></div>
-                <div class="cert-check-mark">✓</div>
-              </div>
-              <div class="cert-check-item">
-                <div class="cert-check-icon">🧰</div>
-                <div class="cert-check-text"><b>BETROUWBAAR</b><span>Geldig bewijs van kennis van bedrijfshulpverlening</span></div>
-                <div class="cert-check-mark">✓</div>
-              </div>
-              <div class="cert-check-item">
-                <div class="cert-check-icon">🔥</div>
-                <div class="cert-check-text"><b>VOORBEREID</b><span>Voor een veilige werkomgeving en snelle hulp bij noodsituaties</span></div>
-                <div class="cert-check-mark">✓</div>
-              </div>
-              <div class="cert-check-item">
-                <div class="cert-check-icon green">⚡</div>
-                <div class="cert-check-text"><b>MET AED</b><span>Getoetst op kennis van het veilig gebruiken van de AED</span></div>
-                <div class="cert-check-mark">✓</div>
-              </div>
+        <div class="cert-sheet c2" id="certificateSheet">
+          <div class="c2-band"><span class="r"></span><span class="w"></span><span class="g"></span></div>
+          <div class="c2-frame">
+            <div class="c2-head">
+              <img class="skb-logo-img c2-logo" alt="SKB BHV logo">
+              <div class="c2-title">Certificaat</div>
+              <div class="c2-subtitle">Bedrijfshulpverlening</div>
             </div>
 
-            <div class="cert-main">
-              <div class="cert-line">Hierbij verklaart SKB BHV dat</div>
-              <div class="cert-name" id="certName">Voornaam Achternaam</div>
-              <div class="cert-meta-line">Geboortedatum&nbsp;&nbsp;:&nbsp;&nbsp;<b id="certBirthdate">—</b></div>
-              <div class="cert-line" style="margin-top:14px;">met goed gevolg heeft deelgenomen aan het examen</div>
-              <div class="cert-exam-title" id="certExamTitle">BHV BASISOPLEIDING</div>
-              <div class="cert-pass"><span class="bar"></span><span class="label">GESLAAGD</span><span class="bar"></span></div>
-              <div class="cert-dates">
-                <div><span class="k">Score behaald</span><span class="v" id="certScore">—</span></div>
-                <div><span class="k">Datum afgifte</span><span class="v" id="certDate">—</span></div>
-                <div><span class="k">Geldig tot</span><span class="v" id="certValid">— (1 jaar)</span></div>
-                <div><span class="k">Certificaatnummer</span><span class="v" id="certNumberEl">—</span></div>
-              </div>
-              <div class="cert-sign">
-                <div class="cert-sign-line">
-                  <div class="cert-sign-script">SKB BHV</div>
-                  <div class="cert-sign-caption">Namens SKB BHV<br>Instructeur / Examinator</div>
-                </div>
-                <div class="cert-stamp">SKB<br>BHV<br><span style="font-size:9px;">VEILIGHEID · KWALITEIT</span></div>
-              </div>
+            <div class="c2-main">
+              <div class="c2-line">Hierbij verklaart SKB BHV dat</div>
+              <div class="c2-name" id="certName">Voornaam Achternaam</div>
+              <div class="c2-line">geboren op <b id="certBirthdate">—</b></div>
+              <div class="c2-line" style="margin-top:18px;">met goed gevolg het examen</div>
+              <div class="c2-exam" id="certExamTitle">BHV BASISOPLEIDING</div>
+              <div class="c2-line">heeft afgelegd en is</div>
+              <div class="c2-pass">GESLAAGD</div>
             </div>
 
-            <div class="cert-side">
-              <div class="cert-stat-box">
-                <div class="cert-stat-row">
-                  <div class="cert-stat-icon">🖥️</div>
-                  <div class="cert-stat-text"><b>E-LEARNING</b><span>Theorie</span></div>
-                  <div class="cert-stat-num">5</div>
-                </div>
-                <div class="cert-stat-row">
-                  <div class="cert-stat-icon">📋</div>
-                  <div class="cert-stat-text"><b>EXAMENVRAGEN</b><span>Onderdelen</span></div>
-                  <div class="cert-stat-num">75</div>
-                </div>
-                <div class="cert-stat-row">
-                  <div class="cert-stat-icon green">⚡</div>
-                  <div class="cert-stat-text"><b>AED</b><span>Kennis AED-gebruik</span></div>
-                  <div class="cert-stat-num" style="font-size:20px;color:var(--green);">✓</div>
-                </div>
+            <div class="c2-details">
+              <div><span class="k">Score</span><span class="v" id="certScore">—</span></div>
+              <div><span class="k">Datum afgifte</span><span class="v" id="certDate">—</span></div>
+              <div><span class="k">Geldig tot</span><span class="v" id="certValid">—</span></div>
+              <div><span class="k">Certificaatnummer</span><span class="v" id="certNumberEl">—</span></div>
+            </div>
+
+            <div class="c2-topics">
+              <span class="c2-topics-label">Getoetste onderdelen</span>
+              <span class="c2-topic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00953C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> EHBO</span>
+              <span class="c2-topic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00953C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Reanimatie &amp; AED</span>
+              <span class="c2-topic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00953C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Brandbestrijding</span>
+              <span class="c2-topic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00953C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Ontruiming</span>
+              <span class="c2-topic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00953C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Wet- &amp; regelgeving</span>
+            </div>
+
+            <div class="c2-sign">
+              <div class="c2-signature">
+                <div class="c2-script">SKB BHV</div>
+                <div class="c2-sigline"></div>
+                <div class="c2-sigcap">Namens SKB BHV · Examinator</div>
               </div>
-              <div class="cert-info-box">
-                <b>SKB BHV</b>
-                <div class="sub">Constructief in veiligheid</div>
-                <p>SKB BHV staat voor kwaliteit, praktijkgerichtheid en veiligheid. Wij zorgen dat u voorbereid bent op elke situatie.</p>
+              <div class="c2-seal">
+                <div class="c2-seal-inner">
+                  <span class="t1">SKB BHV</span>
+                  <span class="t2">Gecertificeerd</span>
+                  <span class="t3">1 jaar geldig</span>
+                </div>
               </div>
             </div>
           </div>
-
-          <div class="cert-footer">
-            <div class="item"><div class="fdot">🌐</div><div><b>www.skbbhv.nl</b><span>Online BHV-examen</span></div></div>
-            <div class="item"><div class="fdot">🛡️</div><div><b>Veiligheid</b><span>op de werkvloer</span></div></div>
-            <div class="item"><div class="fdot">👥</div><div><b>Snelle hulp</b><span>bij noodsituaties</span></div></div>
-            <div class="item"><div class="fdot">🧰</div><div><b>Getraind en</b><span>gecertificeerd</span></div></div>
-            <div class="item"><div class="fdot">⚡</div><div><b>Met AED</b><span>getoetst</span></div></div>
-          </div>
+          <div class="c2-footer">SKB BHV — onderdeel van Oibase B.V. · Goordelaan 19, 9591 CB Onstwedde · KVK 42117378 · www.skbbhv.nl</div>
         </div>
       </div>
       <div style="margin-top:26px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
@@ -2099,7 +2096,7 @@
         <div class="pas-card" id="pasCardSheet">
           <div class="pas-topbar">
             <div class="pas-logo">
-              <img class="skb-logo-img" alt="SKB BHV logo" style="height:28px;width:auto;filter:brightness(0) invert(1);">
+              <img class="skb-logo-img" alt="SKB BHV logo" style="height:40px;width:auto;">
             </div>
             <div class="pas-type" id="pasType">THEORIE</div>
           </div>
@@ -2116,6 +2113,7 @@
           </div>
         </div>
       </div>
+      <p class="pas-post-note">Dit is de digitale versie van je BHV-pasje. Je fysieke pasje wordt per post verstuurd naar het adres dat bij de bestelling is opgegeven.</p>
       <div style="margin-top:26px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
         <button class="btn btn-primary" onclick="downloadPas(event)">Download pasje (PNG)</button>
         <button class="btn btn-outline" onclick="goTo('dashboard')">Terug naar dashboard</button>
