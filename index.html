@@ -898,6 +898,142 @@
   .pas-topbar{background:#ffffff !important;border-bottom:1px solid var(--line);}
   .pas-topbar .skb-logo-img{height:40px !important;filter:none !important;}
   .pas-post-note{max-width:640px;margin:18px auto 0;font-size:14.5px;color:var(--ink-soft);text-align:center;line-height:1.55;}
+
+  /* =====================================================================
+     PROFESSIONEEL 2026 — fotografie, rustiger ritme, nettere kaarten.
+     Alleen publieke weergave; geen wijzigingen aan logica of id's.
+     ===================================================================== */
+  html{scroll-behavior:auto;}
+  body{text-rendering:optimizeLegibility;}
+  main{padding:0 24px;}
+  .section-head h2{text-wrap:balance;}
+  .section-head p{text-wrap:pretty;}
+  .hero h1{text-wrap:balance;letter-spacing:-0.025em;}
+
+  /* knoppen */
+  .btn{transition:background .15s, border-color .15s, color .15s, box-shadow .15s, transform .12s;}
+  .btn-primary{box-shadow:0 1px 2px rgba(11,31,51,0.12);}
+  .btn-primary:hover{box-shadow:0 6px 16px rgba(10,92,168,0.22);}
+  .btn-outline:hover{background:#F7FAFD;}
+
+  /* hero met foto */
+  .hero{grid-template-columns:1.05fr 0.95fr;align-items:center;padding-bottom:64px;}
+  .hero-visual{position:relative;padding-bottom:8px;}
+  .hero-photo{margin:0;position:relative;border-radius:18px;overflow:hidden;aspect-ratio:5/4;background:var(--dark);box-shadow:var(--shadow);}
+  .hero-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+  .hero-photo .ph-credit{top:auto;bottom:10px;right:12px;}
+  .hero-visual .hero-card{margin:-110px 0 0 36px;position:relative;z-index:2;padding:26px 28px;}
+  .hero-visual .hero-card h3{margin-top:0;}
+  .hero-visual .hero-stat-row{margin:16px 0;}
+  .trustline{gap:10px;}
+  .hero .trustline span{background:var(--white);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13.5px;}
+
+  /* foto's in de bestaande beeldkaarten */
+  .has-photo{background:var(--dark);}
+  .has-photo .ph-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;z-index:0;}
+  .has-photo::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+    background:linear-gradient(to top, rgba(11,31,51,0.92) 0%, rgba(11,31,51,0.55) 40%, rgba(11,31,51,0.05) 75%);}
+  .has-photo .pc-icon,.has-photo .ph-icons{display:none;}
+  .has-photo .pc-caption,.has-photo .ph-caption{z-index:1;}
+  .photo-hero.has-photo{min-height:340px;}
+  .ph-credit{position:absolute;top:10px;right:12px;z-index:2;font-size:11px;line-height:1;color:rgba(255,255,255,0.85);
+    background:rgba(11,31,51,0.45);padding:4px 7px;border-radius:5px;text-decoration:none;}
+  .ph-credit:hover{color:#fff;text-decoration:underline;}
+  .photo-card{border-radius:14px;min-height:220px;}
+  .photo-grid{gap:20px;margin:24px 0;}
+  .photo-hero{border-radius:16px;}
+
+  /* volle-breedte banden voor ritme (zonder horizontale scroll) */
+  .band-white{background:var(--white);box-shadow:0 0 0 100vmax var(--white);clip-path:inset(0 -100vmax);}
+
+  /* stappen als nette kaarten */
+  .steps{gap:20px;}
+  .step{padding:24px 22px;background:var(--white);border:1px solid var(--line);border-radius:var(--radius);}
+  .band-white .step{background:var(--bg);border-color:transparent;}
+  .step .n{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:10px;
+    background:#EEF4FB;color:var(--blue);font-size:15px;margin-bottom:16px;}
+  .step h4{font-size:17px;margin-bottom:8px;}
+  .step p{font-size:14.5px;line-height:1.55;}
+
+  /* kaarten */
+  .feature{padding:28px;transition:border-color .15s, box-shadow .15s;}
+  .feature:hover{border-color:#C9D6E4;box-shadow:0 8px 24px rgba(11,31,51,0.06);}
+  .feature h3{font-size:18.5px;line-height:1.3;}
+  .feature p{font-size:15px;line-height:1.6;}
+  .feature .num{font-size:12.5px;}
+  .audience-card{border-width:1px;padding:32px;}
+  .price-card{border-width:1px;border-radius:16px;padding:32px 28px;}
+  .price-card.featured{border-width:2px;}
+  .price-row .amount{font-size:44px;letter-spacing:-0.02em;}
+  .price-list li{font-size:14.5px;line-height:1.45;}
+  .price-source{max-width:860px;margin-top:22px;}
+
+  /* bedrijfsgegevens-strook */
+  .company-strip{margin-top:24px !important;padding:16px 20px;background:var(--white);border:1px solid var(--line);border-radius:12px;gap:8px 24px !important;}
+  .company-strip span{font-size:13.5px;}
+
+  /* prijzen-preview als paneel */
+  #prijzen-preview{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap;}
+  #prijzen-preview .section-head{margin-bottom:0;}
+  #prijzen-preview > .btn{flex-shrink:0;}
+
+  /* stat-strip */
+  .stat-strip{background:var(--white);border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+  .stat-strip .stat{padding:24px 16px;}
+  .stat-strip .stat b{font-size:30px;margin-bottom:4px;}
+  .stat-strip .stat span{font-size:13px;line-height:1.45;display:block;}
+
+  /* reden-lijst */
+  .reason-list{gap:12px;}
+  .reason-list li{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px 20px;font-size:15px;}
+
+  /* FAQ */
+  #view-faq .faq-list{max-width:860px;}
+  .faq-item{padding:0;border-radius:12px;transition:border-color .15s;}
+  .faq-item summary{padding:20px 24px;font-size:16px;}
+  .faq-item p{margin:0;padding:0 24px 22px;font-size:15px;}
+  .faq-item[open]{border-color:#C9D6E4;}
+  .faq-item summary::after{width:28px;height:28px;border-radius:50%;background:#EEF4FB;display:flex;align-items:center;justify-content:center;font-size:18px;line-height:1;}
+
+  /* contact */
+  #view-contact textarea{font-family:var(--font-body) !important;}
+  #view-contact .field textarea:focus{outline:none;border-color:var(--blue) !important;background:var(--white) !important;}
+  .panel{border-radius:16px;}
+
+  /* banners */
+  .cta-band{padding:48px 40px;border-radius:18px;}
+  .cta-band h3{font-size:28px;}
+  .law-banner{border-radius:18px;}
+
+  @media(max-width:920px){
+    .hero{grid-template-columns:1fr;gap:36px;padding-top:40px;padding-bottom:48px;}
+    .hero-visual .hero-card{margin:-80px 16px 0 16px;}
+    .hero-photo{aspect-ratio:4/3;}
+    section{padding:56px 0;}
+    #prijzen-preview{display:block;}
+    #prijzen-preview > .btn{margin-top:20px;}
+  }
+  @media(max-width:600px){
+    main{padding:0 16px;}
+    .header-inner{padding:12px 16px;}
+    .hero h1{font-size:34px;}
+    .section-head h2{font-size:27px !important;}
+    .photo-hero{padding:24px 20px;}
+    .photo-hero.has-photo{min-height:300px;}
+    .steps{grid-template-columns:1fr;}
+    .cta-band{padding:36px 22px;}
+    .law-banner{padding:30px 22px;}
+    .audience-card{padding:24px;}
+    .price-card{padding:28px 22px;}
+    .faq-item summary{padding:18px 18px;font-size:15px;}
+    .faq-item p{padding:0 18px 20px;}
+    .stat-strip .stat{min-width:50%;border-bottom:1px solid var(--line);}
+    #view-contact .field-row{grid-template-columns:1fr;gap:0;}
+    .panel{padding:24px 20px;}
+  }
+  @media(max-width:920px){
+    #view-contact .checkout-wrap{grid-template-columns:1fr !important;padding-top:8px;}
+  }
 </style>
 </head>
 <body>
@@ -946,6 +1082,11 @@
           <span><b>Direct</b>&nbsp;digitaal certificaat</span>
         </div>
       </div>
+      <div class="hero-visual">
+        <figure class="hero-photo">
+          <img class="hero-img" src="https://images.unsplash.com/photo-1755549746563-a7c0a391af36?auto=format&fit=crop&w=1100&q=70" alt="Cursist oefent reanimatie op een oefenpop" fetchpriority="high" width="1100" height="880">
+          <a class="ph-credit" href="https://unsplash.com/photos/person-practicing-cpr-on-a-training-dummy-E2JjBMyxBVw?utm_source=skbbhv&utm_medium=referral" target="_blank" rel="noopener">Foto: Frederick Shaw / Unsplash</a>
+        </figure>
       <div class="hero-card">
         <div class="sweep thin" style="position:static;margin-bottom:18px;width:60px;border-radius:4px;"></div>
         <h3>Basisexamen BHV</h3>
@@ -957,6 +1098,7 @@
         </div>
         <p>EHBO · Reanimatie &amp; AED · Brandbestrijding · Ontruiming · Wet- en regelgeving</p>
       </div>
+      </div>
     </section>
 
     <section id="dit-is-skb-bhv">
@@ -966,7 +1108,9 @@
         <p>SKB BHV is de online BHV-opleider van Oibase B.V., gevestigd aan Goordelaan 19 in Onstwedde. We maken BHV-certificering toegankelijk: een helder online examen tegen een eerlijke prijs, met de mogelijkheid om de praktijk — reanimatie, AED-gebruik en brandbestrijding — gewoon bij u op locatie te laten verzorgen.</p>
       </div>
 
-      <div class="photo-hero">
+      <div class="photo-hero has-photo">
+        <img class="ph-img" src="https://images.unsplash.com/photo-1625958936686-a9343dc35b5b?auto=format&fit=crop&w=1400&q=70" alt="Rode brandblusser aan een grijze wand" loading="lazy" decoding="async">
+        <a class="ph-credit" href="https://unsplash.com/photos/red-fire-extinguisher-on-gray-wall-PWOV__8cRpw?utm_source=skbbhv&utm_medium=referral" target="_blank" rel="noopener">Foto: Tak Kei Wong / Unsplash</a>
         <div class="ph-icons"><span><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21.2l8.8-8.8a5.5 5.5 0 0 0 0-7.8z"/><path d="M3.5 12h4l2-3 3 6 2-3h6"/></svg></span><span><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.4-.5-2-1-3-1.1-2.1-.2-4 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.2.4-2.3 1-3.2.3 1.2 1.2 2.2 2.5 2.7z"/></svg></span><span><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 4h3a2 2 0 0 1 2 2v14M2 20h3M13 20h9M10 12v.01"/><path d="M13 4.6v16.2a.6.6 0 0 1-.8.6L5 19.9V5.6a1 1 0 0 1 .7-1l6.5-1.6a.6.6 0 0 1 .8.6z"/></svg></span></div>
         <div class="ph-caption">
           <b>Eén examen, alle kerntaken van een BHV'er</b>
@@ -975,11 +1119,15 @@
       </div>
 
       <div class="photo-grid">
-        <div class="photo-card a">
+        <div class="photo-card a has-photo">
+          <img class="ph-img" src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=800&q=70" alt="Iemand werkt op een laptop aan een houten tafel" loading="lazy" decoding="async">
+          <a class="ph-credit" href="https://unsplash.com/photos/person-using-laptop-computer-Hcfwew744z4?utm_source=skbbhv&utm_medium=referral" target="_blank" rel="noopener">Foto: Christin Hume / Unsplash</a>
           <div class="pc-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M2 20h20"/></svg></div>
           <div class="pc-caption"><b>Online theorie-examen</b><span>In je eigen tempo, vanaf elk apparaat</span></div>
         </div>
-        <div class="photo-card c">
+        <div class="photo-card c has-photo">
+          <img class="ph-img" src="https://images.unsplash.com/photo-1755718669693-5e5e9ce53e17?auto=format&fit=crop&w=800&q=70" alt="Instructeur geeft reanimatie-uitleg met een oefenpop" loading="lazy" decoding="async">
+          <a class="ph-credit" href="https://unsplash.com/photos/man-teaching-cpr-on-a-dummy-in-outdoor-setting-kjHqn_D_etI?utm_source=skbbhv&utm_medium=referral" target="_blank" rel="noopener">Foto: Frederick Shaw / Unsplash</a>
           <div class="pc-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M12 10.5v6M9 13.5h6"/></svg></div>
           <div class="pc-caption"><b>Praktijk op locatie</b><span>Reanimatie, AED en blussen bij u op de zaak</span></div>
         </div>
@@ -989,7 +1137,7 @@
         </div>
       </div>
 
-      <div class="trustline" style="margin-top:22px;">
+      <div class="trustline company-strip" style="margin-top:22px;">
         <span><b>Oibase B.V.</b>&nbsp;— Goordelaan 19, Onstwedde</span>
         <span><b>KVK</b>&nbsp;42117378</span>
         <span><b>BTW</b>&nbsp;NL869807729B01</span>
@@ -997,7 +1145,7 @@
       </div>
     </section>
 
-    <section id="hoe-werkt-het">
+    <section id="hoe-werkt-het" class="band-white">
       <div class="section-head">
         <div class="eyebrow">Hoe het werkt</div>
         <h2>Van betaling tot certificaat in vier stappen</h2>
@@ -1051,7 +1199,9 @@
         <p style="font-size:16px;">Elk jaar ontstaan er op werkvlekken beginnende branden, vallen er slachtoffers en gebeuren er ongelukken waarbij de eerste minuten cruciaal zijn. Een opgeleide BHV'er is dan het verschil tussen een klein incident en een ramp. Daarom is BHV in Nederland wettelijk verplicht — en daarom is het, los van de wet, gewoon verstandig.</p>
       </div>
 
-      <div class="photo-hero">
+      <div class="photo-hero has-photo">
+        <img class="ph-img" src="https://images.unsplash.com/photo-1732812837481-3ff6c4235995?auto=format&fit=crop&w=1400&q=70" alt="Groen nooduitgangsbord boven een deur" loading="lazy" decoding="async">
+        <a class="ph-credit" href="https://unsplash.com/photos/a-green-exit-sign-above-a-white-door-rc2k3SGI2s8?utm_source=skbbhv&utm_medium=referral" target="_blank" rel="noopener">Foto: Jakub Żerdzicki / Unsplash</a>
         <div class="ph-icons"><span><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.4-.5-2-1-3-1.1-2.1-.2-4 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.2.4-2.3 1-3.2.3 1.2 1.2 2.2 2.5 2.7z"/></svg></span><span><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21.2l8.8-8.8a5.5 5.5 0 0 0 0-7.8z"/><path d="M3.5 12h4l2-3 3 6 2-3h6"/></svg></span></div>
         <div class="ph-caption">
           <b>De eerste minuten bepalen de afloop</b>
@@ -1330,7 +1480,9 @@
         <p style="font-size:16px;">SKB BHV is een handelsnaam van Oibase B.V., gevestigd in Onstwedde. We geloven dat een BHV-certificaat niet duur, ingewikkeld of tijdrovend hoeft te zijn — terwijl de kennis die je opdoet er wél toe doet als het erop aankomt.</p>
       </div>
 
-      <div class="photo-hero">
+      <div class="photo-hero has-photo">
+        <img class="ph-img" src="https://images.unsplash.com/photo-1755548376576-e045f6e01773?auto=format&fit=crop&w=1400&q=70" alt="Reanimatie-oefening op de vloer tijdens een praktijktraining" loading="lazy" decoding="async">
+        <a class="ph-credit" href="https://unsplash.com/photos/man-practices-cpr-on-a-person-lying-on-the-floor-sdNu13NjIe4?utm_source=skbbhv&utm_medium=referral" target="_blank" rel="noopener">Foto: Frederick Shaw / Unsplash</a>
         <div class="ph-icons"><span><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg></span><span><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg></span></div>
         <div class="ph-caption">
           <b>Vanuit Onstwedde, actief door heel Nederland</b>
