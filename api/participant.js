@@ -49,7 +49,7 @@ function cleanText(value, max = 80) {
 
 // Velden die de client te zien krijgt (nooit de examensleutel).
 const MAX_POGINGEN = 2; // eerste poging + 1 herkansing
-const POGINGEN_OP = 'Je hebt het examen al 2 keer gemaakt (1 herkansing). Neem contact op met info@skbbhv.nl voor een nieuwe poging.';
+const POGINGEN_OP = 'Je hebt het examen al 2 keer gemaakt (1 herkansing). Voor een nieuwe poging koop je een nieuw examen op skbbhv.nl.';
 
 function publicRecord(record) {
   const { exam, ...rest } = record;

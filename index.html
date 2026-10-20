@@ -3097,7 +3097,7 @@ function renderRoster(){
           // Deelnemer bekijkt zijn eigen rij via zijn persoonlijke link — geen "Bewerken" of
           // "Kopieer link" tonen, anders kan hij per ongeluk zijn eigen (actieve) link
           // ongeldig maken terwijl hij die nog in de adresbalk heeft staan.
-          actions.innerHTML = (p.status==='failed' && (p.attempts||0)>=2) ? `<span class="muted" style="font-size:13px">Geen herkansing meer — mail info@skbbhv.nl</span>` : `${(p.status==='failed' && (p.attempts||0)>=2) ? `<span class="muted" style="font-size:13px">Geen herkansing meer — mail info@skbbhv.nl</span>` : `<button class="btn btn-primary" onclick="goExamStart(${idx})">${p.status==='failed' ? 'Opnieuw proberen' : 'Start examen'}</button>`}`;
+          actions.innerHTML = (p.status==='failed' && (p.attempts||0)>=2) ? `<span class="muted" style="font-size:13px;margin-right:8px">Geen herkansing meer</span><button class="btn btn-primary" onclick="goTo(&#39;pricing&#39;)">Nieuw examen kopen</button>` : `${(p.status==='failed' && (p.attempts||0)>=2) ? `<span class="muted" style="font-size:13px;margin-right:8px">Geen herkansing meer</span><button class="btn btn-primary" onclick="goTo(&#39;pricing&#39;)">Nieuw examen kopen</button>` : `<button class="btn btn-primary" onclick="goExamStart(${idx})">${p.status==='failed' ? 'Opnieuw proberen' : 'Start examen'}</button>`}`;
         } else {
           const linkBtn = p.token ? `<button class="btn btn-outline" onclick="copyParticipantLink(${idx})"><svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7'/><path d='M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7'/></svg> Kopieer link</button>` : '';
           const mailBtn = (p.token && p.email && state.auth) ? `<button class="btn btn-outline" onclick="mailParticipantLink(${idx})">Link mailen</button>` : '';
@@ -3495,8 +3495,11 @@ async function finishExam(){
   const retryBtn = document.getElementById('resultRetryBtn');
   const pogingenOp = !passed && (participant.attempts||0) >= 2;
   if(retryBtn) retryBtn.style.display = (passed || pogingenOp) ? 'none' : 'inline-flex';
+  let koopBtn = document.getElementById('resultBuyBtn');
+  if(!koopBtn && retryBtn){ koopBtn = document.createElement('button'); koopBtn.id='resultBuyBtn'; koopBtn.className='btn btn-primary'; koopBtn.textContent='Nieuw examen kopen'; koopBtn.onclick=()=>goTo('pricing'); retryBtn.parentNode.insertBefore(koopBtn, retryBtn); }
+  if(koopBtn) koopBtn.style.display = pogingenOp ? 'inline-flex' : 'none';
   if(!passed) document.getElementById('resultDetail').textContent += pogingenOp
-    ? ' Je hebt geen herkansing meer. Neem contact op met info@skbbhv.nl voor een nieuwe poging.'
+    ? ' Je hebt geen herkansing meer. Voor een nieuwe poging koop je een nieuw examen.'
     : ' Je hebt nog 1 herkansing.';
 
   buildReviewList(wrongList);
