@@ -48,6 +48,9 @@ function cleanText(value, max = 80) {
 }
 
 // Velden die de client te zien krijgt (nooit de examensleutel).
+const MAX_POGINGEN = 2; // eerste poging + 1 herkansing
+const POGINGEN_OP = 'Je hebt het examen al 2 keer gemaakt (1 herkansing). Neem contact op met info@skbbhv.nl voor een nieuwe poging.';
+
 function publicRecord(record) {
   const { exam, ...rest } = record;
   return rest;
@@ -212,6 +215,7 @@ async function start(body, res) {
   const record = token ? await kv.get(`participant:${token}`) : null;
   if (!record) return res.status(404).json({ error: 'Deelnemer niet gevonden of link verlopen.' });
   if (record.status === 'passed') return res.status(409).json({ error: 'Deze deelnemer is al geslaagd.' });
+  if ((record.attempts || 0) >= MAX_POGINGEN) return res.status(409).json({ error: POGINGEN_OP });
 
   const { items, questions } = buildExam();
   const examId = crypto.randomBytes(12).toString('hex');
@@ -241,6 +245,7 @@ async function finish(body, res) {
 
     const updated = { ...record };
     delete updated.exam; // elk gestart examen kan maar één keer worden ingeleverd
+    updated.attempts = (record.attempts || 0) + 1;
     updated.correct = result.correct;
     updated.total = result.total;
     updated.pct = result.pct;
@@ -264,6 +269,8 @@ async function finish(body, res) {
       passDate: updated.passDate || null,
       wrong: result.wrong,
       perCategory: result.perCategory,
+      attempts: updated.attempts,
+      attemptsLeft: result.passed ? 0 : Math.max(0, MAX_POGINGEN - updated.attempts),
     });
   } finally {
     await kv.del(lockKey);

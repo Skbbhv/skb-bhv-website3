@@ -3097,7 +3097,7 @@ function renderRoster(){
           // Deelnemer bekijkt zijn eigen rij via zijn persoonlijke link — geen "Bewerken" of
           // "Kopieer link" tonen, anders kan hij per ongeluk zijn eigen (actieve) link
           // ongeldig maken terwijl hij die nog in de adresbalk heeft staan.
-          actions.innerHTML = `<button class="btn btn-primary" onclick="goExamStart(${idx})">${p.status==='failed' ? 'Opnieuw proberen' : 'Start examen'}</button>`;
+          actions.innerHTML = (p.status==='failed' && (p.attempts||0)>=2) ? `<span class="muted" style="font-size:13px">Geen herkansing meer — mail info@skbbhv.nl</span>` : `${(p.status==='failed' && (p.attempts||0)>=2) ? `<span class="muted" style="font-size:13px">Geen herkansing meer — mail info@skbbhv.nl</span>` : `<button class="btn btn-primary" onclick="goExamStart(${idx})">${p.status==='failed' ? 'Opnieuw proberen' : 'Start examen'}</button>`}`;
         } else {
           const linkBtn = p.token ? `<button class="btn btn-outline" onclick="copyParticipantLink(${idx})"><svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7'/><path d='M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7'/></svg> Kopieer link</button>` : '';
           const mailBtn = (p.token && p.email && state.auth) ? `<button class="btn btn-outline" onclick="mailParticipantLink(${idx})">Link mailen</button>` : '';
@@ -3482,6 +3482,7 @@ async function finishExam(){
   participant.certNumber = result.certNumber || null;
   participant.pasNumber = result.pasNumber || null;
   participant.passDate = result.passDate || null;
+  if(result.attempts != null) participant.attempts = result.attempts;
 
   document.getElementById('resultScore').textContent = pct+'%';
   document.getElementById('resultScore').className = 'result-score '+(passed?'pass':'fail');
@@ -3492,7 +3493,11 @@ async function finishExam(){
   document.getElementById('resultCertBtn').style.display = passed ? 'inline-flex':'none';
   document.getElementById('resultPasBtn').style.display = (passed && participant.pasNumber) ? 'inline-flex':'none';
   const retryBtn = document.getElementById('resultRetryBtn');
-  if(retryBtn) retryBtn.style.display = passed ? 'none' : 'inline-flex';
+  const pogingenOp = !passed && (participant.attempts||0) >= 2;
+  if(retryBtn) retryBtn.style.display = (passed || pogingenOp) ? 'none' : 'inline-flex';
+  if(!passed) document.getElementById('resultDetail').textContent += pogingenOp
+    ? ' Je hebt geen herkansing meer. Neem contact op met info@skbbhv.nl voor een nieuwe poging.'
+    : ' Je hebt nog 1 herkansing.';
 
   buildReviewList(wrongList);
   document.getElementById('reviewWrap').style.display = 'none';
@@ -4089,7 +4094,7 @@ function openCourseQuestions(){
     goTo('pricing');
     return;
   }
-  const canStart = (p)=> p.status==='ready' || p.status==='failed';
+  const canStart = (p)=> p.status==='ready' || (p.status==='failed' && (p.attempts||0) < 2);
   // Voorkeur: de eerste deelnemer (meestal de besteller zelf), anders de eerstvolgende die klaarstaat.
   let idx = canStart(roster[0]) ? 0 : roster.findIndex(canStart);
   if(idx >= 0){ goExamStart(idx); return; }
