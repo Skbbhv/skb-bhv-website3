@@ -10,6 +10,8 @@
 //   sess:<token>             → email (inlogsessie, 30 dagen geldig)
 //   loginfail:<email>        → teller mislukte inlogpogingen (15 minuten)
 //   forgot:<email>           → blokkeert 'wachtwoord vergeten' 5 minuten na een verzoek
+//   pwreset:<token>          → email (eenmalige resetlink, 30 minuten geldig)
+//   loginfail-ip:<ip>        → teller mislukte inlogpogingen per internetadres (15 minuten)
 
 import crypto from 'crypto';
 import { kv } from './kv.js';
@@ -223,6 +225,45 @@ export async function sendCredentialsEmail(account, password, kind) {
     return true;
   } catch (err) {
     console.error('Versturen van inloggegevens mislukt:', err);
+    return false;
+  }
+}
+
+// Mail met een eenmalige link om zelf een nieuw wachtwoord te kiezen (wachtwoord vergeten).
+export async function sendResetLinkEmail(account, token) {
+  if (!resend) {
+    console.warn('RESEND_API_KEY ontbreekt — resetmail wordt overgeslagen.');
+    return false;
+  }
+  const siteUrl = process.env.SITE_URL || 'https://www.skbbhv.nl';
+  const link = `${siteUrl}/?reset=${encodeURIComponent(token)}`;
+  const html = `
+  <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;color:#111418;">
+    <div style="background:#0B1F33;padding:24px 28px;border-radius:12px 12px 0 0;">
+      <span style="color:#fff;font-size:22px;font-weight:bold;letter-spacing:0.5px;">SKB BHV</span>
+    </div>
+    <div style="border:1px solid #E3E6EA;border-top:none;padding:28px;border-radius:0 0 12px 12px;">
+      <h2 style="margin-top:0;">Nieuw wachtwoord instellen</h2>
+      <p>Hallo ${escapeHtml(account.first || '')},</p>
+      <p>Je hebt gevraagd om een nieuw wachtwoord voor Mijn omgeving (${escapeHtml(account.email)}). Via onderstaande knop kies je zelf een nieuw wachtwoord. De link is <b>30 minuten</b> geldig en werkt maar één keer.</p>
+      <p style="text-align:center;margin:26px 0;">
+        <a href="${link}" style="background:#0A5CA8;color:#fff;text-decoration:none;padding:12px 26px;border-radius:8px;font-weight:bold;display:inline-block;">Nieuw wachtwoord kiezen</a>
+      </p>
+      <p style="font-size:13px;color:#4A525B;">Heb je dit niet zelf aangevraagd? Dan kun je deze e-mail negeren: je huidige wachtwoord blijft gewoon geldig.</p>
+      <hr style="border:none;border-top:1px solid #E3E6EA;margin:24px 0;">
+      <p style="font-size:12px;color:#6B737C;">${COMPANY_FOOTER_HTML}</p>
+    </div>
+  </div>`;
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to: account.email,
+      subject: 'Stel een nieuw wachtwoord in voor SKB BHV',
+      html,
+    });
+    return true;
+  } catch (err) {
+    console.error('Versturen van resetlink mislukt:', err);
     return false;
   }
 }

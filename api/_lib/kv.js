@@ -1,6 +1,6 @@
 // api/_lib/kv.js
 // Kleine koppeling met de Redis-database van Vercel (Storage → Redis), via REDIS_URL.
-// Biedt dezelfde functies als @vercel/kv (get, set, del, incr, expire, sadd, smembers),
+// Biedt dezelfde functies als @vercel/kv (get, set, del, incr, expire, sadd, srem, scard, smembers),
 // zodat de rest van de code niet hoeft te veranderen. Waarden worden als JSON bewaard.
 //
 // Vereist environment variable: REDIS_URL (wordt automatisch gezet door de Redis-koppeling)
@@ -56,6 +56,14 @@ export const kv = {
   async sadd(key, member) {
     const c = await getClient();
     return await c.sAdd(key, String(member));
+  },
+  async srem(key, member) {
+    const c = await getClient();
+    return await c.sRem(key, String(member));
+  },
+  async scard(key) {
+    const c = await getClient();
+    return await c.sCard(key);
   },
   async smembers(key) {
     const c = await getClient();

@@ -4,6 +4,7 @@
 // Vereist environment variable: STRIPE_SECRET_KEY
 
 import Stripe from 'stripe';
+import { kv } from './_lib/kv.js';
 import { ensureAccountForStripeSession, createSession } from './_lib/accounts.js';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -33,18 +34,24 @@ export default async function handler(req, res) {
 
     // Account + bestelling vastleggen in de database. Een nieuw account krijgt een
     // wachtwoord dat we één keer aan de klant tonen (en ook mailen). Direct na de
-    // betaling (binnen 2 uur) wordt de klant automatisch ingelogd.
+    // betaling (binnen 2 uur, en maar één keer) wordt de klant automatisch ingelogd.
     let account = null;
     try {
       const result = await ensureAccountForStripeSession(session);
       if (result.email) {
         const fresh = (Date.now() / 1000 - (session.created || 0)) < 2 * 60 * 60;
+        // Automatisch inloggen kan maar één keer per bestelling: wie later (of als tweede)
+        // dezelfde session_id-link opent, moet gewoon inloggen.
+        const autoLogin = fresh
+          ? await kv.set(`order-autologin:${session.id}`, new Date().toISOString(), { nx: true, ex: 60 * 60 * 24 * 30 })
+          : null;
         account = {
           email: result.email,
           created: result.created,
           password: result.password, // alleen gevuld als het account nu pas is aangemaakt
-          sessionToken: fresh ? await createSession(result.email) : null,
-          savedOrder: result.orderRecord && result.orderRecord.roster ? result.orderRecord : null,
+          sessionToken: autoLogin ? await createSession(result.email) : null,
+          // De bewaarde deelnemerslijst alleen bij de (eenmalige) automatische inlog meesturen.
+          savedOrder: autoLogin && result.orderRecord && result.orderRecord.roster ? result.orderRecord : null,
         };
       }
     } catch (e) {

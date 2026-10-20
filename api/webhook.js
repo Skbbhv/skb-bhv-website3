@@ -11,11 +11,16 @@
 //   NOTIFY_EMAIL            (optioneel, standaard info@skbbhv.nl)
 //
 // Registreer deze endpoint-URL (https://jouw-domein/api/webhook) in het Stripe Dashboard
-// onder Developers → Webhooks, voor het event "checkout.session.completed".
+// onder Developers → Webhooks, voor de events "checkout.session.completed" en
+// "checkout.session.async_payment_succeeded" (voor betaalmethodes die later bevestigd worden).
+//
+// Elk Stripe-event wordt maar één keer verwerkt (kv-vlag op event.id), en een bestelling
+// alleen als Stripe meldt dat er echt betaald is (payment_status === 'paid').
 
 import Stripe from 'stripe';
 import { Resend } from 'resend';
-import { ensureAccountForStripeSession, COMPANY_FOOTER_HTML } from './_lib/accounts.js';
+import { kv } from './_lib/kv.js';
+import { ensureAccountForStripeSession, COMPANY_FOOTER_HTML, escapeHtml } from './_lib/accounts.js';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
@@ -59,9 +64,9 @@ function invoiceHtml(session) {
 
     const ship = session.shipping_details || (session.collected_information && session.collected_information.shipping_details);
   const addr = ship && ship.address;
-  const shipHtml = addr ? `<br><b>Verzendadres pasjes:</b> ${[ship.name, addr.line1, addr.line2, `${addr.postal_code || ''} ${addr.city || ''}`.trim(), addr.country].filter(Boolean).join(', ')}` : '';
+  const shipHtml = addr ? `<br><b>Verzendadres pasjes:</b> ${escapeHtml([ship.name, addr.line1, addr.line2, `${addr.postal_code || ''} ${addr.city || ''}`.trim(), addr.country].filter(Boolean).join(', '))}` : '';
   const rows = [];
-  rows.push(`<tr><td style="padding:8px 0;">${pkg.name}</td><td style="padding:8px 0;text-align:right;">× ${qty}</td></tr>`);
+  rows.push(`<tr><td style="padding:8px 0;">${escapeHtml(pkg.name)}</td><td style="padding:8px 0;text-align:right;">× ${qty}</td></tr>`);
   if (withPasje) rows.push(`<tr><td style="padding:8px 0;">BHV-pasje</td><td style="padding:8px 0;text-align:right;">× ${qty}</td></tr>`);
   if (onLocation) rows.push(`<tr><td style="padding:8px 0;">Locatietoeslag (praktijkdag op locatie)</td><td style="padding:8px 0;text-align:right;">× 1</td></tr>`);
 
@@ -89,8 +94,8 @@ function invoiceHtml(session) {
       <p style="font-size:13px;color:#4B535C;">
         <b>Factuurnummer:</b> ${invoiceNumber}<br>
         <b>Factuurdatum:</b> ${dateStr}<br>
-        <b>Besteller:</b> ${meta.buyerFirst || ''} ${meta.buyerLast || ''}${meta.buyerCompany ? ' — ' + meta.buyerCompany : ''}<br>
-                <b>E-mail:</b> ${meta.buyerEmail || session.customer_email || ''}${shipHtml}
+        <b>Besteller:</b> ${escapeHtml(meta.buyerFirst || '')} ${escapeHtml(meta.buyerLast || '')}${meta.buyerCompany ? ' — ' + escapeHtml(meta.buyerCompany) : ''}<br>
+        <b>E-mail:</b> ${escapeHtml(meta.buyerEmail || session.customer_email || '')}${shipHtml}
       </p>
       <hr style="border:none;border-top:1px solid #E1E4E9;margin:24px 0;">
       <p style="font-size:12px;color:#8b939b;">
@@ -142,11 +147,47 @@ export default async function handler(req, res) {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
+  // Idempotent: Stripe kan hetzelfde event meerdere keren sturen.
+  const eventKey = `stripe-event:${event.id}`;
+  let firstTime = true;
+  try {
+    firstTime = await kv.set(eventKey, new Date().toISOString(), { nx: true, ex: 60 * 60 * 24 * 30 });
+  } catch (err) {
+    console.error('Database niet bereikbaar voor event-controle, event wordt toch verwerkt:', err);
+  }
+  if (!firstTime) {
+    console.log('Stripe-event al verwerkt, overgeslagen:', event.id);
+    return res.status(200).json({ received: true, duplicate: true });
+  }
+
+  try {
+    await processEvent(event);
+  } catch (err) {
+    // Vlag weghalen zodat Stripe het event opnieuw kan aanbieden.
+    console.error('Verwerken van Stripe-event mislukt:', event.id, err);
+    await kv.del(eventKey).catch(() => {});
+    return res.status(500).json({ error: 'Verwerken mislukt' });
+  }
+
+  res.status(200).json({ received: true });
+}
+
+async function processEvent(event) {
   switch (event.type) {
-    case 'checkout.session.completed': {
+    case 'checkout.session.completed':
+    case 'checkout.session.async_payment_succeeded': {
       const session = event.data.object;
+      if (session.payment_status !== 'paid') {
+        // Bijv. een betaalmethode die later wordt bevestigd: dan volgt
+        // checkout.session.async_payment_succeeded.
+        console.log('Checkout afgerond maar (nog) niet betaald, overgeslagen:', session.id, session.payment_status);
+        break;
+      }
       console.log('✅ Betaling voltooid:', session.id, session.metadata);
-      await sendInvoiceEmail(session);
+      // Factuur maar één keer per bestelling, ook als er meerdere events voor binnenkomen.
+      const invoiceOnce = await kv.set(`invoice-sent:${session.id}`, 1, { nx: true, ex: 60 * 60 * 24 * 365 })
+        .catch(() => 'OK'); // zonder database liever een factuur te veel dan geen
+      if (invoiceOnce) await sendInvoiceEmail(session);
       // Maakt het klantaccount aan (en mailt de inloggegevens), ook als de klant
       // na het betalen niet meer terugkomt op de website.
       try {
@@ -154,6 +195,11 @@ export default async function handler(req, res) {
       } catch (err) {
         console.error('Account aanmaken vanuit webhook mislukt:', err);
       }
+      break;
+    }
+    case 'checkout.session.async_payment_failed': {
+      const session = event.data.object;
+      console.log('❌ Uitgestelde betaling mislukt:', session.id);
       break;
     }
     case 'checkout.session.expired': {
@@ -165,6 +211,4 @@ export default async function handler(req, res) {
       // Andere events negeren we hier bewust.
       break;
   }
-
-  res.status(200).json({ received: true });
 }

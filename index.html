@@ -1298,7 +1298,7 @@
       <div class="section-head" style="margin-top:50px;">
         <div class="eyebrow">Proef de examenstof</div>
         <h2 style="font-size:28px;">5 gratis voorbeeldvragen</h2>
-        <p>Nog niet zeker of je klaar bent voor het echte examen? Probeer eerst deze 5 vragen uit de vragenbank — helemaal gratis, geen account nodig.</p>
+        <p>Nog niet zeker of je klaar bent voor het echte examen? Probeer eerst deze 5 oefenvragen in dezelfde stijl als het examen — helemaal gratis, geen account nodig.</p>
       </div>
       <div class="sample-quiz" id="sampleQuiz"></div>
 
@@ -2024,10 +2024,19 @@
         </form>
         <form id="forgotForm" onsubmit="submitForgot(event)" style="display:none;" novalidate>
           <h2 style="font-size:24px;margin-bottom:6px;">Nieuw wachtwoord</h2>
-          <p class="login-sub">Vul je e-mailadres in. Je ontvangt binnen enkele minuten een nieuw wachtwoord.</p>
+          <p class="login-sub">Vul je e-mailadres in. Je ontvangt binnen enkele minuten een e-mail met een link om zelf een nieuw wachtwoord te kiezen.</p>
           <div class="field"><label for="forgotEmail">E-mailadres</label><input id="forgotEmail" type="email" autocomplete="email" placeholder="naam@bedrijf.nl" required></div>
           <p class="form-msg" id="forgotMsg" role="status"></p>
-          <button type="submit" class="btn btn-primary btn-block" id="forgotBtn">Stuur nieuw wachtwoord</button>
+          <button type="submit" class="btn btn-primary btn-block" id="forgotBtn">Stuur resetlink</button>
+          <button type="button" class="link-btn" onclick="showForgot(false)">Terug naar inloggen</button>
+        </form>
+        <form id="resetForm" onsubmit="submitReset(event)" style="display:none;" novalidate>
+          <h2 style="font-size:24px;margin-bottom:6px;">Kies een nieuw wachtwoord</h2>
+          <p class="login-sub">Kies een wachtwoord van minimaal 8 tekens. Daarna log je ermee in.</p>
+          <div class="field"><label for="resetPassword">Nieuw wachtwoord</label><input id="resetPassword" type="password" autocomplete="new-password" minlength="8" required></div>
+          <div class="field"><label for="resetPassword2">Herhaal nieuw wachtwoord</label><input id="resetPassword2" type="password" autocomplete="new-password" minlength="8" required></div>
+          <p class="form-msg" id="resetMsg" role="alert"></p>
+          <button type="submit" class="btn btn-primary btn-block" id="resetBtn">Wachtwoord opslaan</button>
           <button type="button" class="link-btn" onclick="showForgot(false)">Terug naar inloggen</button>
         </form>
       </div>
@@ -2125,7 +2134,7 @@
           75 vragen, verdeeld over 5 onderdelen van elk 15 vragen. Voor elk onderdeel heb je <b>8 minuten</b>; is de tijd om, dan gaat het examen automatisch door naar het volgende onderdeel. Je hebt minimaal 60 vragen goed (80%) nodig om te slagen. Elke vraag moet beantwoord worden voordat je verder kunt.
         </p>
         <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-          <button class="btn btn-primary" onclick="startExam()">Start examen →</button>
+          <button class="btn btn-primary" id="examStartBtn" onclick="startExam()">Start examen →</button>
           <button class="btn btn-outline" onclick="backToRoster()">← Terug naar deelnemers</button>
         </div>
       </div>
@@ -2181,7 +2190,7 @@
         <button class="btn btn-primary" id="resultCertBtn" onclick="goTo('certificate')">Bekijk mijn certificaat →</button>
         <button class="btn btn-outline" id="resultPasBtn" style="display:none;" onclick="viewPasFor(state.activeIndex)">Bekijk mijn pasje →</button>
         <button class="btn btn-outline" id="resultReviewBtn" onclick="toggleReview()">Bekijk foute antwoorden</button>
-        <button class="btn btn-outline" onclick="retryExam()">Examen opnieuw doen</button>
+        <button class="btn btn-outline" id="resultRetryBtn" onclick="retryExam()">Examen opnieuw doen</button>
         <button class="btn btn-outline" onclick="backToRosterFromResult()">← Terug naar deelnemers</button>
       </div>
     </div>
@@ -2338,92 +2347,20 @@
 const SKB_LOGO_URI = "data:image/png;base64,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";
 document.querySelectorAll(".skb-logo-img").forEach(img => { img.src = SKB_LOGO_URI; });
 
-/* ============ QUESTION BANK — 75 vragen, 5 categorieën x 15 ============ */
-const RAW_QUESTIONS = [
- // ---- EHBO (15) ----
- {cat:"EHBO", q:"Wat is de eerste stap bij het aantreffen van een slachtoffer?", o:["De veiligheid van de omgeving beoordelen","Direct beginnen met reanimeren","Het slachtoffer verplaatsen naar een andere ruimte","Meteen familie van het slachtoffer bellen"], c:0},
- {cat:"EHBO", q:"Wat houdt een shocktoestand primair in?", o:["Een tekort aan bloedtoevoer naar vitale organen","Een allergische huidreactie","Een tijdelijke black-out door stress","Verhoogde lichaamstemperatuur"], c:0},
- {cat:"EHBO", q:"Hoe controleer je het beste of iemand bij bewustzijn is?", o:["Aanspreken en voorzichtig aan de schouders schudden","Even wachten of hij vanzelf reageert","Zijn pols meten zonder verder contact","Direct beademen"], c:0},
- {cat:"EHBO", q:"Wat doe je bij een bewusteloos slachtoffer dat wel normaal ademt?", o:["In stabiele zijligging leggen","Rechtop laten zitten","Meteen beginnen met borstcompressies","Water laten drinken"], c:0},
- {cat:"EHBO", q:"Wat is de juiste volgorde van de basisstappen in eerste hulp (DR ABC)?", o:["Danger, Response, Airway, Breathing, Circulation","Airway, Danger, Response, Circulation, Breathing","Breathing, Airway, Danger, Circulation, Response","Response, Circulation, Danger, Airway, Breathing"], c:0},
- {cat:"EHBO", q:"Wat is bij een ernstige uitwendige bloeding de eerste maatregel?", o:["Directe druk uitoefenen op de wond","Het lichaamsdeel omhoog laten hangen zonder druk","Wachten op de ambulance zonder in te grijpen","De wond direct spoelen met water"], c:0},
- {cat:"EHBO", q:"Wat is een typisch teken van een shocktoestand?", o:["Bleke, klamme huid en een snelle, zwakke pols","Blozende wangen en een trage hartslag","Hoge bloeddruk en warme, droge huid","Verhoogde eetlust"], c:0},
- {cat:"EHBO", q:"Wat is het advies bij brandwonden?", o:["Koelen met lauw stromend water, minimaal 10-20 minuten","Ijsklontjes direct op de wond leggen","Boter of olie op de wond smeren","De wond meteen afdekken zonder te koelen"], c:0},
- {cat:"EHBO", q:"Wat doe je bij een vermoede botbreuk als BHV'er?", o:["Het lichaamsdeel zoveel mogelijk stilhouden en niet zelf rechtzetten","Het lichaamsdeel voorzichtig weer rechtzetten","Het slachtoffer laten lopen op de breuk","Het lichaamsdeel stevig masseren"], c:0},
- {cat:"EHBO", q:"Wat is het belangrijkste bij een epileptische aanval?", o:["De omgeving vrijmaken van gevaarlijke voorwerpen en niet vasthouden","Het slachtoffer stevig vasthouden","Iets tussen de tanden steken","Het slachtoffer overeind zetten"], c:0},
- {cat:"EHBO", q:"Wat is de juiste houding bij een neusbloeding?", o:["Voorover buigen en de neusvleugels dichtknijpen","Achterover leunen en het hoofd in de nek leggen","Plat liggen met de benen omhoog","Rechtop staan zonder de neus aan te raken"], c:0},
- {cat:"EHBO", q:"Wat pas je toe bij verslikking waarbij iemand niet meer kan hoesten of praten?", o:["Stoten tussen de schouderbladen, gevolgd door buikstoten (Heimlich)","Alleen op de rug kloppen met vlakke hand", "Water laten drinken om door te slikken","Het hoofd naar achteren kantelen"], c:0},
- {cat:"EHBO", q:"Wanneer bel je 112 bij een ongeval op de werkvloer?", o:["Zodra er sprake is van een levensbedreigende situatie","Alleen als de bedrijfsarts dat toestaat","Pas nadat alle collega's zijn ingelicht","Nooit, altijd eerst de leidinggevende bellen"], c:0},
- {cat:"EHBO", q:"Wat is de functie van de stabiele zijligging?", o:["De luchtweg vrijhouden en braaksel niet laten inademen","Het slachtoffer warm houden","De bloeddruk verhogen","Pijn verminderen bij botbreuken"], c:0},
- {cat:"EHBO", q:"Hoe spoel je een oog na contact met een chemische stof?", o:["Met veel schoon water, minimaal 15 minuten, van neus naar buiten","Met een doekje het oog droogwrijven","Met melk in plaats van water","Alleen als er pijn optreedt"], c:0},
-
- // ---- Reanimatie & AED (15) ----
- {cat:"AED", q:"Waarmee start je de reanimatie bij een circulatiestilstand?", o:["30 borstcompressies gevolgd door 2 beademingen","2 beademingen gevolgd door 30 compressies","Direct de AED aansluiten zonder compressies","10 compressies en dan pauzeren"], c:0},
- {cat:"AED", q:"Wat is de juiste compressiediepte bij reanimatie van een volwassene?", o:["Ongeveer 5-6 cm","Ongeveer 1-2 cm","Ongeveer 10 cm","Zo diep mogelijk zonder limiet"], c:0},
- {cat:"AED", q:"Wat is het juiste compressietempo bij reanimatie?", o:["100-120 compressies per minuut","40-60 compressies per minuut","150-180 compressies per minuut","Geen vast tempo nodig"], c:0},
- {cat:"AED", q:"Wanneer sluit je een AED aan tijdens reanimatie?", o:["Zo snel mogelijk zodra het apparaat beschikbaar is","Pas na 10 minuten reanimeren","Alleen als een arts aanwezig is","Nooit zonder toestemming van het slachtoffer"], c:0},
- {cat:"AED", q:"Wat doet een AED voordat het eventueel een schok toedient?", o:["Het analyseert automatisch het hartritme","Het meet de lichaamstemperatuur","Het vraagt om een wachtwoord","Het belt automatisch de huisarts"], c:0},
- {cat:"AED", q:"Mag je een AED gebruiken bij een nat slachtoffer?", o:["Nee, eerst de borstkas drogen voor het plakken van de elektroden","Ja, natheid maakt niets uit","Alleen buiten bij regen","Alleen als het zoetwater is"], c:0},
- {cat:"AED", q:"Waarom stop je even met reanimeren tijdens de AED-analyse?", o:["Beweging kan de hartritmeanalyse verstoren","Om zelf op adem te komen","Om het slachtoffer te laten bijkomen","Dat hoeft niet, je gaat altijd door"], c:0},
- {cat:"AED", q:"Hoe reanimeer je een zwangere vrouw?", o:["Op dezelfde wijze als bij een niet-zwangere volwassene","Alleen met beademing, geen compressies","Nooit, wacht altijd op een verloskundige","Met halve compressiediepte"], c:0},
- {cat:"AED", q:"Hoe vaak wissel je van persoon tijdens langdurige reanimatie?", o:["Elke 2 minuten, om vermoeidheid en kwaliteitsverlies te voorkomen","Nooit, één persoon reanimeert door tot de ambulance er is","Elke 30 seconden","Alleen als degene het zelf aangeeft"], c:0},
- {cat:"AED", q:"Wat doe je als eerste bij het aantreffen van een levenloos slachtoffer?", o:["De ademhaling controleren gedurende maximaal 10 seconden","Meteen 112 bellen zonder te controleren","Het slachtoffer direct optillen","Wachten op een collega"], c:0},
- {cat:"AED", q:"Hoe start je reanimatie bij een kind ouder dan 1 jaar?", o:["Met 5 initiële beademingen, daarna 30:2 compressies en beademingen","Direct met de AED, zonder compressies","Met alleen borstcompressies, geen beademing","Met 2 compressies en 30 beademingen"], c:0},
- {cat:"AED", q:"Waarom is snel handelen bij een circulatiestilstand zo belangrijk?", o:["Elke minuut zonder reanimatie verlaagt de overlevingskans aanzienlijk","Het maakt voor de overlevingskans weinig uit","Alleen de eerste 30 minuten zijn relevant","Reanimeren kan altijd wachten tot de ambulance er is"], c:0},
- {cat:"AED", q:"Mag je stoppen met reanimeren zodra ambulancepersoneel arriveert?", o:["Ja, je draagt de reanimatie over aan de professionele hulpverleners","Nee, je moet altijd zelf doorgaan","Alleen als je het zelf wilt","Nee, tenzij de politie dat toestaat"], c:0},
- {cat:"AED", q:"Waar plaats je de elektroden van een AED?", o:["Eén onder het rechtersleutelbeen en één op de linkerzij onder de oksel","Beide midden op de borst naast elkaar","Eén op het voorhoofd en één op de buik","Beide op de rug van het slachtoffer"], c:0},
- {cat:"AED", q:"Wat betekent het als de AED aangeeft 'geen schok geadviseerd'?", o:["Je gaat direct door met borstcompressies en beademing","Je stopt met alle hulpverlening","Je wacht tot de AED opnieuw analyseert zonder iets te doen","Je verwijdert de elektroden meteen"], c:0},
-
- // ---- Brand & brandbestrijding (15) ----
- {cat:"Brand", q:"Welke drie elementen zijn nodig voor een brand (branddriehoek)?", o:["Brandstof, zuurstof en een ontstekingsbron","Water, wind en warmte","Rook, licht en zuurstof","Hitte, kou en vocht"], c:0},
- {cat:"Brand", q:"Welk blusmiddel gebruik je niet bij een vetbrand?", o:["Water, omdat dit een steekvlam kan veroorzaken","Een blusdeken","Een schuimblusser geschikt voor vet","Zand"], c:0},
- {cat:"Brand", q:"Wat is het doel van een blusdeken?", o:["Het afsluiten van zuurstof om een beginnende brand of vlam te doven","Het blussen van elektrische branden met water","Het opvangen van rook","Het beschermen tegen koude"], c:0},
- {cat:"Brand", q:"Wat beschrijft de PASS-techniek bij een handblusser?", o:["Pin eruit, Aanwijzen, Samenknijpen, Spuiten van links naar rechts","Pak op, Activeer, Spring weg, Schreeuw","Plaats, Adem in, Spuit, Stop","Pin erin, Aan de kant, Spuiten, Stoppen"], c:0},
- {cat:"Brand", q:"Wat doe je bij een beginnende brand in een prullenbak?", o:["Grijp naar een geschikte kleine blusser of blusdeken, na risico-inschatting","Loop meteen weg zonder iets te doen","Gooi er benzine bij om te testen","Wacht op de brandweer zonder te handelen"], c:0},
- {cat:"Brand", q:"Wat doe je als de brand te groot is om zelf te blussen?", o:["Sluit deuren, verlaat de ruimte en waarschuw de brandweer","Blijf proberen te blussen tot het lukt","Open alle ramen en deuren voor ventilatie","Verstop je in een kast"], c:0},
- {cat:"Brand", q:"Waarom is rook vaak gevaarlijker dan vlammen?", o:["Rook bevat giftige gassen en beperkt zicht en ademhaling","Rook is altijd heter dan vlammen","Rook verspreidt zich niet","Rook heeft geen effect op de luchtwegen"], c:0},
- {cat:"Brand", q:"Wat is het advies bij het openen van een deur waarachter mogelijk brand is?", o:["Voel de deur en open deze langzaam en gecontroleerd","Trap de deur meteen open","Open de deur zo snel mogelijk voor frisse lucht","Nooit een deur aanraken, ook niet voelen"], c:0},
- {cat:"Brand", q:"Welk type blusser gebruik je bij een elektrische brand?", o:["Een CO2-blusser, omdat deze geen elektrisch geleidend blusmiddel gebruikt","Een waterblusser","Een schuimblusser","Een emmer water"], c:0},
- {cat:"Brand", q:"Wat is een vluchtroute?", o:["De kortste veilige weg naar een nooduitgang of verzamelplaats","De route die de brandweer gebruikt om binnen te komen","Elke gang in het gebouw","Alleen de hoofdingang van het pand"], c:0},
- {cat:"Brand", q:"Waarom moeten vluchtwegen altijd vrij van obstakels blijven?", o:["Om een snelle en veilige evacuatie mogelijk te maken","Om het gebouw er netjes uit te laten zien","Dat is niet verplicht","Alleen belangrijk tijdens kantooruren"], c:0},
- {cat:"Brand", q:"Wat doe je als je kleding vlam vat?", o:["Stop, ga liggen en rol (stop, drop and roll)","Ga hard rennen om het vuur uit te blazen","Blijf stilstaan en wacht op hulp","Trek de kleding niet uit, ook niet later"], c:0},
- {cat:"Brand", q:"Wat is de functie van een rookmelder binnen BHV?", o:["Vroegtijdige detectie zodat sneller gealarmeerd en gehandeld kan worden","Het blussen van een brand", "Het ventileren van de ruimte","Het registreren van de temperatuur voor de administratie"], c:0},
- {cat:"Brand", q:"Wat is de juiste eerste actie bij een gasgeur op de werkvloer?", o:["Geen elektrische schakelaars gebruiken, direct ventileren en melden","Meteen een lichtschakelaar omzetten om te kijken","Een vlam gebruiken om de bron te vinden","Niets doen, gasgeur is meestal onschuldig"], c:0},
- {cat:"Brand", q:"Wat is het belangrijkste doel van brandpreventie binnen een bedrijf?", o:["Voorkomen dat een brand kan ontstaan of zich kan uitbreiden","Zo snel mogelijk kunnen blussen","Verzekeringspremies verlagen","Voldoen aan interne huisregels"], c:0},
-
- // ---- Ontruiming & communicatie (15) ----
- {cat:"Ontruiming", q:"Wat is de rol van een BHV'er bij een ontruiming?", o:["Mensen begeleiden naar de uitgang en ruimtes controleren op achterblijvers","Alleen zichzelf in veiligheid brengen","Wachten op instructies van de brandweer voordat je iets doet","De receptie bemannen tijdens de ontruiming"], c:0},
- {cat:"Ontruiming", q:"Wat is een verzamelplaats?", o:["Een vooraf aangewezen veilige plek buiten het gebouw waar mensen zich melden","De hoofdingang van het gebouw","Een plek binnen het gebouw om te schuilen","De parkeerplaats van de directie"], c:0},
- {cat:"Ontruiming", q:"Waarom is een hoofdtelling na ontruiming belangrijk?", o:["Om te controleren of iedereen het gebouw veilig heeft verlaten","Om de tijdregistratie van medewerkers bij te werken","Om te bepalen wie te laat op werk was","Dat is niet nodig als er geen brand zichtbaar is"], c:0},
- {cat:"Ontruiming", q:"Wat doe je als iemand weigert het gebouw te verlaten tijdens een ontruiming?", o:["Dring aan, leg het gevaar uit en meld dit direct aan de coördinator","Laat diegene gewoon achter zonder iets te melden","Sleep de persoon fysiek naar buiten","Negeer het en ga zelf verder"], c:0},
- {cat:"Ontruiming", q:"Wat is de taak van de ontruimingscoördinator?", o:["Overzicht houden en de ontruiming centraal aansturen en coördineren","Zelf als enige alle verdiepingen controleren","De brandweer vervangen","De telefooncentrale bedienen"], c:0},
- {cat:"Ontruiming", q:"Hoe communiceer je het beste als BHV'er tijdens een calamiteit?", o:["Kalm, kort en duidelijk, met concrete instructies","Zo snel mogelijk en met veel details tegelijk","Alleen schriftelijk, nooit mondeling","Zo min mogelijk, om geen paniek te veroorzaken"], c:0},
- {cat:"Ontruiming", q:"Wat doe je met minder valide personen tijdens een ontruiming?", o:["Extra begeleiding bieden of hen naar een veilige wachtplek brengen","Hen als laatste helpen, na alle anderen","Negeren, zij regelen dit zelf","Hen in een aparte ruimte opsluiten tot het voorbij is"], c:0},
- {cat:"Ontruiming", q:"Wanneer gebruik je de lift tijdens een ontruiming bij brand?", o:["Nooit, gebruik altijd de trap bij een brandmelding","Alleen op de begane grond", "Als er meer dan 5 verdiepingen zijn","Als de brandweer nog niet aanwezig is"], c:0},
- {cat:"Ontruiming", q:"Wat is het doel van een ontruimingsoefening?", o:["Iedereen laten wennen aan de procedure zodat een echte ontruiming vlot verloopt","Vooral om de brandweer te testen","Om te bepalen wie ontslagen wordt bij fouten","Verplicht alleen voor nieuwe medewerkers"], c:0},
- {cat:"Ontruiming", q:"Wat meld je als eerste bij het alarmeren van de meldkamer?", o:["Wat er aan de hand is en de exacte locatie van het incident","Je eigen naam en functie","Het aantal jaren dat je BHV'er bent","De naam van je leidinggevende"], c:0},
- {cat:"Ontruiming", q:"Wat staat het NAWEA(H)-principe bij alarmering voor?", o:["Naam, Adres, Wat is er gebeurd, Eventuele gewonden, Al gedaan, Hoe bereikbaar","Naam, Afdeling, Wachten, Evacueren, Alarmeren","Nummer, Adres, Wachttijd, Ernst, Actie","Naam, Auto, Water, Eten, Ambulance"], c:0},
- {cat:"Ontruiming", q:"Wat is de juiste eerste reactie bij een bommelding?", o:["Blijf kalm, noteer details en waarschuw direct de leidinggevende en politie","Meteen zelf het gebouw doorzoeken naar het object","De melding negeren tenzij je een explosie hoort","Direct alle telefoons uitschakelen"], c:0},
- {cat:"Ontruiming", q:"Wat is de functie van een BHV-plan binnen een organisatie?", o:["Vastleggen wie wat doet bij calamiteiten, zodat iedereen weet hoe te handelen","Een overzicht van vakantiedagen van BHV'ers","Een lijst met noodnummers van klanten","Een verslag van eerdere brandoefeningen zonder verdere functie"], c:0},
- {cat:"Ontruiming", q:"Wat is belangrijk bij het instrueren van paniekerige collega's?", o:["Rustig blijven, korte zinnen gebruiken en oogcontact houden","Hard roepen om aandacht te trekken","Zoveel mogelijk informatie in één keer geven","Wachten tot ze vanzelf kalmeren"], c:0},
- {cat:"Ontruiming", q:"Waarom is een evaluatie na een incident belangrijk?", o:["Om te leren van het incident en procedures waar nodig te verbeteren","Om te bepalen wie schuldig is", "Dat is wettelijk niet nodig","Alleen relevant bij grote branden"], c:0},
-
- // ---- Wet- en regelgeving (15) ----
- {cat:"Wetgeving", q:"In welke wet is de verplichting tot BHV vastgelegd?", o:["De Arbeidsomstandighedenwet (Arbowet)", "Het Burgerlijk Wetboek","De Wegenverkeerswet","De Wet publieke gezondheid"], c:0},
- {cat:"Wetgeving", q:"Hoe vaak wordt een BHV-certificaat gemiddeld verlengd?", o:["Jaarlijks, via een herhalingstraining","Elke 5 jaar","Nooit, het is levenslang geldig","Elke maand"], c:0},
- {cat:"Wetgeving", q:"Wie is uiteindelijk verantwoordelijk voor een goede BHV-organisatie?", o:["De werkgever","Elke individuele werknemer apart","De brandweer","De gemeente"], c:0},
- {cat:"Wetgeving", q:"Wat moet minimaal aanwezig zijn volgens de Arbowet op het gebied van hulpverlening?", o:["Voldoende opgeleide bedrijfshulpverleners, afgestemd op de risico's", "Eén BHV'er per gebouw, ongeacht de grootte","Alleen een EHBO-koffer, BHV'ers zijn niet verplicht","Een externe beveiligingsdienst"], c:0},
- {cat:"Wetgeving", q:"Wat is een RI&E in relatie tot BHV?", o:["Een risico-inventarisatie en -evaluatie die de basis vormt voor het BHV-plan","Een interne rapportage over ziekteverzuim","Een reglement over interne e-mailverkeer","Een examenformulier voor BHV'ers"], c:0},
- {cat:"Wetgeving", q:"Wat bepaalt vooral het aantal benodigde BHV'ers in een organisatie?", o:["Het aantal aanwezige personen en de specifieke risico's van het bedrijf","Uitsluitend de grootte van het gebouw in vierkante meters","De leeftijd van de medewerkers","Het aantal verdiepingen, ongeacht de risico's"], c:0},
- {cat:"Wetgeving", q:"Kan een werkgever een boete krijgen bij onvoldoende BHV-organisatie?", o:["Ja, de Nederlandse Arbeidsinspectie kan handhavend optreden","Nee, BHV is volledig vrijwillig","Alleen bij bedrijven met meer dan 500 medewerkers","Alleen als er al een ongeval heeft plaatsgevonden"], c:0},
- {cat:"Wetgeving", q:"Wat is het doel van een ontruimingsplan?", o:["Vastleggen hoe een gebouw snel en veilig ontruimd kan worden","Een overzicht geven van parkeerplaatsen","Een agenda voor personeelsvergaderingen","Alleen bedoeld voor kantoorpanden boven de 5 verdiepingen"], c:0},
- {cat:"Wetgeving", q:"Wie stelt doorgaans het BHV-plan op binnen een organisatie?", o:["De werkgever, vaak in samenwerking met de preventiemedewerker","Uitsluitend een externe brandweerinspecteur","De ondernemingsraad zonder overleg met de werkgever","Elke medewerker individueel"], c:0},
- {cat:"Wetgeving", q:"Is een BHV'er wettelijk verplicht om hulp te verlenen buiten werktijd?", o:["Nee, de BHV-taak geldt alleen tijdens de uitoefening van de functie op het werk","Ja, altijd en overal, ook privé","Alleen in het weekend","Alleen als de werkgever daarom vraagt via app"], c:0},
- {cat:"Wetgeving", q:"Wat is de relatie tussen een preventiemedewerker en BHV?", o:["De preventiemedewerker adviseert over arbeidsrisico's en ondersteunt de BHV-organisatie","Zij hebben geen enkele relatie met elkaar","De preventiemedewerker vervangt alle BHV'ers","BHV'ers rapporteren nooit aan de preventiemedewerker"], c:0},
- {cat:"Wetgeving", q:"Wat moet er volgens de Arbowet gebeuren na een ernstig ongeval?", o:["Ernstige ongevallen moeten worden gemeld en geregistreerd","Er hoeft niets gemeld te worden zolang niemand gewond is geraakt op papier","Alleen de politie hoeft ingelicht te worden","Het ongeval mag pas na een jaar gemeld worden"], c:0},
- {cat:"Wetgeving", q:"Wat is het doel van periodieke BHV-oefeningen volgens de wet?", o:["Zorgen dat de BHV-organisatie daadwerkelijk effectief functioneert in de praktijk","Alleen om aan een administratieve verplichting te voldoen","Ze zijn wettelijk niet nodig als er een BHV-plan ligt","Enkel bedoeld voor nieuwe gebouwen"], c:0},
- {cat:"Wetgeving", q:"Mag een BHV'er weigeren op te treden bij eigen onveiligheid?", o:["Ja, eigen veiligheid gaat altijd voor","Nee, een BHV'er moet altijd ingrijpen, ongeacht het risico","Alleen als de werkgever hier vooraf toestemming voor gaf","Nee, dat is nooit toegestaan volgens de Arbowet"], c:0},
- {cat:"Wetgeving", q:"Wat gebeurt er als een BHV-certificaat is verlopen?", o:["De persoon mag niet meer als bevoegd BHV'er worden ingezet tot herhaling is gevolgd","Er verandert niets, het certificaat blijft geldig","De werkgever moet een boete betalen aan de certificaathouder","Het certificaat wordt automatisch verlengd na 30 dagen"], c:0},
+/* ============ OEFENVRAGEN (alleen voor de gratis proefvragen) ============
+   De echte examenvragen en de antwoordsleutel staan alleen op de server (api/_lib/examen.js).
+   Het examen wordt via /api/participant (action "start") opgehaald en daar ook nagekeken. */
+const SAMPLE_QUESTIONS = [
+ {cat:"EHBO", q:"Wat is een kenmerkend teken van een beroerte (FAST-test)?", o:["Een scheve mond, een verlamde arm of onduidelijke spraak","Hevig niezen en een loopneus","Rode, jeukende vlekken op de armen","Een snelle, regelmatige hartslag zonder andere klachten"], c:0},
+ {cat:"EHBO", q:"Hoe help je een onderkoeld slachtoffer het beste?", o:["Uit de kou halen, natte kleding vervangen en langzaam opwarmen met dekens","Snel opwarmen met een hete douche","Laten bewegen door rondjes te rennen","Alcohol geven om op te warmen"], c:0},
+ {cat:"AED", q:"Wat doe je als je bij AED-gebruik een pacemaker onder de huid ziet zitten?", o:["De elektrode een paar centimeter naast de pacemaker plakken","Geen AED gebruiken","De elektrode precies op de pacemaker plakken","Eerst de pacemaker uitschakelen"], c:0},
+ {cat:"AED", q:"De elektroden van de AED plakken niet goed door veel borsthaar. Wat doe je?", o:["Het haar snel wegscheren op de plek van de elektroden","De elektroden met tape over de kleding plakken","Wachten tot de ambulance er is","Alleen nog borstcompressies geven en de AED niet gebruiken"], c:0},
+ {cat:"Brand", q:"Waar hangt een brandblusser bij voorkeur?", o:["Op een zichtbare, goed bereikbare plek, bijvoorbeeld langs de vluchtroute","In een afgesloten kast in de kelder","Hoog aan het plafond, buiten bereik van onbevoegden","Alleen in de keuken"], c:0},
+ {cat:"Brand", q:"Wat geeft een groen bord met een rennend poppetje aan?", o:["De richting van de vluchtroute of nooduitgang","De plek van de brandblusser","Een verzamelplaats voor rokers","Een ruimte waar niet gerend mag worden"], c:0},
+ {cat:"Ontruiming", q:"Wat doe je met de deuren als je bij brand een ruimte verlaat?", o:["Sluiten, maar niet op slot doen","Wijd open laten voor de brandweer","Op slot doen en de sleutel meenemen","Openzetten met een deurwig"], c:0},
+ {cat:"Ontruiming", q:"Waarom draagt een BHV'er tijdens een ontruiming vaak een hesje?", o:["Zodat collega's en hulpdiensten hem direct herkennen","Omdat het warmer is buiten","Het is alleen verplicht tijdens oefeningen","Om aan te geven wie als laatste het pand verlaat"], c:0},
+ {cat:"Wetgeving", q:"Moet een werkgever met personeel bedrijfshulpverlening regelen?", o:["Ja, elke werkgever met personeel moet BHV organiseren","Nee, alleen bedrijven met een eigen gebouw","Alleen als de gemeente daarom vraagt","Nee, dat doet de brandweer voor alle bedrijven"], c:0},
+ {cat:"Wetgeving", q:"Mag een BHV'er zelf bepalen dat hij een oefening overslaat?", o:["Nee, deelname aan oefeningen hoort bij de afspraken met de werkgever","Ja, oefeningen zijn altijd vrijblijvend","Alleen als hij al meer dan 5 jaar BHV'er is","Ja, zolang hij het certificaat heeft"], c:0},
 ];
 
 /* ============ STATE ============ */
@@ -2435,7 +2372,8 @@ let state = {
   roster: [], // deelnemers: {first,last,birthdate,status,correct,total,pct,certNumber,pasNumber,pasDate}
   activeIndex: null, // welke deelnemer nu het examen doet
   participantMode: false, // true als iemand hier via zijn eigen persoonlijke examenlink binnenkomt
-  examQuestions: [], // shuffled per onderdeel, met geshuffelde opties
+  examQuestions: [], // van de server: geschud per onderdeel, met geschudde opties (zonder antwoordsleutel)
+  examId: null, // id van het examen dat de server voor deze poging heeft klaargezet
   currentQ: 0,
   answers: [], // index chosen per question, -1 = unanswered
   sectionSize: 15,
@@ -2824,7 +2762,9 @@ async function handleStripeReturn(){
       }
       if(state.auth) refreshAccountOrders();
       goTo('dashboard');
-      showToast('Betaling gelukt — welkom! Vul hieronder de deelnemersgegevens in.');
+      showToast(state.auth
+        ? 'Betaling gelukt — welkom! Vul hieronder de deelnemersgegevens in.'
+        : 'Betaling gelukt. Log in met de gegevens uit je e-mail om verder te gaan.');
     }catch(err){
       console.error('Kon betaling niet verifiëren:', err);
       goTo('pricing');
@@ -2981,7 +2921,7 @@ function renderInvoice(){
     state.buyer.company,
     state.buyer.email,
   ].filter(Boolean);
-  document.getElementById('invBuyer').innerHTML = buyerLines.join('<br>');
+  document.getElementById('invBuyer').innerHTML = buyerLines.map(escapeHtmlText).join('<br>');
 
   const rows = [];
   rows.push(`<tr><td>${p.name}${state.order.discount>0 ? ` (${Math.round(state.order.discount*100)}% groepskorting)` : ''}</td><td>${qty}</td><td>${formatEuro(state.order.unitPrice)}</td><td>${formatEuro(state.order.unitPrice*qty)}</td></tr>`);
@@ -3013,7 +2953,7 @@ function shuffle(arr){
 function renderSampleQuiz(){
   const wrap = document.getElementById('sampleQuiz');
   if(!wrap) return;
-  const picks = shuffle(RAW_QUESTIONS.slice()).slice(0,5);
+  const picks = shuffle(SAMPLE_QUESTIONS.slice()).slice(0,5);
   wrap.innerHTML = '';
   const letters = ['A','B','C','D'];
   picks.forEach((orig, qIdx)=>{
@@ -3022,8 +2962,8 @@ function renderSampleQuiz(){
     const item = document.createElement('div');
     item.className = 'sq-item';
     item.innerHTML = `
-      <div class="sq-cat">${orig.cat}</div>
-      <div class="sq-q">${qIdx+1}. ${orig.q}</div>
+      <div class="sq-cat">${escapeHtmlText(orig.cat)}</div>
+      <div class="sq-q">${qIdx+1}. ${escapeHtmlText(orig.q)}</div>
       <div class="sq-options" id="sqOpts-${qIdx}"></div>
     `;
     wrap.appendChild(item);
@@ -3045,29 +2985,28 @@ function renderSampleQuiz(){
   });
 }
 
-function buildExam(){
-  const byCat = {};
-  RAW_QUESTIONS.forEach(orig=>{
-    if(!byCat[orig.cat]) byCat[orig.cat] = [];
-    byCat[orig.cat].push(orig);
+// Het examen (vragen + geschudde antwoordopties, zonder antwoordsleutel) komt van de server.
+async function participantApi(action, payload){
+  const response = await fetch('/api/participant', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(Object.assign({ action }, payload || {})),
   });
-  const catNames = shuffle(Object.keys(byCat)); // wisselende volgorde van onderdelen per cursist/poging
-  let qs = [];
-  catNames.forEach(cat=>{
-    const list = shuffle(byCat[cat].slice()); // wisselende volgorde van vragen binnen het onderdeel
-    list.forEach(orig=>{
-      const opts = orig.o.map((text,idx)=>({text, correct: idx===orig.c}));
-      shuffle(opts); // wisselende volgorde van antwoordopties
-      qs.push({
-        cat: orig.cat,
-        q: orig.q,
-        options: opts.map(o=>o.text),
-        correctIndex: opts.findIndex(o=>o.correct),
-      });
-    });
-  });
-  state.examQuestions = qs;
-  state.answers = new Array(qs.length).fill(-1);
+  let data = {};
+  try{ data = await response.json(); }catch(e){}
+  if(!response.ok){
+    const err = new Error(data.error || 'Er ging iets mis.');
+    err.status = response.status;
+    throw err;
+  }
+  return data;
+}
+
+async function buildExam(token){
+  const data = await participantApi('start', { token });
+  state.examId = data.examId;
+  state.examQuestions = data.questions || [];
+  state.answers = new Array(state.examQuestions.length).fill(-1);
   state.currentQ = 0;
 }
 
@@ -3127,10 +3066,10 @@ function renderRoster(){
       const form = document.createElement('div');
       form.className = 'roster-form';
       form.innerHTML = `
-        <input class="rf-first" type="text" placeholder="Voornaam" value="${p.first||''}" id="rf-first-${idx}">
-        <input class="rf-last" type="text" placeholder="Achternaam" value="${p.last||''}" id="rf-last-${idx}">
-        <input class="rf-birth" type="date" value="${p.birthdate||''}" id="rf-birth-${idx}">
-        <input class="rf-email" type="email" placeholder="E-mail deelnemer (voor examenlink)" value="${p.email||''}" id="rf-email-${idx}" oninput="updateSaveLabel(${idx})">
+        <input class="rf-first" type="text" placeholder="Voornaam" value="${escapeHtmlText(p.first||'')}" id="rf-first-${idx}">
+        <input class="rf-last" type="text" placeholder="Achternaam" value="${escapeHtmlText(p.last||'')}" id="rf-last-${idx}">
+        <input class="rf-birth" type="date" value="${escapeHtmlText(p.birthdate||'')}" id="rf-birth-${idx}">
+        <input class="rf-email" type="email" placeholder="E-mail deelnemer (voor examenlink)" value="${escapeHtmlText(p.email||'')}" id="rf-email-${idx}" oninput="updateSaveLabel(${idx})">
       `;
       row.appendChild(form);
       const actions = document.createElement('div');
@@ -3140,7 +3079,7 @@ function renderRoster(){
     } else {
       const info = document.createElement('div');
       info.className = 'roster-info';
-      const scoreLine = (p.status!=='ready') ? ` · Score: ${p.pct}% (${p.correct}/${p.total})` : '';
+      const scoreLine = (p.status==='passed' || p.status==='failed') ? ` · Score: ${escapeHtmlText(p.pct)}% (${escapeHtmlText(p.correct)}/${escapeHtmlText(p.total)})` : '';
       const mailLine = p.email ? ` · ${escapeHtmlText(p.email)}${p.linkMailed ? ' (link gemaild)' : ''}` : '';
       info.innerHTML = `<div class="rname">${escapeHtmlText(p.first)} ${escapeHtmlText(p.last)}</div><div class="rmeta">Geboren ${formatDateNL(p.birthdate)}${mailLine}${scoreLine}</div>`;
       row.appendChild(info);
@@ -3153,7 +3092,7 @@ function renderRoster(){
 
       const actions = document.createElement('div');
       actions.className = 'roster-actions';
-      if(p.status==='ready' || p.status==='failed'){
+      if(p.status==='ready' || p.status==='failed' || p.status==='progress'){
         if(state.participantMode){
           // Deelnemer bekijkt zijn eigen rij via zijn persoonlijke link — geen "Bewerken" of
           // "Kopieer link" tonen, anders kan hij per ongeluk zijn eigen (actieve) link
@@ -3206,9 +3145,8 @@ async function createParticipantLink(idx){
       headers,
       body: JSON.stringify({
         action: 'create',
+        orderId: state.orderId,
         first: p.first, last: p.last, birthdate: p.birthdate, email: p.email || '',
-        pkg: state.order.pkg, withPasje: state.order.withPasje, onLocation: state.order.onLocation,
-        buyerEmail: state.buyer.email,
       }),
     });
     if(response.ok){
@@ -3219,9 +3157,14 @@ async function createParticipantLink(idx){
       renderRoster();
       if(data.emailSent) showToast(`De examenlink is gemaild naar ${p.email}.`);
       else if(p.email && state.auth) showToast('De examenlink kon niet worden gemaild. Gebruik "Kopieer link" om hem zelf te sturen.');
+      return data.token;
     } else {
+      const data = await response.json().catch(()=>({}));
       const hint = document.getElementById(`link-hint-${idx}`);
-      if(hint) hint.textContent = 'Persoonlijke link kon niet worden aangemaakt (nog geen database gekoppeld?).';
+      const reason = response.status===401
+        ? 'Log in op Mijn omgeving om de persoonlijke examenlink aan te maken.'
+        : (data.error || 'Persoonlijke link kon niet worden aangemaakt.');
+      if(hint) hint.textContent = reason;
     }
   }catch(err){
     console.warn('Kon geen persoonlijke deelnemerslink aanmaken:', err);
@@ -3292,8 +3235,8 @@ function editParticipant(idx){
     // (bijv. een oude naam) blijft rondzwerven bij wie de link al had.
     fetch('/api/participant', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'delete', token: p.token }),
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (state.auth ? state.auth.token : '') },
+      body: JSON.stringify({ action: 'delete', token: p.token, orderId: state.orderId }),
     }).catch(()=>{});
     p.token = null;
   }
@@ -3333,14 +3276,34 @@ function viewPasFor(idx){
 }
 
 /* ============ EXAM FLOW ============ */
-function startExam(){
-  buildExam(); // altijd een vers, geschud examen — elke deelnemer en elke poging krijgt een andere volgorde
+async function startExam(){
   const idx = state.activeIndex;
-  if(idx!=null && state.roster[idx]){
-    state.roster[idx].status = 'progress';
-    document.getElementById('examActiveLabel').textContent = `Deelnemer: ${state.roster[idx].first} ${state.roster[idx].last}`;
-    syncParticipantToServer(state.roster[idx]);
+  const participant = (idx!=null) ? state.roster[idx] : null;
+  if(participant && !participant.token && state.auth && !state.participantMode){
+    await createParticipantLink(idx); // bijv. een deelnemer die werd opgeslagen vóórdat je was ingelogd
   }
+  if(!participant || !participant.token){
+    alert('Voor deze deelnemer is nog geen persoonlijke examenlink aangemaakt. Log in op Mijn omgeving en sla de deelnemer (opnieuw) op; daarna kun je het examen starten.');
+    goTo('dashboard');
+    backToRoster();
+    return;
+  }
+  const btn = document.getElementById('examStartBtn');
+  if(btn) btn.disabled = true;
+  try{
+    // Altijd een vers, geschud examen van de server — elke poging krijgt een andere volgorde.
+    await buildExam(participant.token);
+  }catch(err){
+    alert(err.status ? err.message : 'Kon het examen niet laden. Controleer je internetverbinding en probeer het opnieuw.');
+    goTo('dashboard');
+    backToRoster();
+    return;
+  }finally{
+    if(btn) btn.disabled = false;
+  }
+  participant.status = 'progress';
+  document.getElementById('examActiveLabel').textContent = `Deelnemer: ${participant.first} ${participant.last}`;
+  saveProgress();
   document.getElementById('examStart').style.display = 'none';
   document.getElementById('examInProgress').style.display = 'grid';
   renderCatProgress();
@@ -3370,7 +3333,7 @@ function renderQuestion(){
   q.options.forEach((opt, idx)=>{
     const div = document.createElement('div');
     div.className = 'option' + (state.answers[i]===idx ? ' selected':'');
-    div.innerHTML = `<span class="letter">${letters[idx]}</span><span>${opt}</span>`;
+    div.innerHTML = `<span class="letter">${letters[idx]}</span><span>${escapeHtmlText(opt)}</span>`;
     div.onclick = ()=>{ selectAnswer(idx); };
     optWrap.appendChild(div);
   });
@@ -3473,49 +3436,63 @@ function renderCatProgress(){
   Object.keys(cats).forEach(cat=>{
     const row = document.createElement('div');
     row.className = 'cat-row';
-    row.innerHTML = `<span>${cat}</span><span>${cats[cat].answered}/${cats[cat].total}</span>`;
+    row.innerHTML = `<span>${escapeHtmlText(cat)}</span><span>${cats[cat].answered}/${cats[cat].total}</span>`;
     wrap.appendChild(row);
   });
 }
 
-function finishExam(){
+let finishing = false;
+async function finishExam(){
   clearInterval(state.timerInterval);
-  // Elke vraag is verplicht beantwoord voordat je hier kunt komen, dus geen onbeantwoorde-vragen-check meer nodig.
-  let correct = 0;
-  const wrongList = [];
-  state.examQuestions.forEach((q,idx)=>{
-    if(state.answers[idx]===q.correctIndex){
-      correct++;
-    } else {
-      wrongList.push({
-        cat: q.cat,
-        q: q.q,
-        chosen: state.answers[idx]===-1 ? 'Niet beantwoord (tijd van het onderdeel verstreken)' : q.options[state.answers[idx]],
-        correct: q.options[q.correctIndex],
-      });
-    }
-  });
-  const total = state.examQuestions.length;
-  const pct = Math.round((correct/total)*100);
-  const passed = pct >= 80;
-
+  if(finishing) return;
   const idx = state.activeIndex;
   const participant = (idx!=null) ? state.roster[idx] : null;
-  if(participant){
-    participant.correct = correct;
-    participant.total = total;
-    participant.pct = pct;
-    participant.status = passed ? 'passed' : 'failed';
+  if(!participant || !participant.token || !state.examId) return;
+  finishing = true;
+  let result = null;
+  try{
+    while(!result){
+      try{
+        // Nakijken gebeurt op de server; de browser kent de antwoordsleutel niet.
+        result = await participantApi('finish', { token: participant.token, examId: state.examId, answers: state.answers });
+      }catch(err){
+        if(err.status){ alert(err.message); goTo('dashboard'); backToRoster(); return; }
+        if(!confirm('Het examen kon niet worden nagekeken (geen verbinding met de server). Opnieuw proberen?')){
+          goTo('dashboard'); backToRoster(); return;
+        }
+      }
+    }
+  } finally {
+    finishing = false;
   }
+  state.examId = null;
+
+  const { correct, total, pct, passed } = result;
+  const wrongList = (result.wrong || []).map(w => ({
+    cat: w.cat,
+    q: w.q,
+    chosen: w.chosen == null ? 'Niet beantwoord (tijd van het onderdeel verstreken)' : w.chosen,
+    correct: w.correct,
+  }));
+
+  participant.correct = correct;
+  participant.total = total;
+  participant.pct = pct;
+  participant.status = result.status || (passed ? 'passed' : 'failed');
+  participant.certNumber = result.certNumber || null;
+  participant.pasNumber = result.pasNumber || null;
+  participant.passDate = result.passDate || null;
 
   document.getElementById('resultScore').textContent = pct+'%';
   document.getElementById('resultScore').className = 'result-score '+(passed?'pass':'fail');
   document.getElementById('resultBadge').textContent = passed ? 'Geslaagd' : 'Nog niet geslaagd';
   document.getElementById('resultBadge').className = 'result-badge '+(passed?'pass':'fail');
-  const whoName = participant ? `${participant.first} ${participant.last} had` : 'Je had';
+  const whoName = `${participant.first} ${participant.last} had`;
   document.getElementById('resultDetail').textContent = `${whoName} ${correct} van de ${total} vragen goed. Je hebt minimaal 60 (80%) nodig om te slagen.`;
   document.getElementById('resultCertBtn').style.display = passed ? 'inline-flex':'none';
-  document.getElementById('resultPasBtn').style.display = (passed && participant && state.order.withPasje) ? 'inline-flex':'none';
+  document.getElementById('resultPasBtn').style.display = (passed && participant.pasNumber) ? 'inline-flex':'none';
+  const retryBtn = document.getElementById('resultRetryBtn');
+  if(retryBtn) retryBtn.style.display = passed ? 'none' : 'inline-flex';
 
   buildReviewList(wrongList);
   document.getElementById('reviewWrap').style.display = 'none';
@@ -3523,58 +3500,22 @@ function finishExam(){
     ? `Bekijk foute antwoorden (${wrongList.length})`
     : 'Bekijk foute antwoorden';
 
-  if(passed && participant){
-    const year = new Date().getFullYear();
-    const seq = Math.floor(1000 + Math.random()*9000);
-    participant.certNumber = `SKB-BHV-${year}-${seq}`;
-    participant.passDate = new Date().toISOString();
-    if(state.order.withPasje){
-      participant.pasNumber = `SKB-P-${String(state.nextPasNummer).padStart(6,'0')}`;
-      state.nextPasNummer++;
-    }
+  if(passed){
     renderCertificate(correct, total, pct);
-    emailPassNotification(participant, pct, correct, total);
+    emailPassNotification(participant);
   }
-  syncParticipantToServer(participant);
   saveProgress();
   goTo('result');
 }
 
-function syncParticipantToServer(participant){
-  if(!participant || !participant.token) return; // geen link voor deze deelnemer — niets te synchroniseren
-  fetch('/api/participant', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      action: 'update',
-      token: participant.token,
-      status: participant.status,
-      correct: participant.correct,
-      total: participant.total,
-      pct: participant.pct,
-      certNumber: participant.certNumber,
-      pasNumber: participant.pasNumber,
-      passDate: participant.passDate,
-    }),
-  }).catch(err => console.warn('Kon resultaat niet synchroniseren met de server:', err));
-}
-
-function emailPassNotification(participant, pct, correct, total){
-  if(!state.buyer.email) return; // geen e-mailadres bekend — mail overslaan
-  const pkg = state.order.pkg ? PACKAGES[state.order.pkg] : null;
+// Vraagt de server de geslaagd-mail te sturen. Alleen het token gaat mee: naam, score,
+// nummers en e-mailadres haalt de server zelf uit het (server-side nagekeken) record.
+function emailPassNotification(participant){
+  if(!participant || !participant.token) return;
   fetch('/api/send-certificate-email', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      email: state.buyer.email,
-      first: participant.first,
-      last: participant.last,
-      pkgName: pkg ? pkg.name : '',
-      pct, correct, total,
-      certNumber: participant.certNumber,
-      pasNumber: participant.pasNumber || null,
-      token: participant.token || null,
-    }),
+    body: JSON.stringify({ token: participant.token }),
   }).catch(err => console.warn('Kon geslaagd-mail niet versturen (niet erg, certificaat blijft gewoon downloadbaar):', err));
 }
 
@@ -3591,10 +3532,10 @@ function buildReviewList(wrongList){
     const div = document.createElement('div');
     div.className = 'review-item';
     div.innerHTML = `
-      <div class="rev-cat">${item.cat}</div>
-      <div class="rev-q">${item.q}</div>
-      <div class="rev-answer wrong"><span class="tag-mini">JOUW ANTWOORD</span><span>${item.chosen}</span></div>
-      <div class="rev-answer right"><span class="tag-mini">GOEDE ANTWOORD</span><span>${item.correct}</span></div>
+      <div class="rev-cat">${escapeHtmlText(item.cat)}</div>
+      <div class="rev-q">${escapeHtmlText(item.q)}</div>
+      <div class="rev-answer wrong"><span class="tag-mini">JOUW ANTWOORD</span><span>${escapeHtmlText(item.chosen)}</span></div>
+      <div class="rev-answer right"><span class="tag-mini">GOEDE ANTWOORD</span><span>${escapeHtmlText(item.correct)}</span></div>
     `;
     wrap.appendChild(div);
   });
@@ -3773,6 +3714,13 @@ async function dismissCookieNotice(){
     return;
   }
 
+  const resetParam = params.get('reset');
+  if(resetParam){
+    history.replaceState({}, '', window.location.pathname);
+    showResetForm(resetParam);
+    return;
+  }
+
   const loggedIn = await restoreSession();
   if(params.get('login')){
     history.replaceState({}, '', window.location.pathname);
@@ -3905,6 +3853,7 @@ function prepareLoginView(){
 function showForgot(show){
   document.getElementById('loginForm').style.display = show ? 'none' : 'block';
   document.getElementById('forgotForm').style.display = show ? 'block' : 'none';
+  document.getElementById('resetForm').style.display = 'none';
   if(show){
     document.getElementById('forgotMsg').textContent = '';
     document.getElementById('forgotEmail').value = document.getElementById('loginEmail').value;
@@ -3948,10 +3897,50 @@ async function submitForgot(evt){
   try{
     const data = await accountApi('forgot', { email });
     msg.className = 'form-msg ok';
-    msg.textContent = data.message || 'Als dit e-mailadres bij ons bekend is, ontvang je een nieuw wachtwoord.';
+    msg.textContent = data.message || 'Als dit e-mailadres bij ons bekend is, ontvang je een e-mail met een link om een nieuw wachtwoord in te stellen.';
   }catch(err){
     msg.className = 'form-msg';
     msg.textContent = 'Er ging iets mis. Probeer het later opnieuw of mail info@skbbhv.nl.';
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+// Resetlink uit de e-mail (/?reset=<token>): formulier voor een nieuw wachtwoord tonen.
+var resetToken = null;
+function showResetForm(token){
+  resetToken = token;
+  goTo('login');
+  document.getElementById('loginForm').style.display = 'none';
+  document.getElementById('forgotForm').style.display = 'none';
+  document.getElementById('resetForm').style.display = 'block';
+  document.getElementById('resetMsg').textContent = '';
+  setTimeout(()=> document.getElementById('resetPassword').focus(), 60);
+}
+
+async function submitReset(evt){
+  evt.preventDefault();
+  const msg = document.getElementById('resetMsg');
+  const btn = document.getElementById('resetBtn');
+  const pw = document.getElementById('resetPassword').value;
+  const pw2 = document.getElementById('resetPassword2').value;
+  msg.className = 'form-msg';
+  if(pw.length < 8){ msg.textContent = 'Kies een wachtwoord van minimaal 8 tekens.'; return; }
+  if(pw !== pw2){ msg.textContent = 'De twee wachtwoorden zijn niet gelijk.'; return; }
+  btn.disabled = true;
+  try{
+    const data = await accountApi('reset', { token: resetToken, password: pw });
+    resetToken = null;
+    document.getElementById('resetPassword').value = '';
+    document.getElementById('resetPassword2').value = '';
+    showForgot(false);
+    if(data.email) document.getElementById('loginEmail').value = data.email;
+    const lm = document.getElementById('loginMsg');
+    lm.className = 'form-msg ok';
+    lm.textContent = 'Je nieuwe wachtwoord is opgeslagen. Log er nu mee in.';
+    document.getElementById('loginPassword').focus();
+  }catch(err){
+    msg.textContent = err.status ? err.message : 'Kon geen verbinding maken met de server.';
   }finally{
     btn.disabled = false;
   }
@@ -4052,18 +4041,44 @@ function scheduleOrderSync(){
   clearTimeout(orderSyncTimer);
   orderSyncTimer = setTimeout(async ()=>{
     try{
-      await accountApi('save-order', {
+      const orderIdAtSync = state.orderId;
+      const saved = await accountApi('save-order', {
         orderId: state.orderId,
         roster: state.roster,
         invoiceNumber: state.invoiceNumber,
         nextPasNummer: state.nextPasNummer,
       });
+      // Uitslag, certificaat- en pasnummers zijn server-side bepaald: neem ze over.
+      if(saved && Array.isArray(saved.roster) && state.orderId === orderIdAtSync){
+        applyServerResults(saved.roster);
+      }
       const cached = state.accountOrders.find(o => o.id === state.orderId);
       if(cached){ cached.roster = state.roster; cached.invoiceNumber = state.invoiceNumber; cached.nextPasNummer = state.nextPasNummer; }
     }catch(err){
       console.warn('Voortgang kon niet op de server worden bewaard:', err);
     }
   }, 800);
+}
+
+const RESULT_FIELDS = ['status','correct','total','pct','certNumber','pasNumber','passDate'];
+function applyServerResults(serverRoster){
+  let changed = false;
+  serverRoster.forEach((srv, i)=>{
+    const local = state.roster[i];
+    if(!srv || !local || (srv.token||null) !== (local.token||null)) return;
+    if(local.status==='setup' || (local.status==='progress' && srv.status==='ready')) return; // lokaal bezig
+    RESULT_FIELDS.forEach(f=>{
+      if((local[f] ?? null) !== (srv[f] ?? null)){ local[f] = srv[f] ?? null; changed = true; }
+    });
+  });
+  if(changed){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      order: state.order, buyer: state.buyer, roster: state.roster, nextPasNummer: state.nextPasNummer,
+      invoiceNumber: state.invoiceNumber, orderId: state.orderId, savedAt: new Date().toISOString(),
+    })); }catch(e){}
+    const rv = document.getElementById('rosterView');
+    if(state.view==='dashboard' && rv && rv.style.display!=='none') renderRoster();
+  }
 }
 
 // De knop "Naar de cursusvragen": opent het examen voor de juiste deelnemer.
@@ -4178,7 +4193,7 @@ async function adminCreateAccount(){
 }
 
 function escapeHtmlText(v){
-  return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
 /* ============ BEHEER: handmatig een examenlogin aanmaken ============ */
