@@ -33,6 +33,7 @@
     "addressCountry": "NL"
   },
   "email": "info@skbbhv.nl",
+  "telephone": "+31624626638",
   "parentOrganization": {
     "@type": "Organization",
     "name": "Oibase B.V.",
@@ -1037,9 +1038,11 @@
   @media(max-width:920px){
     #view-contact .checkout-wrap{grid-template-columns:1fr !important;padding-top:8px;}
   }
+.wa-knop{position:fixed;right:18px;bottom:18px;z-index:900;display:flex;align-items:center;gap:8px;background:#25d366;color:#fff!important;font:700 15px/1 Inter,system-ui,sans-serif;text-decoration:none!important;padding:12px 18px 12px 14px;border-radius:40px;box-shadow:0 10px 30px rgba(0,0,0,.3);transition:transform .2s}.wa-knop:hover{transform:translateY(-3px)}@media(max-width:700px){.wa-knop span{display:none}.wa-knop{padding:13px;right:14px;bottom:14px}}@media print{.wa-knop{display:none}}
+.wa-knop{display:none}body[data-view="home"] .wa-knop,body[data-view="why"] .wa-knop,body[data-view="why-business"] .wa-knop,body[data-view="why-individuals"] .wa-knop,body[data-view="faq"] .wa-knop,body[data-view="about"] .wa-knop,body[data-view="contact"] .wa-knop,body[data-view="pricing"] .wa-knop{display:flex}
 </style>
 </head>
-<body>
+<body data-view="home">
 <!-- ═══════ OPENINGSANIMATIE (alleen in de geïnstalleerde app, 1x per keer openen) ═══════ -->
 <style>
 #oi-splash{position:fixed;inset:0;z-index:2147483000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:radial-gradient(120% 90% at 30% 20%,#FFFFFF 0%,#F3F6FB 60%,#E6ECF5 100%);perspective:900px;overflow:hidden;transition:opacity .6s ease}
@@ -1171,6 +1174,7 @@
         <span><b>KVK</b>&nbsp;42117378</span>
         <span><b>BTW</b>&nbsp;NL869807729B01</span>
         <span><b>info@skbbhv.nl</b></span>
+        <span><b>Tel/WhatsApp</b>&nbsp;06 24 62 66 38</span>
       </div>
     </section>
 
@@ -1541,7 +1545,7 @@
         <div class="sweep thin"></div>
         <div class="eyebrow" style="color:#8fc2ef;">Bedrijfsgegevens</div>
         <h3>SKB BHV — onderdeel van Oibase B.V.</h3>
-        <p>Goordelaan 19, 9591 CB Onstwedde · KVK 42117378 · BTW NL869807729B01 · info@skbbhv.nl</p>
+        <p>Goordelaan 19, 9591 CB Onstwedde · KVK 42117378 · BTW NL869807729B01 · info@skbbhv.nl · 06 24 62 66 38</p>
       </div>
 
       <div class="cta-band">
@@ -1596,7 +1600,9 @@
             KVK 42117378<br>
             BTW NL869807729B01<br><br>
             <b style="color:var(--dark);">E-mail</b><br>
-            info@skbbhv.nl
+            info@skbbhv.nl<br><br>
+            <b style="color:var(--dark);">Telefoon &amp; WhatsApp</b><br>
+            <a href="tel:+31624626638" style="color:inherit;">06 24 62 66 38</a> · <a href="https://wa.me/31624626638?text=Hallo%20SKB%20BHV%2C%20" target="_blank" rel="noopener" style="color:#1a9e4b;font-weight:700;">WhatsApp ons</a>
           </div>
         </div>
       </div>
@@ -2513,6 +2519,7 @@ function goTo(view){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+view).classList.add('active');
   state.view = view;
+  document.body.dataset.view = view;
   document.title = PAGE_TITLES[view] || 'SKB BHV';
   document.querySelectorAll('nav.main button').forEach(b=>{
     const navGroup = (view==='why-business' || view==='why-individuals') ? 'why' : view;
@@ -4294,5 +4301,6 @@ async function initFromParticipantLink(token){
   }
 }
 </script>
+<a class="wa-knop" href="https://wa.me/31624626638?text=Hallo%20SKB%20BHV%2C%20" target="_blank" rel="noopener" aria-label="Stuur ons een WhatsApp-bericht"><svg width="26" height="26" viewBox="0 0 32 32" fill="#fff" aria-hidden="true"><path d="M16 3C9 3 3.3 8.6 3.3 15.6c0 2.3.6 4.5 1.8 6.4L3 29l7.2-1.9c1.8 1 3.8 1.5 5.8 1.5 7 0 12.7-5.7 12.7-12.6S23 3 16 3zm0 23.1c-1.9 0-3.7-.5-5.3-1.4l-.4-.2-4.3 1.1 1.1-4.2-.3-.4a10.4 10.4 0 01-1.6-5.5C5.2 9.8 10 5.1 16 5.1s10.8 4.7 10.8 10.5S22 26.1 16 26.1zm5.9-7.8c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.2-.2-.3 0-.5.1-.7l.5-.6c.2-.2.2-.4.3-.6.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.3 3.6 5.7 5 .8.3 1.4.5 1.9.7.8.3 1.5.2 2.1.1.6-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4z"/></svg><span>WhatsApp</span></a>
 </body>
 </html>
