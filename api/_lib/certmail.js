@@ -17,7 +17,10 @@ export async function sendCertificateMail(record, token) {
   if (!recipients.length) return { sent: false, reason: 'Geen e-mailadres bekend.' };
   if (!resend) return { sent: false, reason: 'E-mail is niet geconfigureerd.' };
   const siteUrl = (process.env.SITE_URL || 'https://www.skbbhv.nl').replace(/\/$/, '');
-  const pkgName = PACKAGE_NAMES[record.pkg] || 'BHV-examen';
+  const ond = (record.theorie != null || record.praktijk != null)
+    ? [record.theorie && 'theorie', record.praktijk && 'praktijk'].filter(Boolean).join(' en ')
+    : null;
+  const pkgName = ond ? `BHV ${ond}${record.pkg === 'herhaling' ? ', herhaling' : ''}` : (PACKAGE_NAMES[record.pkg] || 'BHV-examen');
   const pasNumber = record.pasNumber || null;
   const certLink = `${siteUrl}/?p=${encodeURIComponent(token)}`;
   const scoreTxt = record.pct != null && record.total

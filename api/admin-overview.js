@@ -15,7 +15,7 @@ const FROM_EMAIL = process.env.FROM_EMAIL || 'SKB BHV <onboarding@resend.dev>';
 const RESET_TTL = 30 * 60;
 
 const P_FIELDS = ['token', 'first', 'last', 'birthdate', 'pkg', 'status', 'correct', 'total', 'pct', 'certNumber',
-  'pasNumber', 'passDate', 'withPasje', 'onLocation', 'buyerEmail', 'orderId', 'createdAt', 'createdBy', 'attempts', 'pasPrintedAt'];
+  'pasNumber', 'passDate', 'withPasje', 'theorie', 'praktijk', 'onLocation', 'buyerEmail', 'orderId', 'createdAt', 'createdBy', 'attempts', 'pasPrintedAt'];
 
 function pick(obj, fields) {
   const out = {};
@@ -113,6 +113,7 @@ export default async function handler(req, res) {
       const birthdate = clean(body.birthdate, 10);
       const email = normalizeEmail(body.email);
       const pkg = PACKAGE_NAMES[body.pkg] ? body.pkg : null;
+      if (!body.theorie && !body.praktijk) return res.status(400).json({ error: 'Vink theorie, praktijk of allebei aan.' });
       if (!first || !last || !/^\d{4}-\d{2}-\d{2}$/.test(birthdate) || !pkg || !isValidEmail(email)) {
         return res.status(400).json({ error: 'Vul voornaam, achternaam, geboortedatum, pakket en een geldig e-mailadres in.' });
       }
@@ -125,6 +126,7 @@ export default async function handler(req, res) {
       const record = {
         token, first, last, birthdate, pkg,
         withPasje: !!body.withPasje, onLocation: false,
+        theorie: !!body.theorie, praktijk: !!body.praktijk,
         buyerEmail: email, email,
         status: 'passed',
         correct: pct != null ? Math.round(75 * pct / 100) : null, total: pct != null ? 75 : null, pct,

@@ -1474,6 +1474,9 @@ if(BEHEER_APP){
 }
 </script>
 <style id="beheer-app-stijl">
+.beheer-vinken{display:flex;align-items:center;gap:16px;flex-wrap:wrap;min-height:46px;}
+.beheer-vinken select{background:#0E1115;color:#fff;border:1px solid #242A33;border-radius:4px;padding:9px 10px;font-size:14px;}
+
 .beheer-ok{border:1px solid #19D36B;background:rgba(25,211,107,.1);border-radius:6px;padding:12px 14px;color:#E3E7EC;}
 .beheer-ok a{color:#FF4552;font-weight:700;}
 .bh-acts{display:flex;gap:6px;}
@@ -2328,12 +2331,15 @@ body.beheer-app .beheer-badge{display:inline-flex;align-items:center;font-family
           <div class="field"><label for="ngEmail">E-mailadres (hier gaat het certificaat heen)</label><input id="ngEmail" type="email" placeholder="naam@voorbeeld.nl" autocomplete="off"></div>
         </div>
         <div class="field-row">
-          <div class="field"><label for="ngPkg">Opleiding</label>
-            <select id="ngPkg">
-              <option value="combi">BHV Theorie + Praktijk</option>
-              <option value="basis">BHV Basisexamen (theorie)</option>
-              <option value="herhaling">BHV Herhaling</option>
-            </select>
+          <div class="field"><label>Geslaagd voor</label>
+            <div class="beheer-vinken">
+              <label class="beheer-check"><input type="checkbox" id="ngTheorie" checked> Theorie</label>
+              <label class="beheer-check"><input type="checkbox" id="ngPraktijk" checked> Praktijk</label>
+              <select id="ngSoort" title="Soort opleiding">
+                <option value="basis">Basisopleiding</option>
+                <option value="herhaling">Herhaling</option>
+              </select>
+            </div>
           </div>
           <div class="field"><label for="ngDate">Geslaagd op</label><input id="ngDate" type="date"></div>
         </div>
@@ -4216,7 +4222,7 @@ function renderCertificate(correct, total, pct){
   document.getElementById('certBirthdate').textContent = formatDateNL(participant ? participant.birthdate : null);
 
   const pkg = state.order.pkg ? PACKAGES[state.order.pkg] : PACKAGES.basis;
-  document.getElementById('certExamTitle').textContent = pkg.certTitle;
+  { const o = onderdelenVan(participant); document.getElementById('certExamTitle').textContent = o ? o.certTitle : pkg.certTitle; }
   document.getElementById('certScore').textContent = (pct == null || pct === '') ? 'Behaald' : (total ? `${pct}% (${correct}/${total} goed)` : `${pct}%`);
 
   const issueDate = (participant && participant.passDate) ? new Date(participant.passDate) : new Date();
@@ -4258,13 +4264,24 @@ function downloadCertificate(evt){
 }
 
 /* ============ BHV-PASJE ============ */
+/* Onderdelen (theorie/praktijk) per deelnemer — overschrijft de pakketomschrijving als ze bekend zijn */
+function onderdelenVan(p){
+  if(!p || (p.theorie == null && p.praktijk == null)) return null;
+  const t = !!p.theorie, pr = !!p.praktijk, her = p.pkg === 'herhaling';
+  return {
+    pasType: t && pr ? 'Theorie + Praktijk' : (t ? 'Theorie' : 'Praktijk'),
+    certTitle: t && pr ? (her ? 'BHV HERHALING THEORIE + PRAKTIJK' : 'BHV THEORIE- EN PRAKTIJKOPLEIDING')
+      : t ? (her ? 'BHV HERHALINGSTRAINING' : 'BHV BASISOPLEIDING') : (her ? 'BHV HERHALING PRAKTIJK' : 'BHV PRAKTIJKTRAINING'),
+  };
+}
+
 function renderPasCard(){
   const idx = state.activeIndex;
   const p = (idx!=null) ? state.roster[idx] : null;
   if(!p) return;
 
   const pkg = state.order.pkg ? PACKAGES[state.order.pkg] : PACKAGES.basis;
-  document.getElementById('pasType').textContent = (pkg.pasType || 'Theorie').toUpperCase();
+  { const o = onderdelenVan(p); document.getElementById('pasType').textContent = ((o && o.pasType) || pkg.pasType || 'Theorie').toUpperCase(); }
   document.getElementById('pasName').textContent = `${p.first || 'Cursist'} ${p.last || ''}`.trim();
   document.getElementById('pasBirthdate').textContent = formatDateNL(p.birthdate);
 
@@ -4314,7 +4331,7 @@ function vulPasKaart(card, p){
   const issueDate = p.passDate ? new Date(p.passDate) : new Date();
   const validUntil = new Date(issueDate); validUntil.setFullYear(validUntil.getFullYear()+1);
   const zet = (id, v) => { const e = card.querySelector('#'+id); if(e) e.textContent = v; };
-  zet('pasType', (pkg.pasType || 'Theorie').toUpperCase());
+  { const o = onderdelenVan(p); zet('pasType', ((o && o.pasType) || pkg.pasType || 'Theorie').toUpperCase()); }
   zet('pasName', `${p.first || 'Cursist'} ${p.last || ''}`.trim());
   zet('pasBirthdate', formatDateNL(p.birthdate));
   zet('pasBehaald', formatDateNL(issueDate));
@@ -4453,7 +4470,8 @@ function beheerRenderAlles(){ beheerRenderOverzicht(); beheerRenderPasjes(); beh
 function beheerRij(p, metCheck){
   const naam = `${p.first||''} ${p.last||''}`.trim() || '—';
   const st = p.status || 'ready';
-  const pkgNaam = (PACKAGES[p.pkg] && PACKAGES[p.pkg].name) || '';
+  const ond = onderdelenVan(p);
+  const pkgNaam = ond ? ('Geslaagd: ' + ond.pasType + (p.pkg === 'herhaling' ? ' (herhaling)' : '')) : ((PACKAGES[p.pkg] && PACKAGES[p.pkg].name) || '');
   const meta = [pkgNaam, p.company, p.buyerEmail || p.orderEmail].filter(Boolean).map(beheerEsc).join(' · ');
   const nrs = [p.certNumber, p.pasNumber].filter(Boolean).map(beheerEsc).join(' · ');
   const id = beheerEsc(p.token || '');
@@ -4612,7 +4630,11 @@ async function beheerInstalleer(){
 async function beheerVoegGeslaagdToe(){
   const v = id => document.getElementById(id).value.trim();
   const out = document.getElementById('ngResult'), btn = document.getElementById('ngBtn');
-  const data = { first:v('ngFirst'), last:v('ngLast'), birthdate:v('ngBirth'), email:v('ngEmail'), pkg:v('ngPkg'),
+  const theorie = document.getElementById('ngTheorie').checked, praktijk = document.getElementById('ngPraktijk').checked;
+  if(!theorie && !praktijk){ out.style.color = '#FF6B76'; out.textContent = 'Vink theorie, praktijk of allebei aan.'; return; }
+  const soort = v('ngSoort');
+  const data = { first:v('ngFirst'), last:v('ngLast'), birthdate:v('ngBirth'), email:v('ngEmail'),
+    pkg: (theorie && praktijk && soort === 'basis') ? 'combi' : soort, theorie, praktijk,
     passDate:v('ngDate'), pct:v('ngPct'), withPasje:document.getElementById('ngPasje').checked, sendMail:document.getElementById('ngMail').checked };
   out.style.color = '';
   if(!data.first || !data.last || !data.birthdate || !data.email){ out.style.color = '#FF6B76'; out.textContent = 'Vul voornaam, achternaam, geboortedatum en e-mailadres in.'; return; }
@@ -5239,6 +5261,7 @@ async function initFromParticipantLink(token){
       status: data.status || 'ready',
       correct: data.correct ?? null, total: data.total ?? (data.pct == null && data.status === 'passed' ? null : 75), pct: (data.pct == null && data.status === 'passed') ? null : (data.pct || 0),
       certNumber: data.certNumber || null, pasNumber: data.pasNumber || null, passDate: data.passDate || null,
+      theorie: data.theorie, praktijk: data.praktijk, pkg: data.pkg,
       token: token,
     }];
     state.activeIndex = 0;
