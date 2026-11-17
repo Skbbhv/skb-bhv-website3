@@ -58,6 +58,18 @@
     {
       "source": "/beheer/",
       "destination": "/beheer.html"
+    },
+    {
+      "source": "/check",
+      "destination": "/check.html"
+    },
+    {
+      "source": "/check/:code",
+      "destination": "/check.html"
+    },
+    {
+      "source": "/c/:code",
+      "destination": "/check.html"
     }
   ],
   "crons": [

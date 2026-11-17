@@ -78,6 +78,10 @@ export const kv = {
   async update(key, value) {
     return !!(await rpc('update', { p_key: key, p_value: value }));
   },
+  // Volledige export (zonder sessies/tellers) voor de back-up
+  async dump() {
+    return await rpc('dump', {});
+  },
   async smembers(key) {
     return (await rpc('smembers', { p_key: key })) || [];
   },

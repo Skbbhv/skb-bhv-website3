@@ -7,6 +7,7 @@ import { Resend } from 'resend';
 import { kv } from './_lib/kv.js';
 import { ADMIN_OWNER_EMAIL } from './_lib/admin.js';
 import { PACKAGE_NAMES, COMPANY_FOOTER_HTML, escapeHtml } from './_lib/accounts.js';
+import { certRecipients } from './_lib/certmail.js';
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 const FROM_EMAIL = process.env.FROM_EMAIL || 'SKB BHV <onboarding@resend.dev>';
@@ -16,6 +17,78 @@ function nlDate(d) {
 }
 function nlDateTime(d) {
   return new Date(d).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+}
+
+const DAG = 24 * 60 * 60 * 1000;
+function geldigTot(p) {
+  const d = new Date(p.passDate || p.finishedAt); d.setFullYear(d.getFullYear() + 1); return d;
+}
+function amsDag(d) { return new Date(d).toLocaleDateString('sv-SE', { timeZone: 'Europe/Amsterdam' }); } // JJJJ-MM-DD
+function dagenTot(d, now) { return Math.round((Date.parse(amsDag(d)) - Date.parse(amsDag(now))) / DAG); }
+
+function mailKader(titel, body) {
+  return `<div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;color:#12161B;">
+    <div style="background:#0B0D10;padding:22px 28px;border-bottom:6px solid #E0101F;">
+      <span style="color:#fff;font-size:22px;font-weight:bold;letter-spacing:1px;">SKB BHV</span>
+      <span style="color:#FF5A66;font-size:12px;letter-spacing:3px;margin-left:10px;text-transform:uppercase;">Bedrijfshulpverlening</span></div>
+    <div style="border:1px solid #E1E4E9;border-top:none;padding:28px;"><h2 style="margin-top:0;color:#0B0D10;">${titel}</h2>${body}
+    <hr style="border:none;border-top:1px solid #E1E4E9;margin:24px 0;"><p style="font-size:12px;color:#8b939b;">${COMPANY_FOOTER_HTML}</p></div></div>`;
+}
+function knop(href, tekst) {
+  return `<p style="text-align:center;margin:26px 0;"><a href="${href}" style="background:#E0101F;color:#fff;text-decoration:none;padding:13px 28px;border-radius:4px;font-weight:bold;display:inline-block;letter-spacing:.5px;">${tekst}</a></p>`;
+}
+
+// Herinnering 60 en 14 dagen voor het verlopen van het certificaat.
+async function stuurHerinneringen(rows, now, siteUrl) {
+  let n = 0;
+  for (const r of rows) {
+    const p = r.value;
+    if (!p || p.status !== 'passed' || !p.certNumber) continue;
+    const left = dagenTot(geldigTot(p), now);
+    let veld = null;
+    if (left <= 14 && left >= 0 && !p.remind14At) veld = 'remind14At';
+    else if (left <= 60 && left > 14 && !p.remind60At) veld = 'remind60At';
+    if (!veld) continue;
+    const to = certRecipients(p);
+    if (!to.length) continue;
+    const naam = escapeHtml(p.first || '');
+    const datum = escapeHtml(geldigTot(p).toLocaleDateString('nl-NL', { timeZone: 'Europe/Amsterdam', day: 'numeric', month: 'long', year: 'numeric' }));
+    const html = mailKader(`${naam ? 'Hoi ' + naam + ', je' : 'Je'} BHV-certificaat verloopt ${left <= 14 ? 'bijna' : 'binnenkort'}`,
+      `<p>Je BHV-certificaat (${escapeHtml(p.certNumber)}) is geldig tot <b>${datum}</b>${left <= 14 ? ` — nog <b>${left} dag${left === 1 ? '' : 'en'}</b>` : ''}.</p>
+       <p>Een BHV-certificaat is 1 jaar geldig. Met de <b>BHV Herhaling</b> blijf je bevoegd: online, in je eigen tempo, en je nieuwe certificaat heb je direct.</p>
+       ${knop(`${siteUrl}/?go=pricing&utm_source=herinnering`, 'HERHALING REGELEN')}
+       <p style="font-size:13px;color:#666;">Regelt je werkgever dit voor je? Stuur deze mail dan even door.</p>`);
+    try {
+      await resend.emails.send({ from: FROM_EMAIL, to, subject: left <= 14 ? `Nog ${left} dagen: je BHV-certificaat verloopt` : 'Je BHV-certificaat verloopt binnenkort', html });
+      await kv.update(r.key, { ...p, [veld]: new Date().toISOString() });
+      n++;
+    } catch (e) { console.error('herinnering mislukt', r.key, e); }
+  }
+  return n;
+}
+
+// Een dag na het slagen: vraag om een Google-review (alleen als GOOGLE_REVIEW_URL is ingesteld).
+async function stuurReviewVerzoeken(rows, now) {
+  const url = process.env.GOOGLE_REVIEW_URL;
+  if (!url) return { n: 0, uit: true };
+  let n = 0;
+  for (const r of rows) {
+    const p = r.value;
+    if (!p || p.status !== 'passed' || p.reviewAskedAt || !p.passDate) continue;
+    const ago = now - new Date(p.passDate).getTime();
+    if (ago < 20 * 60 * 60 * 1000 || ago > 4 * DAG) continue;
+    const to = certRecipients(p);
+    if (!to.length) continue;
+    const html = mailKader(`${p.first ? 'Hoi ' + escapeHtml(p.first) + ', hoe' : 'Hoe'} was je BHV-opleiding?`,
+      `<p>Gefeliciteerd nogmaals met je BHV-certificaat! Wil je ons helpen met een korte review op Google? Het kost je 30 seconden en helpt andere bedrijven en BHV'ers om ons te vinden.</p>
+       ${knop(url, 'REVIEW SCHRIJVEN')}<p style="font-size:13px;color:#666;">Bedankt! — Erik, SKB BHV</p>`);
+    try {
+      await resend.emails.send({ from: FROM_EMAIL, to, subject: 'Hoe was je BHV-opleiding bij SKB BHV?', html });
+      await kv.update(r.key, { ...p, reviewAskedAt: new Date().toISOString() });
+      n++;
+    } catch (e) { console.error('review-verzoek mislukt', r.key, e); }
+  }
+  return { n, uit: false };
 }
 
 export default async function handler(req, res) {
@@ -28,7 +101,11 @@ export default async function handler(req, res) {
   try {
     const now = Date.now();
     const since = now - 24 * 60 * 60 * 1000;
-    const rows = await kv.scan('participant:', 5000);
+    const siteUrl0 = (process.env.SITE_URL || `https://${req.headers.host}`).replace(/\/$/, '');
+    let rows = await kv.scan('participant:', 5000);
+    const herinneringen = resend ? await stuurHerinneringen(rows, now, siteUrl0) : 0;
+    const reviews = resend ? await stuurReviewVerzoeken(rows, now) : { n: 0, uit: true };
+    if (herinneringen || reviews.n) rows = await kv.scan('participant:', 5000);
     const people = rows.map((r) => r.value).filter((v) => v && typeof v === 'object');
 
     const geslaagd = people
@@ -38,6 +115,16 @@ export default async function handler(req, res) {
     const tePrinten = people
       .filter((p) => p.status === 'passed' && p.pasNumber && !p.pasPrintedAt)
       .sort((a, b) => String(a.passDate || '').localeCompare(String(b.passDate || '')));
+
+    // Back-up van alle gegevens als bijlage (JSON)
+    let attachments = [];
+    let backupInfo = 'Back-up mislukt — zie de logs.';
+    try {
+      const dump = await kv.dump();
+      const json = JSON.stringify(dump);
+      attachments = [{ filename: `skbbhv-backup-${amsDag(now)}.json`, content: Buffer.from(json).toString('base64') }];
+      backupInfo = `In de bijlage: <b>skbbhv-backup-${amsDag(now)}.json</b> (${(dump.kv || []).length} records, ${Math.round(json.length / 1024)} kB). Bewaar deze mails; hiermee kan alles worden teruggezet.`;
+    } catch (e) { console.error('back-up mislukt:', e); }
 
     const naam = (p) => escapeHtml(`${p.first || ''} ${p.last || ''}`.trim() || '—');
     const pakket = (p) => escapeHtml(PACKAGE_NAMES[p.pkg] || p.pkg || '');
@@ -58,7 +145,7 @@ export default async function handler(req, res) {
 
     const siteUrl = (process.env.SITE_URL || `https://${req.headers.host}`).replace(/\/$/, '');
     const vandaag = nlDate(now);
-    const subject = `SKB BHV dagoverzicht ${vandaag}: ${geslaagd.length} geslaagd, ${tePrinten.length} pasje${tePrinten.length === 1 ? '' : 's'} te printen`;
+    const subject = `SKB BHV dagoverzicht + back-up ${vandaag}: ${geslaagd.length} geslaagd, ${tePrinten.length} pasje${tePrinten.length === 1 ? '' : 's'} te printen`;
     const html = `<div style="font-family:Arial,sans-serif;color:#111;max-width:640px;margin:0 auto">
       <div style="background:#0B0D10;color:#fff;padding:18px 22px;border-bottom:6px solid #E0101F">
         <div style="font-size:12px;letter-spacing:3px;color:#FF5A66;text-transform:uppercase">SKB BHV · Beheerder</div>
@@ -72,11 +159,15 @@ export default async function handler(req, res) {
       <h3 style="margin:18px 0 8px">Geslaagd in de afgelopen 24 uur</h3>${tabelGeslaagd}
       <h3 style="margin:22px 0 8px">Pasjes die je nog moet maken</h3>${tabelPrinten}
       ${tePrinten.length ? `<p style="margin:22px 0"><a href="${siteUrl}/beheer#pasjes" style="display:inline-block;background:#E0101F;color:#fff;padding:13px 24px;border-radius:4px;text-decoration:none;font-weight:bold">Pasjes printen in de beheer-app</a></p>` : ''}
+      <h3 style="margin:22px 0 8px">Automatische mails</h3>
+      <p style="font-size:14px;margin:0">Verloopherinneringen verstuurd: <b>${herinneringen}</b><br>Review-verzoeken verstuurd: <b>${reviews.uit ? 'uit (stel GOOGLE_REVIEW_URL in)' : reviews.n}</b></p>
+      <h3 style="margin:22px 0 8px">Back-up</h3>
+      <p style="font-size:14px;margin:0">${backupInfo}</p>
       <p style="color:#888;font-size:12px;margin-top:26px">${COMPANY_FOOTER_HTML}</p></div>`;
 
     if (!resend) return res.status(500).json({ error: 'RESEND_API_KEY ontbreekt.' });
-    await resend.emails.send({ from: FROM_EMAIL, to: ADMIN_OWNER_EMAIL, subject, html });
-    return res.status(200).json({ ok: true, geslaagd: geslaagd.length, tePrinten: tePrinten.length, gezakt });
+    await resend.emails.send({ from: FROM_EMAIL, to: ADMIN_OWNER_EMAIL, subject, html, attachments });
+    return res.status(200).json({ ok: true, geslaagd: geslaagd.length, tePrinten: tePrinten.length, gezakt, herinneringen, reviews: reviews.n, backup: attachments.length > 0 });
   } catch (err) {
     console.error('daily-report error:', err);
     return res.status(500).json({ error: 'Dagoverzicht mislukt.' });

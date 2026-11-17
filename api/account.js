@@ -185,7 +185,7 @@ async function saveOrder(req, body, res) {
 // Uitslag en certificaatgegevens komen nooit van de client: ze worden overgenomen uit het
 // deelnemersrecord (server-side nagekeken), of uit de eerder bewaarde lijst als die link al
 // verlopen is. Anders kan een deelnemer in de lijst niet op 'geslaagd' staan.
-const RESULT_FIELDS = ['status', 'correct', 'total', 'pct', 'certNumber', 'pasNumber', 'passDate'];
+const RESULT_FIELDS = ['status', 'correct', 'total', 'pct', 'certNumber', 'pasNumber', 'passDate', 'verifyCode', 'theorie', 'praktijk'];
 
 async function sanitizeRoster(roster, previous, email) {
   const prev = Array.isArray(previous) ? previous : [];

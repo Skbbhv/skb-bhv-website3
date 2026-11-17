@@ -27,7 +27,7 @@
 
 import crypto from 'crypto';
 import { kv } from './_lib/kv.js';
-import { issueCertNumber, issuePasNumber, PASSED_TTL_SECONDS } from './_lib/numbers.js';
+import { issueCertNumber, issuePasNumber, PASSED_TTL_SECONDS, newVerifyCode, ensureVerifyCode } from './_lib/numbers.js';
 import { Resend } from 'resend';
 import {
   getSessionEmail, isValidEmail, normalizeEmail, escapeHtml, PACKAGE_NAMES, COMPANY_FOOTER_HTML,
@@ -236,6 +236,7 @@ async function finish(body, res) {
     updated.finishedAt = new Date().toISOString();
     if (result.passed) {
       updated.certNumber = await issueCertNumber(token);
+      updated.verifyCode = await newVerifyCode(token);
       updated.passDate = updated.finishedAt;
       updated.pasNumber = record.withPasje ? (record.pasNumber || await issuePasNumber()) : null;
     }
@@ -249,6 +250,7 @@ async function finish(body, res) {
       pct: result.pct,
       certNumber: updated.certNumber || null,
       pasNumber: updated.pasNumber || null,
+      verifyCode: updated.verifyCode || null,
       passDate: updated.passDate || null,
       wrong: result.wrong,
       perCategory: result.perCategory,
@@ -301,8 +303,9 @@ export default async function handler(req, res) {
     if (req.method === 'GET') {
       const { token } = req.query;
       if (!token) return res.status(400).json({ error: 'Token ontbreekt.' });
-      const record = await kv.get(`participant:${token}`);
+      let record = await kv.get(`participant:${token}`);
       if (!record) return res.status(404).json({ error: 'Deelnemer niet gevonden of link verlopen.' });
+      record = await ensureVerifyCode(String(token).slice(0, 40), record);
       return res.status(200).json(publicRecord(record));
     }
 

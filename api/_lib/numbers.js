@@ -22,3 +22,25 @@ export async function issuePasNumber() {
   const n = await kv.incr('counter:pasnummer');
   return `SKB-P-${String(PAS_OFFSET + n).padStart(6, '0')}`;
 }
+
+// Willekeurige verificatiecode voor de QR-code (niet te raden, 10 tekens).
+const ALFABET = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+export async function newVerifyCode(token) {
+  for (let i = 0; i < 10; i++) {
+    let code = '';
+    const bytes = crypto.randomBytes(10);
+    for (const b of bytes) code += ALFABET[b % ALFABET.length];
+    const ok = await kv.set(`verify:${code}`, token, { nx: true, ex: PASSED_TTL_SECONDS });
+    if (ok) return code;
+  }
+  throw new Error('Kon geen verificatiecode maken.');
+}
+
+// Zorgt dat een geslaagde deelnemer een verificatiecode heeft (voor oudere records).
+export async function ensureVerifyCode(token, record) {
+  if (!record || record.status !== 'passed' || record.verifyCode) return record;
+  const verifyCode = await newVerifyCode(token);
+  const updated = { ...record, verifyCode };
+  await kv.update(`participant:${token}`, updated);
+  return updated;
+}

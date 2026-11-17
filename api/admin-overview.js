@@ -7,7 +7,7 @@ import crypto from 'crypto';
 import { Resend } from 'resend';
 import { checkAdmin, ADMIN_OWNER_EMAIL } from './_lib/admin.js';
 import { hashPassword, COMPANY_FOOTER_HTML, PACKAGE_NAMES, isValidEmail, normalizeEmail } from './_lib/accounts.js';
-import { issueCertNumber, issuePasNumber, PASSED_TTL_SECONDS } from './_lib/numbers.js';
+import { issueCertNumber, issuePasNumber, PASSED_TTL_SECONDS, newVerifyCode, ensureVerifyCode } from './_lib/numbers.js';
 import { sendCertificateMail } from './_lib/certmail.js';
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
@@ -15,7 +15,7 @@ const FROM_EMAIL = process.env.FROM_EMAIL || 'SKB BHV <onboarding@resend.dev>';
 const RESET_TTL = 30 * 60;
 
 const P_FIELDS = ['token', 'first', 'last', 'birthdate', 'pkg', 'status', 'correct', 'total', 'pct', 'certNumber',
-  'pasNumber', 'passDate', 'withPasje', 'theorie', 'praktijk', 'onLocation', 'buyerEmail', 'orderId', 'createdAt', 'createdBy', 'attempts', 'pasPrintedAt'];
+  'pasNumber', 'passDate', 'withPasje', 'theorie', 'praktijk', 'verifyCode', 'onLocation', 'buyerEmail', 'orderId', 'createdAt', 'createdBy', 'attempts', 'pasPrintedAt'];
 
 function pick(obj, fields) {
   const out = {};
@@ -76,6 +76,11 @@ export default async function handler(req, res) {
       const [parts, orders, accounts] = await Promise.all([
         kv.scan('participant:', 5000), kv.scan('order:', 5000), kv.scan('account:', 5000),
       ]);
+      for (const r of parts) {
+        if (r.value && r.value.status === 'passed' && !r.value.verifyCode) {
+          r.value = await ensureVerifyCode(r.key.slice('participant:'.length), r.value);
+        }
+      }
       const participants = parts
         .filter((r) => r.value && typeof r.value === 'object')
         .map((r) => ({ token: r.key.slice('participant:'.length), ...pick(r.value, P_FIELDS) }));
@@ -134,6 +139,7 @@ export default async function handler(req, res) {
         attempts: 0, createdAt: new Date().toISOString(), createdBy: 'admin-geslaagd',
       };
       record.certNumber = await issueCertNumber(token);
+      record.verifyCode = await newVerifyCode(token);
       if (record.withPasje) record.pasNumber = await issuePasNumber();
       await kv.set(`participant:${token}`, record, { ex: PASSED_TTL_SECONDS });
 
@@ -144,7 +150,7 @@ export default async function handler(req, res) {
       }
       const siteUrl = (process.env.SITE_URL || `https://${req.headers.host}`).replace(/\/$/, '');
       return res.status(200).json({ ok: true, token, certNumber: record.certNumber, pasNumber: record.pasNumber,
-        link: `${siteUrl}/?p=${token}`, mailSent: !!mail.sent, mailReason: mail.reason || null });
+        verifyCode: record.verifyCode, link: `${siteUrl}/?p=${token}`, mailSent: !!mail.sent, mailReason: mail.reason || null });
     }
 
     if (body.action === 'resendCert') {
