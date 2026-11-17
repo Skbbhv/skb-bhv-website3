@@ -48,6 +48,19 @@
           "value": "no-cache"
         }
       ]
+    },
+    {
+      "source": "/sw-pas.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        },
+        {
+          "key": "Service-Worker-Allowed",
+          "value": "/pas/"
+        }
+      ]
     }
   ],
   "rewrites": [
@@ -66,6 +79,10 @@
     {
       "source": "/c/:code",
       "destination": "/check"
+    },
+    {
+      "source": "/pas/",
+      "destination": "/pas"
     },
     {
       "source": "/pas/:code",

@@ -9,11 +9,16 @@
 //   reset            { token, password }              → { ok }  (nieuw wachtwoord via die link)
 //   change-password  { current, next } + Bearer      → { ok }
 //   save-order       { orderId, roster, invoiceNumber, nextPasNummer } + Bearer → { ok }
+//   alarm            { soort, locatie, bericht, test } + Bearer → BHV-alarm naar het hele team
+//   alarm-status     { id? } + Bearer → reacties van de BHV'ers
+//   alarm-abonneer   { code, subscription, test? } → pushmeldingen op de digitale pas
+//   alarm-bhver      { code, id, reactie? } → alarm bekijken / "ik kom eraan"
 //
 // Vereist: Vercel KV gekoppeld (KV_REST_API_URL, KV_REST_API_TOKEN) en voor e-mail RESEND_API_KEY.
 
 import crypto from 'crypto';
 import { kv } from './_lib/kv.js';
+import { abonneer, afmelden, slaAlarm, alarmStatus, alarmVoorBhver, pushSleutel } from './_lib/alarm.js';
 import {
   normalizeEmail, isValidEmail, getAccount, verifyPassword, createSession, getBearerToken,
   getSessionEmail, publicAccount, getOrdersForEmail, setNewPassword, sendResetLinkEmail,
@@ -48,6 +53,18 @@ export default async function handler(req, res) {
       case 'logboek': return await logboek(req, body, res);
       case 'instellingen': return await instellingen(req, body, res);
       case 'fitscores': return await fitscores(req, res);
+      // BHV-alarmknop
+      case 'push-sleutel': { const r = pushSleutel(); return res.status(r.status).json(r.json); }
+      case 'alarm-abonneer': { const r = await abonneer(body); return res.status(r.status).json(r.json); }
+      case 'alarm-afmelden': { const r = await afmelden(body); return res.status(r.status).json(r.json); }
+      case 'alarm-bhver': { const r = await alarmVoorBhver(body); return res.status(r.status).json(r.json); }
+      case 'alarm':
+      case 'alarm-status': {
+        const email = await getSessionEmail(req);
+        if (!email) return res.status(401).json({ error: 'Niet ingelogd.' });
+        const r = body.action === 'alarm' ? await slaAlarm(email, body, await getAccount(email)) : await alarmStatus(email, body);
+        return res.status(r.status).json(r.json);
+      }
       default: return res.status(400).json({ error: 'Onbekende actie.' });
     }
   } catch (err) {

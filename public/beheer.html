@@ -1505,6 +1505,26 @@ i.og-s{background:linear-gradient(180deg,#FF3B4A,#B30F1C);border-radius:3px 3px 
 .omzet-tabel td{padding:9px 6px;border-bottom:1px solid #1E232B;color:#E3E7EC;white-space:nowrap;}
 .omzet-tabel tr.tot td{font-weight:800;color:#fff;border-top:2px solid #E0101F;}
 
+.team-alarmknop{background:#E0101F!important;color:#fff!important;border:none!important;font-weight:800;}
+.team-alarm{margin:14px 0 4px;border:2px solid #E0101F;border-radius:10px;padding:18px;background:#FFF5F5;}
+.team-alarm h3{margin:0 0 6px;color:#B30F1C;font-size:20px;}
+.ta-soorten{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;}
+.ta-soorten button{border:1.5px solid #E5C2C5;background:#fff;color:#111;border-radius:999px;padding:9px 14px;font-weight:700;font-size:14.5px;cursor:pointer;}
+.ta-soorten button.actief{background:#E0101F;border-color:#E0101F;color:#fff;}
+.ta-form{grid-template-columns:1fr 1fr!important;}
+.ta-test{margin:10px 0 12px!important;color:#7A4A00!important;}
+.ta-sla{display:block;width:100%;border:none;border-radius:10px;padding:18px;font-size:22px;font-weight:900;letter-spacing:.12em;color:#fff;cursor:pointer;
+ background:repeating-linear-gradient(-45deg,#E0101F 0 18px,#C20D1A 18px 36px);box-shadow:0 6px 0 #8A0912;font-family:'Archivo Black','Archivo',Arial,sans-serif;}
+.ta-sla:active{transform:translateY(3px);box-shadow:0 3px 0 #8A0912;} .ta-sla:disabled{opacity:.6;cursor:wait;}
+.ta-status{margin-top:14px;}
+.ta-kop{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:#0B0D10;color:#fff;border-radius:8px;padding:12px 14px;}
+.ta-kop b{font-size:17px;} .ta-kop span{font-size:13px;color:#C9CFD8;}
+.ta-teller{font-size:30px;font-weight:900;color:#3BE38A;line-height:1;}
+.ta-lijst{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:6px;margin-top:8px;}
+.ta-lijst div{background:#fff;border:1px solid #E1E4E9;border-left:5px solid #C9CFD8;border-radius:6px;padding:8px 10px;font-size:14px;display:flex;justify-content:space-between;gap:8px;}
+.ta-lijst div.komt{border-left-color:#19D36B;} .ta-lijst div.kan-niet{border-left-color:#E0101F;}
+.ta-lijst em{font-style:normal;font-size:12.5px;color:#666;white-space:nowrap;}
+@media(max-width:640px){.ta-form{grid-template-columns:1fr!important;}}
 .team-fit{display:flex;align-items:center;gap:8px;font-size:14px;color:#111;margin-left:auto;cursor:pointer;}
 .team-fit input{width:18px;height:18px;accent-color:#E0101F;}
 .team-fitscore{font-weight:700;color:#B35A00;} .team-fitscore.top{color:#0E7A3D;}
@@ -4112,9 +4132,28 @@ window.SKBQR={matrix:matrix,svg:svg,dataUrl:dataUrl};})();
       <div class="team-tiles" id="teamTiles"></div>
       <div class="team-advies" id="teamAdvies"></div>
       <div class="team-acties">
+        <button class="btn btn-sm team-alarmknop" onclick="alarmToggle()">🚨 BHV-alarm</button>
         <button class="btn btn-primary btn-sm" onclick="dossierMaken()">BHV-dossier (PDF)</button>
         <button class="btn btn-outline btn-sm" onclick="logboekToggle()">Logboek oefeningen &amp; controles</button>
         <label class="team-fit"><input type="checkbox" id="teamFit" onchange="bhvFitZet(this.checked)"> <b>BHV-fit</b> — elke maand 3 opfrisvragen per BHV'er</label>
+      </div>
+      <div class="team-alarm" id="teamAlarm" style="display:none;">
+        <h3>🚨 BHV-alarm slaan</h3>
+        <p class="tl-uitleg">Al je geslaagde BHV'ers krijgen direct een melding met trilalarm op hun telefoon (als ze meldingen op hun digitale pas hebben aangezet) én een e-mail. Je ziet hieronder live wie eraan komt. <b>Bij levensgevaar: bel altijd eerst 112.</b></p>
+        <div class="ta-soorten" id="taSoorten">
+          <button data-s="brand" class="actief" onclick="alarmSoort('brand')">🔥 Brand</button>
+          <button data-s="ehbo" onclick="alarmSoort('ehbo')">🩹 EHBO</button>
+          <button data-s="reanimatie" onclick="alarmSoort('reanimatie')">❤️ Reanimatie</button>
+          <button data-s="ontruiming" onclick="alarmSoort('ontruiming')">🚪 Ontruiming</button>
+          <button data-s="overig" onclick="alarmSoort('overig')">⚠️ Overig</button>
+        </div>
+        <div class="tl-form ta-form">
+          <input id="taLocatie" maxlength="120" placeholder="Waar? bijv. 'Magazijn hal 2, bij de laaddeuren'">
+          <input id="taBericht" maxlength="400" placeholder="Toelichting (optioneel), bijv. 'Persoon onwel, AED meenemen'">
+        </div>
+        <label class="team-fit ta-test"><input type="checkbox" id="taTest" checked> Testalarm (oefening) — haal dit vinkje weg bij een echte calamiteit</label>
+        <button class="ta-sla" id="taSla" onclick="alarmSlaan()">ALARM SLAAN</button>
+        <div id="taStatus" class="ta-status"></div>
       </div>
       <div class="team-logboek" id="teamLogboek" style="display:none;">
         <h3>Logboek</h3>
@@ -6293,6 +6332,56 @@ async function bhvFitZet(aan){
     teamExtra.fit = !!aan;
     showToast(aan ? 'BHV-fit staat aan. Je BHV\'ers krijgen voortaan elke maand 3 opfrisvragen per mail.' : 'BHV-fit staat uit.');
   }catch(e){ showToast(e.message); document.getElementById('teamFit').checked = !aan; }
+}
+
+/* ============ BHV-ALARMKNOP (werkgever) ============ */
+let alarmGekozen = 'brand', alarmPoll = null, alarmEind = 0;
+function alarmToggle(){
+  const el = document.getElementById('teamAlarm');
+  const open = el.style.display === 'none';
+  el.style.display = open ? '' : 'none';
+  if(open){ document.getElementById('teamLogboek').style.display = 'none'; alarmVolgen(null, false); el.scrollIntoView({ behavior:'smooth', block:'start' }); }
+}
+function alarmSoort(s){
+  alarmGekozen = s;
+  document.querySelectorAll('#taSoorten button').forEach(b => b.classList.toggle('actief', b.dataset.s === s));
+}
+async function alarmSlaan(){
+  const test = document.getElementById('taTest').checked;
+  const locatie = document.getElementById('taLocatie').value.trim();
+  if(!test && !confirm('ECHT ALARM versturen naar al je BHV\'ers?')) return;
+  const knop = document.getElementById('taSla'); knop.disabled = true; knop.textContent = 'ALARM WORDT VERSTUURD…';
+  try{
+    const r = await accountApi('alarm', { soort: alarmGekozen, locatie, bericht: document.getElementById('taBericht').value.trim(), test });
+    alarmTekenen(r.alarm);
+    if(!r.pushIngesteld) showToast('Alarm verstuurd per e-mail. (Pushmeldingen zijn nog niet actief.)');
+    alarmVolgen(r.alarm.id, true);
+  }catch(e){ showToast(e.message); }
+  finally{ knop.disabled = false; knop.textContent = 'ALARM SLAAN'; }
+}
+function alarmVolgen(id, live){
+  clearInterval(alarmPoll);
+  const haal = async () => {
+    try{
+      const r = await accountApi('alarm-status', id ? { id } : {});
+      if(r.alarm){ alarmTekenen(r.alarm); id = r.alarm.id; }
+      if(!live || Date.now() > alarmEind || document.getElementById('teamAlarm').style.display === 'none') clearInterval(alarmPoll);
+    }catch(e){ clearInterval(alarmPoll); }
+  };
+  if(live){ alarmEind = Date.now() + 20 * 60 * 1000; alarmPoll = setInterval(haal, 4000); }
+  else haal();
+}
+const ALARM_SOORT = { brand:'🔥 Brand', ehbo:'🩹 EHBO / letsel', reanimatie:'❤️ Reanimatie / AED', ontruiming:'🚪 Ontruiming', overig:'⚠️ Calamiteit' };
+function alarmTekenen(a){
+  const el = document.getElementById('taStatus'); if(!el || !a) return;
+  const komt = a.ontvangers.filter(o => o.reactie === 'komt').length;
+  const tijd = d => new Date(d).toLocaleTimeString('nl-NL', { hour:'2-digit', minute:'2-digit' });
+  const volgorde = { komt:0, 'kan-niet':2 };
+  const lijst = a.ontvangers.slice().sort((x, y) => (volgorde[x.reactie] ?? 1) - (volgorde[y.reactie] ?? 1));
+  el.innerHTML = `<div class="ta-kop"><div><b>${a.test ? 'Testalarm' : 'BHV-alarm'} · ${ALARM_SOORT[a.soort] || ''}</b><br>
+      <span>${a.locatie ? beheerEsc(a.locatie) + ' · ' : ''}verstuurd om ${tijd(a.at)} · ${a.bereik.push} via pushmelding, ${a.bereik.mail} via e-mail</span></div>
+      <div style="text-align:right"><div class="ta-teller">${komt}/${a.ontvangers.length}</div><span>komen eraan</span></div></div>
+    <div class="ta-lijst">${lijst.map(o => `<div class="${o.reactie || ''}"><span>${o.reactie === 'komt' ? '✅' : o.reactie === 'kan-niet' ? '❌' : '⏳'} ${beheerEsc(o.naam || 'BHV\'er')}</span><em>${o.reactie === 'komt' ? 'komt · ' + tijd(o.om) : o.reactie === 'kan-niet' ? 'kan niet' : 'nog geen reactie'}</em></div>`).join('')}</div>`;
 }
 
 /* ============ BEHEER: OMZET PER MAAND ============ */

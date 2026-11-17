@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#0B0D10">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="BHV-pas">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="icon" href="/favicon.ico">
+<link rel="manifest" href="/manifest-pas.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="icon" href="/favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Oswald:wght@500;600;700&family=Public+Sans:wght@400;600;700;800&display=swap">
 <style>
@@ -37,6 +37,20 @@ body{background:#08090B;color:#ECEFF3;font-family:'Public Sans',Arial,sans-serif
 .tip{max-width:400px;width:100%;margin-top:16px;background:#111419;border:1px solid #242A33;border-radius:10px;padding:14px 16px;font-size:14px;color:#C9CFD8;line-height:1.55}
 .tip b{color:#fff}.knop{display:block;text-align:center;margin-top:12px;background:linear-gradient(180deg,#FF3B4A,#E0101F);color:#fff;border:none;border-radius:6px;padding:13px;font-family:'Oswald',Arial,sans-serif;font-weight:600;letter-spacing:.1em;text-transform:uppercase;font-size:15px;width:100%;cursor:pointer}
 .fout{max-width:400px;text-align:center;color:#FF6B76;margin-top:40px}
+.alarm{max-width:400px;width:100%;margin:0 0 18px;border-radius:14px;overflow:hidden;background:#E0101F;box-shadow:0 0 0 0 rgba(224,16,31,.7);animation:puls 1.4s infinite}
+.alarm.test{background:#B35A00;animation:none}
+@keyframes puls{0%{box-shadow:0 0 0 0 rgba(224,16,31,.7)}70%{box-shadow:0 0 0 18px rgba(224,16,31,0)}100%{box-shadow:0 0 0 0 rgba(224,16,31,0)}}
+.alarm .ak{padding:16px 18px 6px;font-family:'Archivo Black',Arial,sans-serif;font-size:28px;line-height:1.05;text-transform:uppercase}
+.alarm .ai{padding:0 18px 12px;font-size:15.5px;line-height:1.5}.alarm .ai small{display:block;opacity:.85;font-size:13px;margin-top:4px}
+.alarm .ab{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 12px 12px}
+.alarm button{border:none;border-radius:8px;padding:15px 8px;font-family:'Oswald',Arial,sans-serif;font-weight:700;font-size:17px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
+.alarm .ja{background:#fff;color:#B30F1C}.alarm .nee{background:rgba(0,0,0,.28);color:#fff}
+.alarm .ar{background:rgba(0,0,0,.25);padding:10px 18px;font-size:14px}
+.alarm .gekozen{outline:3px solid #fff;outline-offset:2px}
+.meld{max-width:400px;width:100%;margin-top:16px;background:#111419;border:1px solid #242A33;border-radius:10px;padding:14px 16px;font-size:14px;color:#C9CFD8;line-height:1.55}
+.meld b{color:#fff}.meld .aan{color:#3BE38A;font-weight:700}
+.meld button{display:block;width:100%;margin-top:10px;background:linear-gradient(180deg,#FF3B4A,#E0101F);color:#fff;border:none;border-radius:6px;padding:12px;font-family:'Oswald',Arial,sans-serif;font-weight:600;letter-spacing:.1em;text-transform:uppercase;font-size:15px;cursor:pointer}
+.meld button.stil{background:none;border:1px solid #2A313B;color:#9AA4B1;font-size:13px;padding:9px}
 @media (display-mode: standalone){.tip{display:none}}
 </style>
 </head>
@@ -1317,6 +1331,7 @@ function qrCanvas(code){var m=SKBQR.matrix('https://www.skbbhv.nl/c/'+code,'H'),
  g.fillStyle='#fff';g.fillRect(0,0,size,size);g.fillStyle='#0B0D10';for(var y=0;y<n;y++)for(var x=0;x<n;x++)if(m[y][x])g.fillRect((x+q)*sc,(y+q)*sc,sc,sc);
  var img=new Image();img.onload=function(){var lw=Math.round(n*0.30)*sc,lh=Math.round(lw*img.naturalHeight/img.naturalWidth),pad=Math.round(sc*.9),bw=lw+2*pad,bh=lh+2*pad,bx=Math.round((size-bw)/2),by=Math.round((size-bh)/2);g.fillStyle='#fff';g.fillRect(bx,by,bw,bh);g.drawImage(img,bx+pad,by+pad,lw,lh);};img.src=LOGO;return c;}
 var m=location.pathname.match(/^\/pas\/([A-Za-z0-9]{6,20})/), code=m?m[1]:new URLSearchParams(location.search).get('c');
+if(!code){try{code=localStorage.getItem('skb-mijn-pas');if(code&&!/^[A-Za-z0-9]{6,20}$/.test(code))code=null;}catch(e){}}
 var app=document.getElementById('app');
 if(!code){app.innerHTML='<p class="fout">Geen pas gevonden.</p>';}
 else fetch('/api/verify?code='+encodeURIComponent(code)).then(function(r){return r.json()}).then(function(r){
@@ -1332,7 +1347,58 @@ else fetch('/api/verify?code='+encodeURIComponent(code)).then(function(r){return
    '<div class="status '+(r.valid?'ok':'verl')+'">'+(r.valid?'✅ Echt en geldig BHV-certificaat':'⚠️ Dit certificaat is verlopen — tijd voor de herhaling')+'</div>'+
    '<div class="tip"><b>Altijd bij de hand:</b> zet deze pas op je beginscherm. '+(ios?'Tik onderin op <b>Delen</b> → <b>Zet op beginscherm</b>.':'Tik rechtsboven op <b>⋮</b> → <b>Toevoegen aan startscherm</b>.')+'</div>';
   document.getElementById('qr').appendChild(qrCanvas(code));
+  meldingenBlok(); alarmTonen();
 }).catch(function(){app.innerHTML='<p class="fout">Pas laden mislukt. Probeer het later opnieuw.</p>';});
+
+/* ===== BHV-alarm: meldingen aanzetten + alarm bekijken/reageren ===== */
+function api(action,payload){return fetch('/api/account',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({action:action},payload||{}))}).then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.error||'Er ging iets mis.');return j;});});}
+function b64ToBytes(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';var r=atob(s),a=new Uint8Array(r.length);for(var i=0;i<r.length;i++)a[i]=r.charCodeAt(i);return a;}
+var standalone=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+var pushKan='serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window;
+function swReg(){return navigator.serviceWorker.register('/sw-pas.js',{scope:'/pas/'});}
+function meldingenBlok(){
+  var el=document.createElement('div');el.className='meld';el.id='meld';document.body.appendChild(el);
+  var ios=/iPhone|iPad|iPod/i.test(navigator.userAgent);
+  function teken(staatAan){
+    if(staatAan){el.innerHTML='<b>🔔 BHV-alarm</b><br><span class="aan">● Meldingen staan aan</span> op dit toestel. Slaat je werkgever alarm, dan krijg je direct een melding.<button class="stil" onclick="meldingTest()">Stuur testmelding</button>';return;}
+    if(!pushKan||(ios&&!standalone)){
+      el.innerHTML='<b>🔔 BHV-alarm op je telefoon</b><br>Krijg direct een melding als je werkgever BHV-alarm slaat. '+(ios?'Zet deze pas eerst op je beginscherm (<b>Delen</b> → <b>Zet op beginscherm</b>), open hem daar en zet dan de meldingen aan.':'Je browser ondersteunt geen meldingen; je krijgt het alarm wel per e-mail.');return;}
+    el.innerHTML='<b>🔔 BHV-alarm op je telefoon</b><br>Krijg direct een melding met trilalarm als je werkgever BHV-alarm slaat. Je krijgt het alarm ook per e-mail.<button onclick="meldingAan()">Alarmmeldingen aanzetten</button>';
+  }
+  window._meldTeken=teken;
+  if(pushKan&&Notification.permission==='granted'){swReg().then(function(r){return r.pushManager.getSubscription();}).then(function(sub){teken(!!sub);}).catch(function(){teken(false);});}
+  else teken(false);
+}
+function meldingAan(test){
+  var knop=document.querySelector('#meld button');if(knop){knop.disabled=true;knop.textContent='Even geduld…';}
+  var reg;
+  Promise.all([swReg(),api('push-sleutel'),Notification.requestPermission()]).then(function(x){
+    reg=x[0];var sleutel=x[1];
+    if(x[2]!=='granted')throw new Error('Je hebt meldingen geweigerd. Zet ze aan in de instellingen van je telefoon.');
+    if(!sleutel.aan||!sleutel.key)throw new Error('Meldingen zijn nog niet beschikbaar. Je krijgt het alarm per e-mail.');
+    return navigator.serviceWorker.ready.then(function(r){return r.pushManager.getSubscription().then(function(s){return s||r.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64ToBytes(sleutel.key)});});});
+  }).then(function(sub){return api('alarm-abonneer',{code:code,subscription:sub.toJSON(),test:true});})
+  .then(function(){window._meldTeken(true);})
+  .catch(function(e){alert(e.message||'Aanzetten mislukt.');window._meldTeken(false);});
+}
+function meldingTest(){navigator.serviceWorker.ready.then(function(r){return r.pushManager.getSubscription();}).then(function(sub){if(!sub)throw new Error('Geen abonnement');return api('alarm-abonneer',{code:code,subscription:sub.toJSON(),test:true});}).then(function(){var b=document.querySelector('#meld .stil');if(b)b.textContent='Testmelding verstuurd ✓';}).catch(function(e){alert(e.message);});}
+var alarmId=new URLSearchParams(location.search).get('alarm');
+function alarmTonen(reactie){
+  if(!alarmId||!/^[A-Za-z0-9_-]{6,30}$/.test(alarmId))return;
+  api('alarm-bhver',{code:code,id:alarmId,reactie:reactie||undefined}).then(function(a){
+    var el=document.getElementById('alarm');
+    if(!el){el=document.createElement('div');el.id='alarm';var pas=document.querySelector('.pas');pas.parentNode.insertBefore(el,pas);window.scrollTo(0,0);}
+    el.className='alarm'+(a.test?' test':'');
+    var tijd=new Date(a.at).toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'});
+    el.innerHTML='<div class="ak">'+(a.test?'Testalarm':'BHV-alarm')+' '+a.icoon+'<br>'+esc(a.soort)+'</div>'+
+      '<div class="ai">'+(a.locatie?'<b>📍 '+esc(a.locatie)+'</b><br>':'')+(a.bericht?esc(a.bericht):'')+'<small>'+esc(a.bedrijf||'Je werkgever')+' · '+tijd+(a.test?' · dit is een oefening':'')+'</small></div>'+
+      '<div class="ab"><button class="ja'+(a.mijnReactie==='komt'?' gekozen':'')+'" onclick="alarmTonen(\'komt\')">✋ Ik kom eraan</button><button class="nee'+(a.mijnReactie==='kan-niet'?' gekozen':'')+'" onclick="alarmTonen(\'kan-niet\')">Ik kan niet</button></div>'+
+      '<div class="ar">'+(a.mijnReactie?(a.mijnReactie==='komt'?'✅ Je werkgever ziet dat je eraan komt. ':'Doorgegeven dat je niet kunt. '):'')+'<b>'+a.komt+'</b> van '+a.totaal+' BHV\'ers komen eraan. Bij levensgevaar: bel 112.</div>';
+    if(navigator.vibrate&&!reactie&&!a.mijnReactie)navigator.vibrate([400,150,400]);
+    clearTimeout(window._at);window._at=setTimeout(alarmTonen,8000);
+  }).catch(function(){});
+}
+
 </script>
 </body>
 </html>
