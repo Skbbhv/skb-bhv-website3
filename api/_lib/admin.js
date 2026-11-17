@@ -9,6 +9,10 @@
 
 import crypto from 'crypto';
 import { kv } from './kv.js';
+import { verifyPassword } from './accounts.js';
+
+// Mailbox van de eigenaar: hier gaat de link 'wachtwoord instellen' naartoe.
+export const ADMIN_OWNER_EMAIL = 'info@oibase.nl';
 
 function safeEqual(a, b) {
   const ha = crypto.createHash('sha256').update(String(a)).digest();
@@ -20,8 +24,10 @@ function safeEqual(a, b) {
 export async function checkAdmin(req, body) {
   const adminEmail = String(process.env.ADMIN_EMAIL || '').trim().toLowerCase();
   const adminPassword = process.env.ADMIN_PASSWORD;
-  if (!adminEmail || !adminPassword) {
-    return { status: 500, error: 'ADMIN_EMAIL en ADMIN_PASSWORD moeten allebei ingesteld zijn in Vercel.' };
+  // Wachtwoord dat de beheerder zelf via de resetlink heeft ingesteld (heeft voorrang).
+  const stored = await kv.get('admin:auth');
+  if (!stored && (!adminEmail || !adminPassword)) {
+    return { status: 500, error: 'Er is nog geen beheerderswachtwoord. Gebruik "Wachtwoord instellen".' };
   }
 
   const ip = String(req.headers['x-forwarded-for'] || 'onbekend').split(',')[0].trim();
@@ -31,9 +37,9 @@ export async function checkAdmin(req, body) {
   }
 
   const email = String(body.adminEmail || '').trim().toLowerCase();
-  const emailOk = safeEqual(email, adminEmail);
-  const passwordOk = safeEqual(body.adminPassword || '', adminPassword);
-  if (!emailOk || !passwordOk) {
+  const viaStored = !!stored && safeEqual(email, stored.email) && verifyPassword(String(body.adminPassword || ''), stored);
+  const viaEnv = !!adminEmail && !!adminPassword && safeEqual(email, adminEmail) && safeEqual(body.adminPassword || '', adminPassword);
+  if (!viaStored && !viaEnv) {
     await kv.incr(failKey);
     await kv.expire(failKey, 15 * 60);
     return { status: 401, error: 'E-mailadres of wachtwoord van de beheerder klopt niet.' };

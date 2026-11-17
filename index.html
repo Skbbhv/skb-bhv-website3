@@ -2216,6 +2216,18 @@ body.beheer-app .beheer-badge{display:inline-flex;align-items:center;font-family
         </div>
         <button type="submit" class="btn btn-primary btn-block" id="beheerLoginBtn" style="margin-top:18px;">Inloggen als beheerder</button>
         <div id="beheerLoginMsg" class="form-msg" style="margin:10px 0 0;text-align:center;"></div>
+        <button type="button" class="link-btn" onclick="beheerResetAanvragen()">Wachtwoord vergeten of instellen?</button>
+      </form>
+      <form class="panel" id="beheerResetForm" style="display:none;margin-bottom:20px;" onsubmit="beheerResetOpslaan();return false;" autocomplete="on">
+        <h2 style="font-size:20px;margin-bottom:6px;">Nieuw beheerderswachtwoord</h2>
+        <p style="font-size:14px;margin:0 0 16px;">Kies een wachtwoord van minimaal 8 tekens. Daarna log je in met info@oibase.nl.</p>
+        <input type="text" name="username" value="info@oibase.nl" autocomplete="username" style="display:none;" readonly>
+        <div class="field-row" style="margin-bottom:0;">
+          <div class="field" style="margin-bottom:0;"><label for="beheerNieuwPw">Nieuw wachtwoord</label><input id="beheerNieuwPw" type="password" autocomplete="new-password" minlength="8"></div>
+          <div class="field" style="margin-bottom:0;"><label for="beheerNieuwPw2">Herhaal wachtwoord</label><input id="beheerNieuwPw2" type="password" autocomplete="new-password" minlength="8"></div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" id="beheerResetBtn" style="margin-top:18px;">Wachtwoord opslaan</button>
+        <div id="beheerResetMsg" class="form-msg" style="margin:10px 0 0;text-align:center;"></div>
       </form>
       <div id="beheerApp" style="display:none;">
         <div class="beheer-bar">
@@ -4462,6 +4474,47 @@ function beheerRenderDeelnemers(){
   document.getElementById('beheerDeelnemers').innerHTML = L.length ? L.slice(0,300).map(p => beheerRij(p,false)).join('') : '<p class="bh-leeg">Geen deelnemers gevonden.</p>';
 }
 
+async function beheerResetAanvragen(){
+  const msg = document.getElementById('beheerLoginMsg');
+  msg.className = 'form-msg'; msg.textContent = 'Link aanvragen…';
+  try{
+    const r = await fetch('/api/admin-overview', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'resetRequest' }) });
+    const j = await r.json().catch(() => ({}));
+    if(!r.ok) throw new Error(j.error || 'Fout ' + r.status);
+    msg.className = 'form-msg ok';
+    msg.textContent = 'Er is een link gestuurd naar ' + (j.to || 'de beheerder') + '. Open die mail om je wachtwoord in te stellen (30 minuten geldig).';
+  }catch(e){ msg.className = 'form-msg'; msg.textContent = e.message; }
+}
+function beheerResetToon(){
+  const t = new URLSearchParams(location.search).get('reset');
+  if(!t) return false;
+  BEHEER.resetToken = t;
+  document.getElementById('beheerLogin').style.display = 'none';
+  document.getElementById('beheerResetForm').style.display = '';
+  return true;
+}
+async function beheerResetOpslaan(){
+  const a = document.getElementById('beheerNieuwPw').value, b = document.getElementById('beheerNieuwPw2').value;
+  const msg = document.getElementById('beheerResetMsg'), btn = document.getElementById('beheerResetBtn');
+  msg.className = 'form-msg';
+  if(a.length < 8){ msg.textContent = 'Kies minimaal 8 tekens.'; return; }
+  if(a !== b){ msg.textContent = 'De wachtwoorden zijn niet gelijk.'; return; }
+  btn.disabled = true; msg.textContent = 'Opslaan…';
+  try{
+    const r = await fetch('/api/admin-overview', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'resetSet', token: BEHEER.resetToken, newPassword: a }) });
+    const j = await r.json().catch(() => ({}));
+    if(!r.ok) throw new Error(j.error || 'Fout ' + r.status);
+    history.replaceState(null, '', '/beheer');
+    document.getElementById('beheerResetForm').style.display = 'none';
+    document.getElementById('beheerLogin').style.display = '';
+    document.getElementById('adminEmailLogin').value = j.email || 'info@oibase.nl';
+    document.getElementById('adminPassword').value = a;
+    document.getElementById('beheerNieuwPw').value = ''; document.getElementById('beheerNieuwPw2').value = '';
+    beheerInloggen();
+  }catch(e){ msg.textContent = e.message; }
+  finally{ btn.disabled = false; }
+}
+
 /* ============ COOKIEMELDING ============ */
 async function initCookieNotice(){
   try{
@@ -4484,7 +4537,7 @@ async function dismissCookieNotice(){
 
   const params = new URLSearchParams(window.location.search);
 
-  if(BEHEER_APP){ document.body.classList.add('beheer-app'); goTo('admin'); return; }
+  if(BEHEER_APP){ document.body.classList.add('beheer-app'); goTo('admin'); beheerResetToon(); return; }
   if(params.get('admin')){
     // Geheime beheerpagina — alleen bereikbaar met de juiste link, niet gelinkt in het menu.
     goTo('admin');
