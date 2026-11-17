@@ -2544,6 +2544,7 @@ body.stoer .stoer-ticker{margin:10px calc(50% - 50vw - 40px) 30px;}
       <div id="rosterOwnerToolbar" style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:18px;border-top:1px solid var(--line);flex-wrap:wrap;gap:10px;">
         <button class="btn btn-outline" onclick="goTo('invoice')"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg> Bekijk factuur</button>
         <button class="btn btn-outline" onclick="emailOrderToSkb()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg> Bestelgegevens mailen naar SKB BHV</button>
+        <button class="btn btn-outline" onclick="printAllePassenBadgy()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2"/><path d="M14 10h4M14 14h3"/></svg>Print alle pasjes (Badgy)</button>
         <button class="btn btn-outline" id="clearOrderBtn" onclick="clearProgress()" style="color:var(--red);border-color:#F3C6CA;">Bestelling wissen</button>
       </div>
     </div>
@@ -2730,6 +2731,8 @@ body.stoer .stoer-ticker{margin:10px calc(50% - 50vw - 40px) 30px;}
       <p class="pas-post-note">Dit is de digitale versie van je BHV-pasje. Je fysieke pasje wordt per post verstuurd naar het adres dat bij de bestelling is opgegeven.</p>
       <div style="margin-top:26px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
         <button class="btn btn-primary" onclick="downloadPas(event)">Download pasje (PNG)</button>
+        <button class="btn btn-primary" onclick="printPasBadgy()">Print op pasjesprinter (Badgy)</button>
+        <button class="btn btn-outline" onclick="downloadPasBadgeStudio(event)">Download voor Badge Studio</button>
         <button class="btn btn-outline" onclick="goTo('dashboard')">Terug naar dashboard</button>
       </div>
     </div>
@@ -4099,6 +4102,81 @@ function downloadPas(evt){
     sheet.style.transform = originalTransform;
     if(btn) btn.disabled = false;
   });
+}
+
+/* ============ BADGY PASJESPRINTER (CR80, 85,6 × 54 mm) ============ */
+function vulPasKaart(card, p){
+  const pkg = state.order.pkg ? PACKAGES[state.order.pkg] : PACKAGES.basis;
+  const issueDate = p.passDate ? new Date(p.passDate) : new Date();
+  const validUntil = new Date(issueDate); validUntil.setFullYear(validUntil.getFullYear()+1);
+  const zet = (id, v) => { const e = card.querySelector('#'+id); if(e) e.textContent = v; };
+  zet('pasType', (pkg.pasType || 'Theorie').toUpperCase());
+  zet('pasName', `${p.first || 'Cursist'} ${p.last || ''}`.trim());
+  zet('pasBirthdate', formatDateNL(p.birthdate));
+  zet('pasBehaald', formatDateNL(issueDate));
+  zet('pasGeldig', formatDateNL(validUntil));
+  zet('pasNumberEl', p.pasNumber || '—');
+  zet('pasCertNr', p.certNumber || '—');
+  card.querySelectorAll('[id]').forEach(e => e.removeAttribute('id'));
+  card.removeAttribute('id');
+  card.style.transform = 'none';
+  return card;
+}
+
+function printPassen(lijst){
+  const sjabloon = document.getElementById('pasCardSheet');
+  if(!sjabloon || !lijst.length){ alert('Er zijn nog geen pasjes om te printen. Een pasje komt beschikbaar zodra een deelnemer geslaagd is en een pasnummer heeft.'); return; }
+  const w = window.open('', '_blank');
+  if(!w){ alert('Je browser blokkeert het printvenster. Sta pop-ups toe voor skbbhv.nl en probeer het opnieuw.'); return; }
+  const stijlen = Array.from(document.querySelectorAll('style')).map(st => st.outerHTML).join('\n');
+  const kaarten = lijst.map(p => '<div class="badgy-kaart">' + vulPasKaart(sjabloon.cloneNode(true), p).outerHTML + '</div>').join('');
+  w.document.open();
+  w.document.write(`<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><title>SKB BHV pasjes – Badgy</title>${stijlen}
+<style>
+  @page{size:85.6mm 54mm;margin:0;}
+  html,body{margin:0 !important;padding:0 !important;background:#fff !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .badgy-kaart{width:85.6mm;height:54mm;overflow:hidden;position:relative;break-after:page;page-break-after:always;}
+  .badgy-kaart:last-child{break-after:auto;page-break-after:auto;}
+  .badgy-kaart .pas-card{position:absolute;left:0;top:0;width:640px !important;height:404px !important;border-radius:0 !important;box-shadow:none !important;
+    transform:none !important;zoom:0.50546;}
+  @media screen{
+    body{background:#2a2d33 !important;padding:24px !important;}
+    .badgy-kaart{margin:0 auto 18px;border-radius:3.2mm;box-shadow:0 10px 30px rgba(0,0,0,.5);}
+    .badgy-info{max-width:560px;margin:0 auto 22px;font:14px/1.5 Arial,sans-serif;color:#fff;background:#111419;border:1px solid #333;border-radius:8px;padding:14px 18px;}
+    .badgy-info b{color:#FF4552;}
+  }
+  @media print{.badgy-info{display:none !important;}}
+</style></head><body>
+<div class="badgy-info"><b>${lijst.length} pasje${lijst.length===1?'':'s'} klaar voor de Badgy.</b><br>
+Kies in het printvenster: printer <b>Evolis Badgy</b> · formaat <b>CR80 / 85,6 × 54 mm</b> · marges <b>Geen</b> · schaal <b>100%</b> · <b>Achtergrondafbeeldingen aan</b>.</div>
+${kaarten}</body></html>`);
+  w.document.close();
+  const start = () => setTimeout(() => { try{ w.focus(); w.print(); }catch(e){} }, 400);
+  try{ (w.document.fonts && w.document.fonts.ready) ? w.document.fonts.ready.then(start) : w.addEventListener('load', start); }catch(e){ start(); }
+}
+
+function printPasBadgy(){
+  const p = state.roster[state.activeIndex];
+  if(p) printPassen([p]);
+}
+
+function printAllePassenBadgy(){
+  printPassen((state.roster || []).filter(p => p && p.status === 'passed' && p.pasNumber));
+}
+
+function downloadPasBadgeStudio(evt){
+  const p = state.roster[state.activeIndex];
+  if(!p) return;
+  const kaart = vulPasKaart(document.getElementById('pasCardSheet').cloneNode(true), p);
+  kaart.style.cssText = 'position:fixed;left:-10000px;top:0;width:640px;height:404px;border-radius:0;box-shadow:none;transform:none;';
+  document.body.appendChild(kaart);
+  const btn = evt && evt.target; if(btn) btn.disabled = true;
+  html2canvas(kaart, {scale:1012/640, backgroundColor:'#0B0D10', useCORS:true}).then(canvas => {
+    const a = document.createElement('a');
+    a.download = 'SKB-BHV-pasje-' + (p.pasNumber || 'demo') + '-CR80-300dpi.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+  }).finally(() => { kaart.remove(); if(btn) btn.disabled = false; });
 }
 
 /* ============ COOKIEMELDING ============ */
