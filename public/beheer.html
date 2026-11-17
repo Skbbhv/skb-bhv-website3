@@ -1491,6 +1491,20 @@ if(BEHEER_APP){
 }
 </script>
 <style id="beheer-app-stijl">
+.omzet-grafiek{display:flex;align-items:flex-end;gap:6px;height:230px;padding:10px 4px 0;border-bottom:1px solid #242A33;position:relative;flex-wrap:wrap;}
+.og-kol{flex:1;min-width:34px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:200px;}
+.og-staaf{width:70%;max-width:44px;height:150px;display:flex;flex-direction:column-reverse;justify-content:flex-start;}
+.og-staaf i{display:block;width:100%;}
+i.og-s{background:linear-gradient(180deg,#FF3B4A,#B30F1C);border-radius:3px 3px 0 0;} i.og-h{background:#19D36B;}
+.og-bedrag{font-size:10.5px;color:#C9CFD8;margin-bottom:3px;white-space:nowrap;}
+.og-mnd{font-size:11.5px;color:#9AA4B1;margin-top:6px;text-transform:uppercase;font-family:'Oswald','Archivo',Arial,sans-serif;letter-spacing:.05em;}
+.og-leg{width:100%;display:flex;gap:16px;justify-content:flex-end;font-size:12.5px;color:#9AA4B1;padding:8px 0 6px;}
+.og-leg i{display:inline-block;width:11px;height:11px;margin-right:6px;vertical-align:-1px;border-radius:2px;}
+.omzet-tabel{width:100%;border-collapse:collapse;font-size:13.5px;min-width:760px;}
+.omzet-tabel th{text-align:left;font-family:'Oswald','Archivo',Arial,sans-serif;font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:12px;color:#9AA4B1;padding:8px 6px;border-bottom:1px solid #2A313B;}
+.omzet-tabel td{padding:9px 6px;border-bottom:1px solid #1E232B;color:#E3E7EC;white-space:nowrap;}
+.omzet-tabel tr.tot td{font-weight:800;color:#fff;border-top:2px solid #E0101F;}
+
 .team-fit{display:flex;align-items:center;gap:8px;font-size:14px;color:#111;margin-left:auto;cursor:pointer;}
 .team-fit input{width:18px;height:18px;accent-color:#E0101F;}
 .team-fitscore{font-weight:700;color:#B35A00;} .team-fitscore.top{color:#0E7A3D;}
@@ -3614,6 +3628,7 @@ window.SKBQR={matrix:matrix,svg:svg,dataUrl:dataUrl};})();
             <button class="active" data-tab="overzicht" onclick="beheerTab('overzicht')">Overzicht</button>
             <button data-tab="pasjes" onclick="beheerTab('pasjes')">Pasjes printen <span class="bt-count" id="btPasCount"></span></button>
             <button data-tab="deelnemers" onclick="beheerTab('deelnemers')">Deelnemers</button>
+            <button data-tab="omzet" onclick="beheerTab('omzet')">Omzet</button>
             <button data-tab="nieuw" onclick="beheerTab('nieuw')">Nieuw</button>
           </div>
           <div class="beheer-bar-r">
@@ -3673,6 +3688,19 @@ window.SKBQR={matrix:matrix,svg:svg,dataUrl:dataUrl};})();
           </div>
         </div>
 
+        <div class="beheer-pane" data-pane="omzet" style="display:none;">
+          <div class="panel">
+            <div class="beheer-pas-top">
+              <div><h2 style="font-size:22px;margin-bottom:4px;">Omzet per maand</h2>
+              <p style="font-size:14px;margin:0;">Betalingen via Stripe (iDEAL/creditcard) plus contant en overboekingen die je hier zelf invoert. Laatste 12 maanden.</p></div>
+              <button class="btn btn-outline btn-sm" onclick="beheerOmzet(true)">↻ Vernieuwen</button>
+            </div>
+            <div id="omzetTegels" class="beheer-tiles" style="margin:6px 0 18px;"></div>
+            <div id="omzetGrafiek" class="omzet-grafiek"></div>
+            <div id="omzetTabel" style="overflow-x:auto;margin-top:18px;"></div>
+            <p id="omzetNoot" class="klein" style="font-size:12.5px;color:#9AA4B1;margin-top:10px;"></p>
+          </div>
+        </div>
         <div class="beheer-pane" data-pane="nieuw" style="display:none;">
       <div class="panel beheer-geslaagd" style="margin-bottom:20px;">
         <h2 style="font-size:22px;margin-bottom:6px;">Deelnemer toevoegen als geslaagd</h2>
@@ -5845,6 +5873,7 @@ function beheerUitloggen(){
   BEHEER.data = null; BEHEER.lijst = []; BEHEER.gekozen.clear();
 }
 function beheerTab(t){
+  if(t === 'omzet') beheerOmzet(false);
   if(t === 'nieuw'){ const d = document.getElementById('ngDate'); if(d && !d.value) d.value = new Date().toISOString().slice(0,10); }
   document.querySelectorAll('.beheer-tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === t));
   document.querySelectorAll('.beheer-pane').forEach(p => p.style.display = p.dataset.pane === t ? '' : 'none');
@@ -6264,6 +6293,46 @@ async function bhvFitZet(aan){
     teamExtra.fit = !!aan;
     showToast(aan ? 'BHV-fit staat aan. Je BHV\'ers krijgen voortaan elke maand 3 opfrisvragen per mail.' : 'BHV-fit staat uit.');
   }catch(e){ showToast(e.message); document.getElementById('teamFit').checked = !aan; }
+}
+
+/* ============ BEHEER: OMZET PER MAAND ============ */
+let omzetData = null;
+const MND = ['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+function eurNL(v){ return '€' + Number(v||0).toLocaleString('nl-NL', { minimumFractionDigits:2, maximumFractionDigits:2 }); }
+async function beheerOmzet(opnieuw){
+  if(omzetData && !opnieuw){ omzetTonen(); return; }
+  document.getElementById('omzetGrafiek').innerHTML = '<p class="bh-leeg">Omzet laden…</p>';
+  try{ omzetData = await beheerApi('omzet'); omzetTonen(); }
+  catch(e){ document.getElementById('omzetGrafiek').innerHTML = `<p class="bh-leeg" style="color:#FF6B76">${beheerEsc(e.message)}</p>`; }
+}
+function omzetTonen(){
+  const M = omzetData.maanden || [];
+  const nu = M[M.length-1] || {}, vorig = M[M.length-2] || {};
+  const jaar = new Date().getFullYear().toString();
+  const ditJaar = M.filter(m => m.maand.startsWith(jaar));
+  const som = (L,k) => L.reduce((a,m) => a + (m[k]||0), 0);
+  const label = m => { const [j,mm] = m.split('-'); return MND[+mm-1] + ' ' + j.slice(2); };
+  const verschil = vorig.totaalIncl ? Math.round((nu.totaalIncl - vorig.totaalIncl) / vorig.totaalIncl * 100) : null;
+  document.getElementById('omzetTegels').innerHTML = [
+    ['hot', eurNL(nu.totaalIncl), 'Deze maand (incl. btw)' + (verschil!=null ? ` · ${verschil>=0?'+':''}${verschil}%` : '')],
+    ['', eurNL(nu.totaalExcl), 'Deze maand excl. btw'],
+    ['ok', eurNL(som(ditJaar,'totaalIncl')), 'Dit jaar (incl. btw)'],
+    ['', eurNL(som(ditJaar,'stripeNetto') + som(ditJaar,'handmatig')), 'Dit jaar netto ontvangen'],
+    ['', String(som(M,'bestellingen')), 'Bestellingen (12 mnd)'],
+  ].map(t => `<div class="bh-tile ${t[0]}"><b style="font-size:24px">${t[1]}</b><span>${t[2]}</span></div>`).join('');
+  const max = Math.max(1, ...M.map(m => m.totaalIncl));
+  document.getElementById('omzetGrafiek').innerHTML = M.map(m => {
+    const hS = Math.max(0, (m.stripeBruto - m.terugbetaald) / max * 100), hH = m.handmatig / max * 100;
+    return `<div class="og-kol" title="${label(m.maand)}: ${eurNL(m.totaalIncl)}"><span class="og-bedrag">${m.totaalIncl ? Math.round(m.totaalIncl).toLocaleString('nl-NL') : ''}</span>
+      <div class="og-staaf"><i class="og-h" style="height:${hH}%"></i><i class="og-s" style="height:${hS}%"></i></div><span class="og-mnd">${label(m.maand)}</span></div>`;
+  }).join('') + '<div class="og-leg"><span><i class="og-s"></i>Stripe (iDEAL/kaart)</span><span><i class="og-h"></i>Contant / overboeking</span></div>';
+  const rijen = M.slice().reverse().map(m => `<tr><td><b>${label(m.maand)}</b></td><td>${m.bestellingen}</td><td>${eurNL(m.stripeBruto)}</td><td>${m.terugbetaald?'− '+eurNL(m.terugbetaald):'—'}</td><td>${eurNL(m.handmatig)}</td>
+    <td><b>${eurNL(m.totaalIncl)}</b></td><td>${eurNL(m.btw)}</td><td>${eurNL(m.totaalExcl)}</td><td>${m.stripeKosten?'− '+eurNL(m.stripeKosten):'—'}</td></tr>`).join('');
+  document.getElementById('omzetTabel').innerHTML = `<table class="omzet-tabel"><tr><th>Maand</th><th>Best.</th><th>Stripe bruto</th><th>Terugbetaald</th><th>Contant/overb.</th><th>Totaal incl.</th><th>Btw 21%</th><th>Excl. btw</th><th>Stripe-kosten</th></tr>${rijen}
+    <tr class="tot"><td>12 mnd</td><td>${som(M,'bestellingen')}</td><td>${eurNL(som(M,'stripeBruto'))}</td><td>${som(M,'terugbetaald')?'− '+eurNL(som(M,'terugbetaald')):'—'}</td><td>${eurNL(som(M,'handmatig'))}</td><td>${eurNL(som(M,'totaalIncl'))}</td><td>${eurNL(som(M,'btw'))}</td><td>${eurNL(som(M,'totaalExcl'))}</td><td>− ${eurNL(som(M,'stripeKosten'))}</td></tr></table>`;
+  document.getElementById('omzetNoot').textContent = omzetData.stripeOk
+    ? 'Stripe-bedragen komen rechtstreeks uit Stripe (op datum van betaling). Btw is berekend als 21% van het totaal. Contant/overboeking: klantaccounts die je handmatig hebt aangemaakt, met hun betaalwijze.'
+    : 'Let op: ' + (omzetData.stripeFout || 'Stripe niet bereikbaar') + ' De bedragen zijn nu berekend uit de bestellingen in de database.';
 }
 
 /* ============ COOKIEMELDING ============ */
