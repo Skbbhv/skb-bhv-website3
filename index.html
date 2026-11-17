@@ -1469,6 +1469,12 @@ if(BEHEER_APP){
 }
 </script>
 <style id="beheer-app-stijl">
+.beheer-install{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:0 0 26px;padding:14px 16px;border:1px solid #E0101F;border-radius:6px;background:linear-gradient(120deg,rgba(224,16,31,.22),rgba(224,16,31,.06));}
+.beheer-install div{display:flex;flex-direction:column;gap:2px;flex:1;min-width:200px;}
+.beheer-install b{color:#fff;font-family:'Oswald','Archivo',Arial,sans-serif;text-transform:uppercase;letter-spacing:.08em;font-size:16px;}
+.beheer-install span{color:#E3E7EC;font-size:14px;}
+.beheer-install span b{font-family:inherit;text-transform:none;letter-spacing:0;font-size:inherit;}
+
 body.beheer-app nav.main,body.beheer-app header.site .btn,body.beheer-app header.site .menu-toggle,body.beheer-app footer,body.beheer-app .wa-knop,body.beheer-app .cookie-notice{display:none !important;}
 body.beheer-app header.site .header-inner{justify-content:flex-start;gap:16px;}
 body.beheer-app header.site .logo{pointer-events:none;}
@@ -2202,6 +2208,10 @@ body.beheer-app .beheer-badge{display:inline-flex;align-items:center;font-family
 <div class="view" id="view-admin">
   <main>
     <section style="padding-top:52px;padding-bottom:80px;max-width:680px;margin:0 auto;">
+      <div class="beheer-install" id="beheerInstall" style="display:none;">
+        <div><b>SKB Beheer als app</b><span id="beheerInstallTxt">Zet de beheer-app op je startscherm.</span></div>
+        <button class="btn btn-primary btn-sm" id="beheerInstallBtn" onclick="beheerInstalleer()">Installeer als app</button>
+      </div>
       <div class="section-head beheer-head">
         <div class="eyebrow">Beheerder</div>
         <h2 style="font-size:34px;">SKB BHV Beheer</h2>
@@ -4515,6 +4525,46 @@ async function beheerResetOpslaan(){
   finally{ btn.disabled = false; }
 }
 
+/* ============ BEHEER-APP INSTALLEREN ============ */
+let beheerInstallPrompt = null;
+function beheerInstallInit(){
+  if(typeof BEHEER_APP === 'undefined' || !BEHEER_APP) return;
+  try{ if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw-beheer.js', { scope:'/beheer' }).catch(()=>{}); }catch(e){}
+  const standalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+  if(standalone) return; // al geïnstalleerd
+  const ua = navigator.userAgent || '';
+  const ios = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const inApp = /FBAN|FBAV|Instagram|WhatsApp|Line\/|wv\)|; wv/i.test(ua);
+  const box = document.getElementById('beheerInstall'), txt = document.getElementById('beheerInstallTxt'), btn = document.getElementById('beheerInstallBtn');
+  box.style.display = '';
+  if(ios){
+    txt.innerHTML = /CriOS|FxiOS|EdgiOS/i.test(ua) || inApp
+      ? 'Open deze pagina in <b>Safari</b> en kies daar Delen → <b>Zet op beginscherm</b>.'
+      : 'Tik onderaan op <b>Delen</b> (vierkantje met pijl) → <b>Zet op beginscherm</b>.';
+    btn.style.display = 'none';
+  } else if(inApp){
+    txt.innerHTML = 'Je zit in het venster van een andere app. Open <b>www.skbbhv.nl/beheer</b> in <b>Chrome</b> om te installeren.';
+    btn.textContent = 'Link kopiëren';
+  } else {
+    txt.innerHTML = 'Zet de beheer-app met het BEHEERDER-icoon op je startscherm.';
+  }
+}
+window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); beheerInstallPrompt = e; });
+window.addEventListener('appinstalled', () => { const b = document.getElementById('beheerInstall'); if(b) b.style.display = 'none'; });
+async function beheerInstalleer(){
+  const txt = document.getElementById('beheerInstallTxt');
+  if(beheerInstallPrompt){
+    beheerInstallPrompt.prompt();
+    try{ await beheerInstallPrompt.userChoice; }catch(e){}
+    beheerInstallPrompt = null; return;
+  }
+  if(document.getElementById('beheerInstallBtn').textContent === 'Link kopiëren'){
+    try{ await navigator.clipboard.writeText('https://www.skbbhv.nl/beheer'); txt.innerHTML = 'Link gekopieerd. Plak hem in <b>Chrome</b> en installeer daar.'; }catch(e){}
+    return;
+  }
+  txt.innerHTML = 'Tik rechtsboven op <b>⋮</b> → <b>App installeren</b> of <b>Toevoegen aan startscherm</b>.';
+}
+
 /* ============ COOKIEMELDING ============ */
 async function initCookieNotice(){
   try{
@@ -4537,7 +4587,7 @@ async function dismissCookieNotice(){
 
   const params = new URLSearchParams(window.location.search);
 
-  if(BEHEER_APP){ document.body.classList.add('beheer-app'); goTo('admin'); beheerResetToon(); return; }
+  if(BEHEER_APP){ document.body.classList.add('beheer-app'); goTo('admin'); beheerInstallInit(); beheerResetToon(); return; }
   if(params.get('admin')){
     // Geheime beheerpagina — alleen bereikbaar met de juiste link, niet gelinkt in het menu.
     goTo('admin');
