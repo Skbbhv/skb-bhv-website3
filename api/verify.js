@@ -5,6 +5,7 @@
 // Geeft alleen terug wat nodig is om de houder te controleren.
 
 import { kv } from './_lib/kv.js';
+import fitHandler from './_lib/fit-handler.js';
 import { PACKAGE_NAMES } from './_lib/accounts.js';
 
 function onderdelen(r) {
@@ -33,6 +34,8 @@ function antwoord(r) {
 }
 
 export default async function handler(req, res) {
+  // /api/fit wordt via vercel.json hierheen herschreven (Hobby-limiet: max. 12 functies)
+  if (req.query && req.query.fit) return fitHandler(req, res);
   res.setHeader('Cache-Control', 'no-store');
   try {
     let token = null;

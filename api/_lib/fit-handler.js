@@ -1,6 +1,6 @@
 // api/fit.js — BHV-fit vragen ophalen (GET) en beantwoorden (POST). Per BHV'er via zijn verificatiecode.
-import { kv } from './_lib/kv.js';
-import { FIT_VRAGEN, vragenVoorMaand, huidigeMaand } from './_lib/fit.js';
+import { kv } from './kv.js';
+import { FIT_VRAGEN, vragenVoorMaand, huidigeMaand } from './fit.js';
 
 async function deelnemer(code) {
   const c = String(code || '').replace(/[^A-Za-z0-9]/g, '').slice(0, 20);
