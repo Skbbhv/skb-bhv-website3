@@ -1502,6 +1502,14 @@ if(BEHEER_APP){
 .tl-d{color:#4A525B;} .tl-t{font-weight:700;} .tl-o i{color:#6B7480;}
 .tl-rij button{background:none;border:none;color:#C8101F;cursor:pointer;font-size:15px;}
 @media(max-width:760px){.tl-form{grid-template-columns:1fr 1fr;} .tl-form input#lbTekst{grid-column:1/-1;} .tl-rij{grid-template-columns:80px 1fr 26px;} .tl-t{display:none;}}
+.nav-meer{position:relative;display:inline-block;}
+@media(min-width:921px){body.stoer nav.main button{padding:9px 8px;letter-spacing:.05em;font-size:15px;} body.stoer header.site .btn{padding:10px 13px;}}
+.nav-meer-menu{display:none;position:absolute;top:100%;left:0;min-width:210px;background:#0B0D10;border:1px solid #242A33;border-radius:6px;padding:6px;z-index:200;box-shadow:0 18px 40px rgba(0,0,0,.5);}
+.nav-meer.open .nav-meer-menu,.nav-meer:hover .nav-meer-menu{display:block;}
+.nav-meer-menu a{display:block;padding:9px 12px;color:#E3E7EC;text-decoration:none;font-family:'Oswald','Archivo',Arial,sans-serif;letter-spacing:.06em;text-transform:uppercase;font-size:14px;border-radius:4px;}
+.nav-meer-menu a:hover{background:#E0101F;color:#fff;}
+body:not(.stoer) .nav-meer-menu{background:#fff;border-color:var(--line);} body:not(.stoer) .nav-meer-menu a{color:#111;}
+@media(max-width:920px){.nav-meer{display:block;} .nav-meer-menu{position:static;display:block;box-shadow:none;border:none;padding:0 0 0 10px;background:transparent;} .nav-meer-knop{display:none;}}
 
 a.btn{text-decoration:none;}
 .home-echt{display:grid;grid-template-columns:1.05fr 1fr;gap:36px;align-items:center;}
@@ -2915,6 +2923,16 @@ window.SKBQR={matrix:matrix,svg:svg,dataUrl:dataUrl};})();
       <button onclick="goTo('faq')" data-view="faq">FAQ</button>
       <button onclick="goTo('about')" data-view="about">Over ons</button>
       <button onclick="goTo('contact')" data-view="contact">Contact</button>
+      <div class="nav-meer">
+        <button type="button" class="nav-meer-knop" onclick="this.parentNode.classList.toggle('open');event.stopPropagation();">Meer ▾</button>
+        <div class="nav-meer-menu">
+          <a href="/bhv-cursus-op-locatie">BHV op locatie</a>
+          <a href="/rekentool">Rekentool</a>
+          <a href="/oefentoets">Gratis oefentoets</a>
+          <a href="/bhv-plan">BHV-plan template</a>
+          <a href="/echtheid">Echtheidscheck</a>
+        </div>
+      </div>
       <button onclick="goTo('dashboard')" data-view="dashboard" class="nav-account">Mijn omgeving</button>
     </nav>
     <div style="display:flex;align-items:center;gap:10px;">
@@ -3045,41 +3063,6 @@ window.SKBQR={matrix:matrix,svg:svg,dataUrl:dataUrl};})();
           <h3 style="color:#fff;">Start vandaag nog</h3>
           <p style="color:#c3c9ce;">Bekijk de pakketten en begin binnen enkele minuten met oefenen.</p>
         </div>
-      </div>
-    </section>
-
-    <section id="echtheid-blok">
-      <div class="home-echt">
-        <div class="he-tekst">
-          <div class="eyebrow">Uniek: echtheidscheck</div>
-          <h2>Elk certificaat is te controleren met QR</h2>
-          <p>Op ieder SKB BHV-certificaat en -pasje staat een QR-code. Werkgever, inspecteur of opdrachtgever scant hem en ziet direct of de BHV'er echt en geldig gecertificeerd is. Geen gesjoemel met papiertjes.</p>
-          <a class="btn btn-primary" href="/echtheid">Zo werkt de echtheidscheck →</a>
-        </div>
-        <img src="/certificaat-pasje.jpg" alt="SKB BHV-certificaat en BHV-pasje met QR-code" loading="lazy" decoding="async">
-      </div>
-    </section>
-
-    <section id="gratis-tools" class="band-white">
-      <div class="section-head">
-        <div class="eyebrow">Gratis voor werkgevers</div>
-        <h2>Handige tools</h2>
-      </div>
-      <div class="grid-3">
-        <a class="feature home-tool" href="/rekentool"><div class="num">REKENTOOL</div><h3>Hoeveel BHV'ers heb je nodig?</h3><p>Aantal medewerkers invullen, direct het advies en de prijs met staffelkorting. Offerte als PDF.</p></a>
-        <a class="feature home-tool" href="/oefentoets"><div class="num">OEFENTOETS</div><h3>Test je BHV-kennis</h3><p>10 echte BHV-vragen over EHBO, reanimatie, brand en ontruiming. Gratis, met uitleg.</p></a>
-        <a class="feature home-tool" href="/bhv-plan"><div class="num">TEMPLATE</div><h3>BHV-plan template</h3><p>Een kant-en-klaar BHV- en ontruimingsplan. Online invullen en opslaan als PDF.</p></a>
-      </div>
-    </section>
-
-    <section id="op-locatie">
-      <div class="section-head">
-        <div class="eyebrow">Praktijk op locatie</div>
-        <h2>Wij komen naar jullie toe</h2>
-        <p>Vanaf 4 deelnemers geven we de praktijkdag op jullie eigen werkplek, in heel Noord-Nederland.</p>
-      </div>
-      <div class="home-steden">
-        <a href="/bhv-cursus-groningen">Groningen</a><a href="/bhv-cursus-assen">Assen</a><a href="/bhv-cursus-emmen">Emmen</a><a href="/bhv-cursus-stadskanaal">Stadskanaal</a><a href="/bhv-cursus-veendam">Veendam</a><a href="/bhv-cursus-winschoten">Winschoten</a><a href="/bhv-cursus-hoogezand">Hoogezand</a><a href="/bhv-cursus-hoogeveen">Hoogeveen</a><a href="/bhv-cursus-leeuwarden">Leeuwarden</a><a href="/bhv-cursus-zwolle">Zwolle</a><a href="/bhv-cursus-westerwolde">Westerwolde</a><a href="/bhv-cursus-op-locatie" class="alle">Alle plaatsen →</a>
       </div>
     </section>
 
@@ -6908,5 +6891,6 @@ async function initFromParticipantLink(token){
   zet();tel();
 })();
 </script>
+<script>document.addEventListener('click',function(){document.querySelectorAll('.nav-meer.open').forEach(function(e){e.classList.remove('open');});});</script>
 </body>
 </html>
