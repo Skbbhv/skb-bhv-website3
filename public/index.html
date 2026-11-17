@@ -4366,6 +4366,7 @@ async function beheerInloggen(){
     document.getElementById('beheerLogin').style.display = 'none';
     document.getElementById('beheerApp').style.display = '';
     document.body.classList.add('beheer-ingelogd');
+    if(location.hash === '#pasjes') beheerTab('pasjes');
     beheerLaad();
   }catch(e){ msg.textContent = e.message; }
   finally{ btn.disabled = false; }
