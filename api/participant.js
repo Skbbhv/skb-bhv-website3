@@ -32,7 +32,7 @@ import { Resend } from 'resend';
 import {
   getSessionEmail, isValidEmail, normalizeEmail, escapeHtml, PACKAGE_NAMES, COMPANY_FOOTER_HTML,
 } from './_lib/accounts.js';
-import { buildExam, gradeExam } from './_lib/examen.js';
+import { buildExam, gradeExam, geldigeTaal } from './_lib/examen.js';
 
 const TTL_SECONDS = 60 * 60 * 24 * 90; // links blijven 90 dagen geldig
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
@@ -200,9 +200,10 @@ async function start(body, res) {
   if (record.status === 'passed') return res.status(409).json({ error: 'Deze deelnemer is al geslaagd.' });
   if ((record.attempts || 0) >= MAX_POGINGEN) return res.status(409).json({ error: POGINGEN_OP });
 
-  const { items, questions } = buildExam();
+  const lang = geldigeTaal(String(body.lang || 'nl'));
+  const { items, questions } = buildExam(lang);
   const examId = crypto.randomBytes(12).toString('hex');
-  record.exam = { id: examId, items, startedAt: new Date().toISOString() };
+  record.exam = { id: examId, items, lang, startedAt: new Date().toISOString() };
   record.status = 'progress';
   await saveRecord(record);
   return res.status(200).json({ examId, questions });
@@ -224,7 +225,7 @@ async function finish(body, res) {
       return res.status(409).json({ error: 'Dit examen is niet (meer) actief. Start het examen opnieuw.' });
     }
     const answers = Array.isArray(body.answers) ? body.answers.slice(0, record.exam.items.length) : [];
-    const result = gradeExam(record.exam.items, answers);
+    const result = gradeExam(record.exam.items, answers, record.exam.lang || 'nl');
 
     const updated = { ...record };
     delete updated.exam; // elk gestart examen kan maar één keer worden ingeleverd
@@ -234,6 +235,7 @@ async function finish(body, res) {
     updated.pct = result.pct;
     updated.status = result.passed ? 'passed' : 'failed';
     updated.finishedAt = new Date().toISOString();
+    updated.examTaal = record.exam.lang || 'nl';
     if (result.passed) {
       updated.certNumber = await issueCertNumber(token);
       updated.verifyCode = await newVerifyCode(token);

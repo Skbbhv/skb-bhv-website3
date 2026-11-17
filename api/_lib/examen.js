@@ -7,6 +7,21 @@
 // c = index (in o) van het goede antwoord.
 
 import crypto from 'crypto';
+import en from './talen/en.js';
+import pl from './talen/pl.js';
+import ro from './talen/ro.js';
+import tr from './talen/tr.js';
+import ar from './talen/ar.js';
+
+// Vertalingen: zelfde volgorde en optie-indexen als QUESTIONS; de antwoordsleutel (c) blijft hier.
+export const TALEN = { en, pl, ro, tr, ar };
+export function geldigeTaal(lang) { return TALEN[lang] ? lang : 'nl'; }
+function tekstVan(i, lang) {
+  const t = TALEN[lang];
+  if (!t) return { q: QUESTIONS[i].q, o: QUESTIONS[i].o, cat: QUESTIONS[i].cat };
+  const r = t.v[i];
+  return { q: r[0], o: r.slice(1), cat: t.cats[QUESTIONS[i].cat] || QUESTIONS[i].cat };
+}
 
 export const QUESTIONS = [
  {"cat":"EHBO","q":"Wat is de eerste stap bij het aantreffen van een slachtoffer?","o":["De veiligheid van de omgeving beoordelen","Direct beginnen met reanimeren","Het slachtoffer verplaatsen naar een andere ruimte","Meteen familie van het slachtoffer bellen"],"c":0},
@@ -101,7 +116,7 @@ function shuffle(arr) {
 // onderdeel geschud en antwoordopties geschud. Geeft { items, questions } terug:
 //   items     → server-side bewaren: [{ i: index in QUESTIONS, perm: [oorspronkelijke optie-index per getoonde positie] }]
 //   questions → naar de client: [{ cat, q, options }] (zonder antwoord)
-export function buildExam() {
+export function buildExam(lang = 'nl') {
   const byCat = {};
   QUESTIONS.forEach((q, i) => { (byCat[q.cat] = byCat[q.cat] || []).push(i); });
   const items = [];
@@ -110,21 +125,21 @@ export function buildExam() {
       items.push({ i, perm: shuffle(QUESTIONS[i].o.map((_, idx) => idx)) });
     });
   });
-  return { items, questions: questionsFor(items) };
+  return { items, questions: questionsFor(items, lang) };
 }
 
-export function questionsFor(items) {
-  return items.map(({ i, perm }) => ({
-    cat: QUESTIONS[i].cat,
-    q: QUESTIONS[i].q,
-    options: perm.map((p) => QUESTIONS[i].o[p]),
-  }));
+export function questionsFor(items, lang = 'nl') {
+  return items.map(({ i, perm }) => {
+    const t = tekstVan(i, lang);
+    // cat blijft de Nederlandse sleutel (voor timers/indeling); catLabel is de vertaalde naam.
+    return { cat: QUESTIONS[i].cat, catLabel: t.cat, q: t.q, options: perm.map((p) => t.o[p]) };
+  });
 }
 
 // Kijkt de antwoorden na (answers[k] = gekozen getoonde positie, -1 = niet beantwoord,
 // bijv. omdat de tijd van het onderdeel om was). Zelfde regels als voorheen in de website:
 // pct = afgerond percentage goed, geslaagd bij 80% of meer (60 van de 75).
-export function gradeExam(items, answers) {
+export function gradeExam(items, answers, lang = 'nl') {
   const list = Array.isArray(answers) ? answers : [];
   let correct = 0;
   const wrong = [];
@@ -140,7 +155,8 @@ export function gradeExam(items, answers) {
       correct++;
       pc.correct++;
     } else {
-      wrong.push({ cat: q.cat, q: q.q, chosen: a === -1 ? null : q.o[perm[a]], correct: q.o[q.c] });
+      const t = tekstVan(i, lang);
+      wrong.push({ cat: q.cat, catLabel: t.cat, q: t.q, chosen: a === -1 ? null : t.o[perm[a]], correct: t.o[q.c] });
     }
   });
   const total = items.length;

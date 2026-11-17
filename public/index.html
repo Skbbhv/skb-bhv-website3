@@ -441,7 +441,7 @@
     display:flex;align-items:center;gap:12px;transition:border-color .12s, background .12s;background:var(--white);
   }
   .option:hover{border-color:var(--blue);}
-  .option.selected{border-color:var(--blue);background:#EEF5FC;font-weight:600;}
+  .option.selected{border-color:var(--blue);background:#EEF5FC;color:#0B0D10;font-weight:600;}
   .option .letter{
     width:26px;height:26px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;
     font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--ink-soft);flex-shrink:0;
@@ -1520,6 +1520,14 @@ i.og-s{background:linear-gradient(180deg,#FF3B4A,#B30F1C);border-radius:3px 3px 
 .ta-lijst div.komt{border-left-color:#19D36B;} .ta-lijst div.kan-niet{border-left-color:#E0101F;}
 .ta-lijst em{font-style:normal;font-size:12.5px;color:#666;white-space:nowrap;}
 @media(max-width:640px){.ta-form{grid-template-columns:1fr!important;}}
+.exam-taal{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;max-width:560px;margin:14px auto 4px;}
+.exam-taal .et-label{width:100%;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);font-weight:700;}
+.exam-taal button{display:inline-flex;align-items:center;gap:6px;border:1.5px solid #D5DAE1;background:#fff;color:#111;border-radius:999px;padding:7px 13px;font-size:14px;font-weight:700;cursor:pointer;}
+.exam-taal button span{font-size:17px;line-height:1;}
+.exam-taal button.actief{border-color:#E0101F;background:#E0101F;color:#fff;}
+.exam-taal .et-noot{width:100%;font-size:12px;color:var(--ink-soft);}
+[dir="rtl"] .q-text,[dir="rtl"] .options .option{text-align:right;}
+[dir="rtl"] .option .letter{margin-left:12px;margin-right:0;}
 .team-fit{display:flex;align-items:center;gap:8px;font-size:14px;color:#111;margin-left:auto;cursor:pointer;}
 .team-fit input{width:18px;height:18px;accent-color:#E0101F;}
 .team-fitscore{font-weight:700;color:#B35A00;} .team-fitscore.top{color:#0E7A3D;}
@@ -4209,13 +4217,14 @@ window.SKBQR={matrix:matrix,svg:svg,dataUrl:dataUrl};})();
     <div class="exam-card" id="examStart" style="display:none;">
       <div class="start-screen">
         <div class="big-icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="18" rx="2"/><path d="M9 2h6v4H9zM9 12h6M9 16h4"/></svg></div>
-        <h2 style="font-size:22px;">Klaar voor het examen, <span id="examStartName">deelnemer</span>?</h2>
-        <p style="color:var(--ink-soft);max-width:460px;margin:10px auto 26px;">
+        <h2 style="font-size:22px;" id="examKop">Klaar voor het examen, <span id="examStartName">deelnemer</span>?</h2>
+        <div class="exam-taal" id="examTaal" role="radiogroup" aria-label="Taal van het examen"></div>
+        <p id="examIntro" style="color:var(--ink-soft);max-width:460px;margin:10px auto 26px;">
           75 vragen, verdeeld over 5 onderdelen van elk 15 vragen. Voor elk onderdeel heb je <b>8 minuten</b>; is de tijd om, dan gaat het examen automatisch door naar het volgende onderdeel. Je hebt minimaal 60 vragen goed (80%) nodig om te slagen. Elke vraag moet beantwoord worden voordat je verder kunt.
         </p>
         <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
           <button class="btn btn-primary" id="examStartBtn" onclick="startExam()">Start examen →</button>
-          <button class="btn btn-outline" onclick="backToRoster()">← Terug naar deelnemers</button>
+          <button class="btn btn-outline" id="examTerug" onclick="backToRoster()">← Terug naar deelnemers</button>
         </div>
       </div>
     </div>
@@ -4242,16 +4251,16 @@ window.SKBQR={matrix:matrix,svg:svg,dataUrl:dataUrl};})();
       </div>
       <div>
         <div class="side-card">
-          <h4>Voortgang per onderdeel</h4>
+          <h4 id="exVoortgang">Voortgang per onderdeel</h4>
           <div id="catProgress"></div>
         </div>
         <div class="side-card">
-          <h4>Tijd per onderdeel</h4>
-          <p style="font-size:13px;color:var(--ink-soft);margin:0;">Elk onderdeel heeft een limiet van <b>8 minuten</b>. Bij het verstrijken van de tijd gaat het examen automatisch verder met het volgende onderdeel — onbeantwoorde vragen tellen dan als fout.</p>
+          <h4 id="exTijdKop">Tijd per onderdeel</h4>
+          <p id="exTijd" style="font-size:13px;color:var(--ink-soft);margin:0;">Elk onderdeel heeft een limiet van <b>8 minuten</b>. Bij het verstrijken van de tijd gaat het examen automatisch verder met het volgende onderdeel — onbeantwoorde vragen tellen dan als fout.</p>
         </div>
         <div class="side-card">
-          <h4>Slaag-eis</h4>
-          <p style="font-size:13px;color:var(--ink-soft);margin:0;">Je hebt <b>60 van de 75</b> vragen goed nodig (80%) om te slagen. Niet gehaald? Je kunt direct opnieuw beginnen, zonder wachttijd.</p>
+          <h4 id="exEisKop">Slaag-eis</h4>
+          <p id="exEis" style="font-size:13px;color:var(--ink-soft);margin:0;">Je hebt <b>60 van de 75</b> vragen goed nodig (80%) om te slagen. Niet gehaald? Je kunt direct opnieuw beginnen, zonder wachttijd.</p>
         </div>
       </div>
     </div>
@@ -5097,11 +5106,58 @@ async function participantApi(action, payload){
 }
 
 async function buildExam(token){
-  const data = await participantApi('start', { token });
+  const data = await participantApi('start', { token, lang: state.examLang || 'nl' });
   state.examId = data.examId;
   state.examQuestions = data.questions || [];
   state.answers = new Array(state.examQuestions.length).fill(-1);
   state.currentQ = 0;
+}
+
+/* ============ MEERTALIG EXAMEN ============ */
+// Vragen komen vertaald van de server; hier alleen de teksten van het examenscherm.
+const EXAM_TALEN = [
+  { k:'nl', vlag:'🇳🇱', naam:'Nederlands' }, { k:'en', vlag:'🇬🇧', naam:'English' }, { k:'pl', vlag:'🇵🇱', naam:'Polski' },
+  { k:'ro', vlag:'🇷🇴', naam:'Română' }, { k:'tr', vlag:'🇹🇷', naam:'Türkçe' }, { k:'ar', vlag:'🇸🇦', naam:'العربية' },
+];
+const EXAM_UI = {
+  en:{ kop:'Ready for the exam, {n}?', intro:'75 questions in 5 sections of 15. You have <b>8 minutes</b> per section; when time runs out the exam automatically moves on to the next section. You need at least 60 correct answers (80%) to pass. Every question must be answered before you can continue.', start:'Start exam →', terug:'← Back to participants', vraag:'Question {a} of {b} — Section {c} of {d}', volgende:'Next →', af:'Finish exam ✓', vorige:'← Previous', hint:'Choose an answer first to continue.', voortgang:'Progress per section', tijdKop:'Time per section', tijd:'Each section has a limit of <b>8 minutes</b>. When time runs out, the exam moves on to the next section — unanswered questions count as wrong.', eisKop:'Pass mark', eis:'You need <b>60 of the 75</b> questions correct (80%) to pass.', toNext:'Time for this section is up — moving on to the next section.', toEind:'Time for this section is up — the exam is being finished.', geslaagd:'Passed', niet:'Not passed yet', detail:'{c} of {t} questions correct. You need at least 60 (80%) to pass.', taal:'Exam language', noot:'The certificate is issued in Dutch.' },
+  pl:{ kop:'Gotowy na egzamin, {n}?', intro:'75 pytań w 5 częściach po 15. Na każdą część masz <b>8 minut</b>; gdy czas minie, egzamin automatycznie przechodzi do następnej części. Aby zdać, potrzebujesz co najmniej 60 poprawnych odpowiedzi (80%). Na każde pytanie trzeba odpowiedzieć, zanim przejdziesz dalej.', start:'Rozpocznij egzamin →', terug:'← Wróć do uczestników', vraag:'Pytanie {a} z {b} — Część {c} z {d}', volgende:'Dalej →', af:'Zakończ egzamin ✓', vorige:'← Wstecz', hint:'Najpierw wybierz odpowiedź, aby przejść dalej.', voortgang:'Postęp w częściach', tijdKop:'Czas na część', tijd:'Każda część ma limit <b>8 minut</b>. Po upływie czasu egzamin przechodzi do następnej części — pytania bez odpowiedzi liczą się jako błędne.', eisKop:'Próg zaliczenia', eis:'Aby zdać, potrzebujesz <b>60 z 75</b> poprawnych odpowiedzi (80%).', toNext:'Czas na tę część minął — przechodzimy do następnej części.', toEind:'Czas na tę część minął — egzamin zostaje zakończony.', geslaagd:'Zdany', niet:'Jeszcze nie zdany', detail:'{c} z {t} pytań poprawnie. Aby zdać, potrzebujesz co najmniej 60 (80%).', taal:'Język egzaminu', noot:'Certyfikat jest wystawiany w języku niderlandzkim.' },
+  ro:{ kop:'Ești gata pentru examen, {n}?', intro:'75 de întrebări în 5 secțiuni a câte 15. Ai <b>8 minute</b> pentru fiecare secțiune; când timpul expiră, examenul trece automat la secțiunea următoare. Ai nevoie de cel puțin 60 de răspunsuri corecte (80%) pentru a promova. Trebuie să răspunzi la fiecare întrebare înainte de a continua.', start:'Începe examenul →', terug:'← Înapoi la participanți', vraag:'Întrebarea {a} din {b} — Secțiunea {c} din {d}', volgende:'Următoarea →', af:'Finalizează examenul ✓', vorige:'← Înapoi', hint:'Alege mai întâi un răspuns ca să continui.', voortgang:'Progres pe secțiuni', tijdKop:'Timp pe secțiune', tijd:'Fiecare secțiune are o limită de <b>8 minute</b>. Când timpul expiră, examenul trece la secțiunea următoare — întrebările fără răspuns contează ca greșite.', eisKop:'Condiție de promovare', eis:'Ai nevoie de <b>60 din 75</b> de răspunsuri corecte (80%) pentru a promova.', toNext:'Timpul pentru această secțiune a expirat — trecem la secțiunea următoare.', toEind:'Timpul pentru această secțiune a expirat — examenul se încheie.', geslaagd:'Promovat', niet:'Încă nepromovat', detail:'{c} din {t} întrebări corecte. Ai nevoie de cel puțin 60 (80%) pentru a promova.', taal:'Limba examenului', noot:'Certificatul se eliberează în limba neerlandeză.' },
+  tr:{ kop:'Sınava hazır mısın, {n}?', intro:'15\'er sorudan oluşan 5 bölümde 75 soru. Her bölüm için <b>8 dakikan</b> var; süre dolunca sınav otomatik olarak sonraki bölüme geçer. Geçmek için en az 60 doğru cevap (%80) gerekir. Devam etmeden önce her soru cevaplanmalıdır.', start:'Sınavı başlat →', terug:'← Katılımcılara dön', vraag:'Soru {a} / {b} — Bölüm {c} / {d}', volgende:'İleri →', af:'Sınavı bitir ✓', vorige:'← Geri', hint:'Devam etmek için önce bir cevap seç.', voortgang:'Bölümlere göre ilerleme', tijdKop:'Bölüm başına süre', tijd:'Her bölümün <b>8 dakikalık</b> süre sınırı vardır. Süre dolunca sınav sonraki bölüme geçer — cevaplanmayan sorular yanlış sayılır.', eisKop:'Geçme şartı', eis:'Geçmek için <b>75 sorudan 60</b> doğru (%80) gerekir.', toNext:'Bu bölümün süresi doldu — sonraki bölüme geçiliyor.', toEind:'Bu bölümün süresi doldu — sınav bitiriliyor.', geslaagd:'Geçti', niet:'Henüz geçemedi', detail:'{t} sorudan {c} doğru. Geçmek için en az 60 (%80) gerekir.', taal:'Sınav dili', noot:'Sertifika Hollandaca olarak düzenlenir.' },
+  ar:{ kop:'هل أنت مستعد للامتحان يا {n}؟', intro:'75 سؤالًا في 5 أقسام، كل قسم 15 سؤالًا. لديك <b>8 دقائق</b> لكل قسم؛ وعند انتهاء الوقت ينتقل الامتحان تلقائيًا إلى القسم التالي. تحتاج إلى 60 إجابة صحيحة على الأقل (80%) للنجاح. يجب الإجابة عن كل سؤال قبل المتابعة.', start:'ابدأ الامتحان ←', terug:'العودة إلى المشاركين →', vraag:'السؤال {a} من {b} — القسم {c} من {d}', volgende:'التالي ←', af:'إنهاء الامتحان ✓', vorige:'السابق →', hint:'اختر إجابة أولًا للمتابعة.', voortgang:'التقدم في كل قسم', tijdKop:'الوقت لكل قسم', tijd:'لكل قسم حد زمني قدره <b>8 دقائق</b>. عند انتهاء الوقت ينتقل الامتحان إلى القسم التالي — وتُحتسب الأسئلة غير المجابة خاطئة.', eisKop:'شرط النجاح', eis:'تحتاج إلى <b>60 من 75</b> إجابة صحيحة (80%) للنجاح.', toNext:'انتهى وقت هذا القسم — ننتقل إلى القسم التالي.', toEind:'انتهى وقت هذا القسم — يتم إنهاء الامتحان.', geslaagd:'ناجح', niet:'لم تنجح بعد', detail:'{c} من {t} إجابة صحيحة. تحتاج إلى 60 على الأقل (80%) للنجاح.', taal:'لغة الامتحان', noot:'تصدر الشهادة باللغة الهولندية.' },
+};
+function examTxt(k, vars){
+  const t = EXAM_UI[state.examLang] && EXAM_UI[state.examLang][k];
+  if(t == null) return null;
+  return t.replace(/\{(\w)\}/g, (_, x) => (vars && vars[x] != null) ? vars[x] : '');
+}
+function examTaalBewaar(){
+  if(!state.examLang) state.examLang = 'nl';
+  if(!state._examNL){ // Nederlandse teksten één keer onthouden
+    state._examNL = {};
+    ['examIntro','exVoortgang','exTijdKop','exTijd','exEisKop','exEis','examStartBtn','examTerug','btnPrev','nextHint'].forEach(id => { const el = document.getElementById(id); if(el) state._examNL[id] = el.innerHTML; });
+  }
+}
+function examTaalKies(k){
+  examTaalBewaar();
+  state.examLang = EXAM_UI[k] ? k : 'nl';
+  try{ localStorage.setItem('skb-examtaal', state.examLang); }catch(e){}
+  examTaalToepassen();
+}
+function examTaalToepassen(){
+  examTaalBewaar();
+  const k = state.examLang, nl = state._examNL, rtl = k === 'ar';
+  const zet = (id, key) => { const el = document.getElementById(id); if(el) el.innerHTML = examTxt(key) ?? nl[id]; };
+  const kies = document.getElementById('examTaal');
+  if(kies) kies.innerHTML = `<span class="et-label">${examTxt('taal') || 'Taal van het examen'}</span>` +
+    EXAM_TALEN.map(t => `<button type="button" role="radio" aria-checked="${t.k===k}" class="${t.k===k?'actief':''}" onclick="examTaalKies('${t.k}')"><span>${t.vlag}</span>${t.naam}</button>`).join('') +
+    (k !== 'nl' ? `<span class="et-noot">${examTxt('noot')}</span>` : '');
+  const naam = escapeHtmlText(document.getElementById('examStartName') ? document.getElementById('examStartName').textContent : '');
+  const kop = document.getElementById('examKop');
+  if(kop) kop.innerHTML = k === 'nl' ? `Klaar voor het examen, <span id="examStartName">${naam}</span>?` : examTxt('kop', { n: `<span id="examStartName">${naam}</span>` });
+  ['examIntro','exVoortgang','exTijdKop','exTijd','exEisKop','exEis','btnPrev','nextHint'].forEach(id => zet(id, { examIntro:'intro', exVoortgang:'voortgang', exTijdKop:'tijdKop', exTijd:'tijd', exEisKop:'eisKop', exEis:'eis', btnPrev:'vorige', nextHint:'hint' }[id]));
+  zet('examStartBtn', 'start'); zet('examTerug', 'terug');
+  ['examStart','examInProgress'].forEach(id => { const el = document.getElementById(id); if(el){ el.dir = rtl ? 'rtl' : 'ltr'; el.lang = k; } });
 }
 
 /* ============ ROSTER (deelnemers) ============ */
@@ -5342,6 +5398,8 @@ function editParticipant(idx){
 function goExamStart(idx){
   state.activeIndex = idx;
   document.getElementById('examStartName').textContent = state.roster[idx].first || 'deelnemer';
+  if(!state.examLang){ try{ state.examLang = localStorage.getItem('skb-examtaal') || 'nl'; }catch(e){ state.examLang = 'nl'; } }
+  examTaalToepassen();
   document.getElementById('rosterView').style.display = 'none';
   document.getElementById('examStart').style.display = 'block';
   document.getElementById('examInProgress').style.display = 'none';
@@ -5415,8 +5473,8 @@ function renderQuestion(){
   const localIndex = i - sectionStart;
   const sectionCount = Math.ceil(total/size);
 
-  document.getElementById('qCounter').textContent = `Vraag ${localIndex+1} van ${size} — Onderdeel ${sectionIndex+1} van ${sectionCount}`;
-  document.getElementById('qCategory').textContent = q.cat;
+  document.getElementById('qCounter').textContent = examTxt('vraag', { a: localIndex+1, b: size, c: sectionIndex+1, d: sectionCount }) || `Vraag ${localIndex+1} van ${size} — Onderdeel ${sectionIndex+1} van ${sectionCount}`;
+  document.getElementById('qCategory').textContent = q.catLabel || q.cat;
   document.getElementById('qText').textContent = q.q;
   const pct = Math.round((i/total)*100);
   document.getElementById('progressBar').style.width = pct+'%';
@@ -5434,7 +5492,7 @@ function renderQuestion(){
 
   document.getElementById('btnPrev').disabled = (i===sectionStart);
   const answered = state.answers[i] !== -1;
-  document.getElementById('btnNext').textContent = (i===total-1) ? 'Examen afronden ✓' : 'Volgende →';
+  document.getElementById('btnNext').textContent = (i===total-1) ? (examTxt('af') || 'Examen afronden ✓') : (examTxt('volgende') || 'Volgende →');
   document.getElementById('btnNext').disabled = !answered;
   document.getElementById('nextHint').style.display = answered ? 'none' : 'block';
 }
@@ -5498,14 +5556,14 @@ function handleSectionTimeout(){
   const currentSection = Math.floor(state.currentQ/size);
   const nextStart = (currentSection+1)*size;
   if(nextStart >= total){
-    showToast('Tijd voor dit onderdeel is om — het examen wordt afgerond.');
+    showToast(examTxt('toEind') || 'Tijd voor dit onderdeel is om — het examen wordt afgerond.');
     finishExam();
   } else {
     state.currentQ = nextStart;
     renderQuestion();
     renderCatProgress();
     startSectionTimer();
-    showToast('Tijd voor dit onderdeel is om — door naar het volgende onderdeel.');
+    showToast(examTxt('toNext') || 'Tijd voor dit onderdeel is om — door naar het volgende onderdeel.');
   }
 }
 
@@ -5521,7 +5579,7 @@ function showToast(msg){
 function renderCatProgress(){
   const cats = {};
   state.examQuestions.forEach((q,idx)=>{
-    if(!cats[q.cat]) cats[q.cat] = {total:0, answered:0};
+    if(!cats[q.cat]) cats[q.cat] = {total:0, answered:0, label: q.catLabel || q.cat};
     cats[q.cat].total++;
     if(state.answers[idx]!==-1) cats[q.cat].answered++;
   });
@@ -5530,7 +5588,7 @@ function renderCatProgress(){
   Object.keys(cats).forEach(cat=>{
     const row = document.createElement('div');
     row.className = 'cat-row';
-    row.innerHTML = `<span>${escapeHtmlText(cat)}</span><span>${cats[cat].answered}/${cats[cat].total}</span>`;
+    row.innerHTML = `<span>${escapeHtmlText(cats[cat].label)}</span><span>${cats[cat].answered}/${cats[cat].total}</span>`;
     wrap.appendChild(row);
   });
 }
@@ -5580,10 +5638,10 @@ async function finishExam(){
 
   document.getElementById('resultScore').textContent = pct+'%';
   document.getElementById('resultScore').className = 'result-score '+(passed?'pass':'fail');
-  document.getElementById('resultBadge').textContent = passed ? 'Geslaagd' : 'Nog niet geslaagd';
+  document.getElementById('resultBadge').textContent = passed ? (examTxt('geslaagd') || 'Geslaagd') : (examTxt('niet') || 'Nog niet geslaagd');
   document.getElementById('resultBadge').className = 'result-badge '+(passed?'pass':'fail');
   const whoName = `${participant.first} ${participant.last} had`;
-  document.getElementById('resultDetail').textContent = `${whoName} ${correct} van de ${total} vragen goed. Je hebt minimaal 60 (80%) nodig om te slagen.`;
+  document.getElementById('resultDetail').textContent = examTxt('detail', { c: correct, t: total }) ? `${whoName} ${examTxt('detail', { c: correct, t: total })}` : `${whoName} ${correct} van de ${total} vragen goed. Je hebt minimaal 60 (80%) nodig om te slagen.`;
   document.getElementById('resultCertBtn').style.display = passed ? 'inline-flex':'none';
   document.getElementById('resultPasBtn').style.display = (passed && participant.pasNumber) ? 'inline-flex':'none';
   const retryBtn = document.getElementById('resultRetryBtn');
