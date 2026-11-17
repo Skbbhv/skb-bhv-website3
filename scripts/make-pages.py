@@ -491,7 +491,7 @@ def fit_pagina():
     script = r'''<style>.optie{display:block;width:100%;text-align:left;background:#0E1115;border:1px solid #2A313B;color:#ECEFF3;border-radius:5px;padding:12px 14px;margin:7px 0;font:inherit;cursor:pointer}
 .optie.gekozen{border-color:#FF2D3D;background:rgba(255,45,61,.12)}.vraag{margin-bottom:18px}.goed{color:#19D36B}.fout{color:#FF6B76}</style>
 <script>
-var m=location.pathname.match(/^\\/fit\\/([A-Za-z0-9]{6,20})/), code=m?m[1]:new URLSearchParams(location.search).get('c'), maand=new URLSearchParams(location.search).get('m')||'';
+var m=location.pathname.match(/^\/fit\/([A-Za-z0-9]{6,20})/), code=m?m[1]:new URLSearchParams(location.search).get('c'), maand=new URLSearchParams(location.search).get('m')||'';
 var keuze=[null,null,null], data=null;
 function esc(v){return String(v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]});}
 function toon(){
