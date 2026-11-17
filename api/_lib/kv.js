@@ -70,6 +70,14 @@ export const kv = {
   async scard(key) {
     return Number(await rpc('scard', { p_key: key }));
   },
+  // Alle sleutels met dit voorvoegsel (alleen voor beheer): [{ key, value }]
+  async scan(prefix, limit = 2000) {
+    return (await rpc('scan', { p_prefix: prefix, p_limit: limit })) || [];
+  },
+  // Waarde aanpassen zonder de verlooptijd te wijzigen
+  async update(key, value) {
+    return !!(await rpc('update', { p_key: key, p_value: value }));
+  },
   async smembers(key) {
     return (await rpc('smembers', { p_key: key })) || [];
   },

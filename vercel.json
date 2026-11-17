@@ -36,5 +36,11 @@
         }
       ]
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/beheer",
+      "destination": "/index.html"
+    }
   ]
 }

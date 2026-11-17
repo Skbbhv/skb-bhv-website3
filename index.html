@@ -1453,6 +1453,73 @@ body.stoer .stoer-ticker{margin:10px calc(50% - 50vw - 40px) 30px;}
 .p3 .p3-112 b{font-family:'Archivo Black','Archivo',Arial,sans-serif;font-weight:400;color:#FF4552;margin-left:4px;}
 .p3 .p3-web{font-family:'Oswald','Archivo',Arial,sans-serif;font-weight:600;font-size:14px;letter-spacing:2px;color:#fff;}
 </style>
+<script id="beheer-app-head">
+var BEHEER_APP = /^\/beheer\/?$/.test(location.pathname);
+if(BEHEER_APP){
+  (function(){
+    function zet(sel, attr, val){ var e = document.querySelector(sel); if(e) e.setAttribute(attr, val); }
+    zet('link[rel="manifest"]', 'href', '/manifest-beheer.json');
+    zet('link[rel="apple-touch-icon"]', 'href', '/apple-touch-icon-beheer.png');
+    zet('link[rel="icon"][type="image/png"]', 'href', '/icon-beheer-192.png');
+    var t = document.querySelector('meta[name="theme-color"]'); if(t) t.setAttribute('content', '#0B0D10');
+    var m = document.createElement('meta'); m.name = 'apple-mobile-web-app-title'; m.content = 'SKB Beheer'; document.head.appendChild(m);
+    var r = document.createElement('meta'); r.name = 'robots'; r.content = 'noindex,nofollow'; document.head.appendChild(r);
+    document.title = 'SKB BHV Beheer';
+  })();
+}
+</script>
+<style id="beheer-app-stijl">
+body.beheer-app nav.main,body.beheer-app header.site .btn,body.beheer-app header.site .menu-toggle,body.beheer-app footer,body.beheer-app .wa-knop,body.beheer-app .cookie-notice{display:none !important;}
+body.beheer-app header.site .header-inner{justify-content:flex-start;gap:16px;}
+body.beheer-app header.site .logo{pointer-events:none;}
+.beheer-badge{display:none;}
+body.beheer-app .beheer-badge{display:inline-flex;align-items:center;font-family:'Archivo Black','Archivo',Arial,sans-serif;font-size:15px;letter-spacing:2px;text-transform:uppercase;color:#fff;background:#E0101F;padding:7px 14px;border-radius:3px;box-shadow:3px 3px 0 #fff;}
+#view-admin section{max-width:980px !important;}
+.beheer-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px;}
+.beheer-tabs{display:flex;gap:4px;flex-wrap:wrap;background:#111419;border:1px solid #242A33;border-radius:6px;padding:4px;}
+.beheer-tabs button{background:transparent;color:#C9CFD8;font-family:'Oswald','Archivo',Arial,sans-serif;font-weight:600;font-size:15px;letter-spacing:.08em;text-transform:uppercase;padding:10px 16px;border-radius:4px;display:inline-flex;align-items:center;gap:8px;}
+.beheer-tabs button.active{background:#E0101F;color:#fff;}
+.bt-count{background:#fff;color:#E0101F;border-radius:10px;font-size:12px;padding:1px 7px;font-family:Arial,sans-serif;font-weight:800;}
+.bt-count:empty{display:none;}
+.beheer-bar-r{display:flex;gap:8px;}
+.beheer-msg{min-height:20px;font-size:14px;color:#9AA4B1;margin-bottom:10px;}
+.beheer-msg.fout{color:#FF6B76;}
+.beheer-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;}
+.bh-tile{background:linear-gradient(180deg,#13161C,#0E1115);border:1px solid #242A33;border-top:4px solid #3A414D;border-radius:6px;padding:16px 18px;display:flex;flex-direction:column;gap:2px;}
+.bh-tile b{font-family:'Archivo Black','Archivo',Arial,sans-serif;font-weight:400;font-size:36px;color:#fff;line-height:1.1;}
+.bh-tile span{font-family:'Oswald','Archivo',Arial,sans-serif;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#9AA4B1;}
+.bh-tile.ok{border-top-color:#19D36B;} .bh-tile.bad{border-top-color:#9AA4B1;}
+.bh-tile.hot{border-top-color:#E0101F;background:linear-gradient(160deg,#2A0C10,#0E1115);}
+.bh-tile.hot b{color:#FF4552;}
+.beheer-list{display:flex;flex-direction:column;}
+.bh-row{display:flex;align-items:center;gap:14px;padding:12px 4px;border-bottom:1px solid #242A33;}
+.bh-row:last-child{border-bottom:none;}
+.bh-chk{width:22px;height:22px;accent-color:#E0101F;flex-shrink:0;cursor:pointer;}
+.bh-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+.bh-main b{color:#fff;font-size:16px;}
+.bh-main span{font-size:13px;color:#9AA4B1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.bh-main .bh-nr{color:#FF7A84;font-family:'JetBrains Mono',monospace;font-size:12.5px;}
+.bh-side{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;}
+.bh-tag{font-size:12px;font-weight:700;padding:3px 9px;border-radius:3px;background:#1A1E25;color:#C9CFD8;white-space:nowrap;}
+.bh-tag.st-passed,.bh-tag.ok{background:rgba(25,211,107,.14);color:#19D36B;}
+.bh-tag.st-failed{background:rgba(255,255,255,.08);color:#C9CFD8;}
+.bh-tag.st-progress{background:rgba(255,170,0,.14);color:#FFB020;}
+.bh-tag.todo{background:#E0101F;color:#fff;}
+.bh-leeg{color:#9AA4B1;padding:18px 4px;margin:0;}
+.beheer-pas-top{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:14px;}
+.beheer-pas-top select,.beheer-pas-top input{background:#0E1115;color:#fff;border:1px solid #242A33;border-radius:4px;padding:10px 12px;font-size:14.5px;}
+.beheer-pas-top input{flex:1;min-width:220px;}
+.beheer-pas-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 4px;border-top:1px solid #242A33;border-bottom:1px solid #242A33;}
+.beheer-check{display:flex;align-items:center;gap:10px;color:#C9CFD8;font-size:14.5px;cursor:pointer;}
+.beheer-check input{width:20px;height:20px;accent-color:#E0101F;}
+.beheer-confirm{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0 4px;padding:12px 14px;border:1px solid #E0101F;border-radius:6px;background:rgba(224,16,31,.1);color:#fff;font-size:14.5px;}
+.beheer-confirm span{flex:1;min-width:200px;}
+@media(max-width:640px){
+  .beheer-tabs{width:100%;display:grid;grid-template-columns:1fr 1fr;} .beheer-tabs button{justify-content:center;padding:11px 8px;font-size:13px;}
+  .beheer-bar-r{width:100%;} .beheer-bar-r .btn{flex:1;}
+  .bh-tile b{font-size:28px;}
+}
+</style>
 </head>
 <body data-view="home">
 <!-- ═══════ OPENINGSANIMATIE (alleen in de geïnstalleerde app, 1x per keer openen) ═══════ -->
@@ -1487,6 +1554,7 @@ body.stoer .stoer-ticker{margin:10px calc(50% - 50vw - 40px) 30px;}
     <div class="logo" onclick="goTo('home')">
       <img class="skb-logo-img" alt="SKB BHV logo" style="height:42px;width:auto;display:block;">
     </div>
+    <span class="beheer-badge">Beheerder</span>
     <nav class="main" id="mainNav">
       <button onclick="goTo('home')" data-view="home">Home</button>
       <button onclick="goTo('why')" data-view="why">Waarom BHV</button>
@@ -2134,19 +2202,88 @@ body.stoer .stoer-ticker{margin:10px calc(50% - 50vw - 40px) 30px;}
 <div class="view" id="view-admin">
   <main>
     <section style="padding-top:52px;padding-bottom:80px;max-width:680px;margin:0 auto;">
-      <div class="section-head">
-        <div class="eyebrow">Beheer</div>
-        <h2 style="font-size:28px;">Beheer</h2>
-        <p>Alleen voor eigen gebruik. Log eerst in met je beheerdersgegevens en kies daarna wat je wilt doen.</p>
+      <div class="section-head beheer-head">
+        <div class="eyebrow">Beheerder</div>
+        <h2 style="font-size:34px;">SKB BHV Beheer</h2>
+        <p>Alleen voor de beheerder. Log in om deelnemers te bekijken, pasjes in batch te printen en accounts aan te maken.</p>
       </div>
 
-      <form class="panel" style="margin-bottom:20px;" onsubmit="return false;" autocomplete="on">
+      <form class="panel beheer-login" id="beheerLogin" style="margin-bottom:20px;" onsubmit="beheerInloggen();return false;" autocomplete="on">
         <h2 style="font-size:20px;margin-bottom:14px;">Beheerder</h2>
         <div class="field-row" style="margin-bottom:0;">
           <div class="field" style="margin-bottom:0;"><label for="adminEmailLogin">E-mailadres</label><input id="adminEmailLogin" name="username" type="email" placeholder="jouw@email.nl" autocomplete="username" onchange="rememberAdminEmail()"></div>
           <div class="field" style="margin-bottom:0;"><label for="adminPassword">Wachtwoord</label><input id="adminPassword" name="password" type="password" placeholder="Wachtwoord" autocomplete="current-password"></div>
         </div>
+        <button type="submit" class="btn btn-primary btn-block" id="beheerLoginBtn" style="margin-top:18px;">Inloggen als beheerder</button>
+        <div id="beheerLoginMsg" class="form-msg" style="margin:10px 0 0;text-align:center;"></div>
       </form>
+      <div id="beheerApp" style="display:none;">
+        <div class="beheer-bar">
+          <div class="beheer-tabs" role="tablist">
+            <button class="active" data-tab="overzicht" onclick="beheerTab('overzicht')">Overzicht</button>
+            <button data-tab="pasjes" onclick="beheerTab('pasjes')">Pasjes printen <span class="bt-count" id="btPasCount"></span></button>
+            <button data-tab="deelnemers" onclick="beheerTab('deelnemers')">Deelnemers</button>
+            <button data-tab="nieuw" onclick="beheerTab('nieuw')">Nieuw</button>
+          </div>
+          <div class="beheer-bar-r">
+            <button class="btn btn-outline btn-sm" onclick="beheerLaad()" id="beheerRefresh">↻ Vernieuwen</button>
+            <button class="btn btn-outline btn-sm" onclick="beheerUitloggen()">Uitloggen</button>
+          </div>
+        </div>
+        <div class="beheer-msg" id="beheerMsg"></div>
+
+        <div class="beheer-pane" data-pane="overzicht">
+          <div class="beheer-tiles" id="beheerTiles"></div>
+          <div class="panel" style="margin-top:18px;">
+            <h2 style="font-size:20px;margin-bottom:12px;">Laatste activiteit</h2>
+            <div id="beheerRecent" class="beheer-list"></div>
+          </div>
+        </div>
+
+        <div class="beheer-pane" data-pane="pasjes" style="display:none;">
+          <div class="panel">
+            <div class="beheer-pas-top">
+              <div>
+                <h2 style="font-size:22px;margin-bottom:4px;">Pasjes printen (Badgy)</h2>
+                <p style="font-size:14px;margin:0;">Selecteer de pasjes en print ze in één batch. Na het printen markeer je ze als geprint.</p>
+              </div>
+              <select id="beheerPasFilter" onchange="beheerRenderPasjes()">
+                <option value="todo">Nog te printen</option>
+                <option value="done">Al geprint</option>
+                <option value="all">Alle pasjes</option>
+              </select>
+            </div>
+            <div class="beheer-pas-actions">
+              <label class="beheer-check"><input type="checkbox" id="beheerPasAll" onchange="beheerSelectAll(this.checked)"> Alles selecteren</label>
+              <button class="btn btn-primary" id="beheerPrintBtn" onclick="beheerPrintSelectie()" disabled>Print selectie op Badgy</button>
+            </div>
+            <div id="beheerPasConfirm" class="beheer-confirm" style="display:none;">
+              <span id="beheerPasConfirmTxt">Zijn alle pasjes goed geprint?</span>
+              <button class="btn btn-primary btn-sm" onclick="beheerMarkeer(false)">Ja, markeer als geprint</button>
+              <button class="btn btn-outline btn-sm" onclick="beheerVerbergConfirm()">Nee, later</button>
+            </div>
+            <div id="beheerPasList" class="beheer-list"></div>
+          </div>
+        </div>
+
+        <div class="beheer-pane" data-pane="deelnemers" style="display:none;">
+          <div class="panel">
+            <div class="beheer-pas-top">
+              <input type="search" id="beheerZoek" placeholder="Zoek op naam, e-mail, certificaat- of pasnummer" oninput="beheerRenderDeelnemers()">
+              <select id="beheerStatus" onchange="beheerRenderDeelnemers()">
+                <option value="">Alle statussen</option>
+                <option value="passed">Geslaagd</option>
+                <option value="failed">Gezakt</option>
+                <option value="progress">Bezig</option>
+                <option value="ready">Nog niet gestart</option>
+              </select>
+            </div>
+            <div id="beheerDeelnemers" class="beheer-list"></div>
+          </div>
+        </div>
+
+        <div class="beheer-pane" data-pane="nieuw" style="display:none;">
+
 
       <!-- Klantaccount voor contante betaling -->
       <div class="panel" style="margin-bottom:20px;">
@@ -2220,6 +2357,9 @@ body.stoer .stoer-ticker{margin:10px calc(50% - 50vw - 40px) 30px;}
         <div class="field"><label>E-mailadres (hier wordt de examenlink direct naartoe gestuurd)</label><input id="adminEmail" type="email" placeholder="naam@voorbeeld.nl"></div>
         <button class="btn btn-primary btn-block" onclick="adminCreateLogin()">Aanmaken en versturen →</button>
         <div id="adminResult" style="margin-top:16px;font-size:13.5px;"></div>
+      </div>
+    
+        </div>
       </div>
     </section>
   </main>
@@ -4106,7 +4246,7 @@ function downloadPas(evt){
 
 /* ============ BADGY PASJESPRINTER (CR80, 85,6 × 54 mm) ============ */
 function vulPasKaart(card, p){
-  const pkg = state.order.pkg ? PACKAGES[state.order.pkg] : PACKAGES.basis;
+  const pkg = PACKAGES[p.pkg] || (state.order && state.order.pkg ? PACKAGES[state.order.pkg] : PACKAGES.basis);
   const issueDate = p.passDate ? new Date(p.passDate) : new Date();
   const validUntil = new Date(issueDate); validUntil.setFullYear(validUntil.getFullYear()+1);
   const zet = (id, v) => { const e = card.querySelector('#'+id); if(e) e.textContent = v; };
@@ -4179,6 +4319,149 @@ function downloadPasBadgeStudio(evt){
   }).finally(() => { kaart.remove(); if(btn) btn.disabled = false; });
 }
 
+/* ============ BEHEER-APP ============ */
+const BEHEER = { data:null, lijst:[], gekozen:new Set(), laatstGeprint:[] };
+const STATUS_NL = { passed:'Geslaagd', failed:'Gezakt', progress:'Bezig', ready:'Nog niet gestart' };
+function beheerCreds(){
+  return { adminEmail: document.getElementById('adminEmailLogin').value.trim(), adminPassword: document.getElementById('adminPassword').value };
+}
+async function beheerApi(action, extra){
+  const r = await fetch('/api/admin-overview', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ ...beheerCreds(), action, ...(extra||{}) }) });
+  let j = {}; try{ j = await r.json(); }catch(e){}
+  if(!r.ok) throw new Error(j.error || ('Fout ' + r.status));
+  return j;
+}
+function beheerEsc(v){ return String(v==null?'':v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+async function beheerInloggen(){
+  const msg = document.getElementById('beheerLoginMsg'), btn = document.getElementById('beheerLoginBtn');
+  const c = beheerCreds();
+  if(!c.adminEmail || !c.adminPassword){ msg.textContent = 'Vul je e-mailadres en wachtwoord in.'; return; }
+  btn.disabled = true; msg.className = 'form-msg'; msg.textContent = 'Bezig met inloggen…';
+  try{
+    await beheerApi('login');
+    rememberAdminEmail();
+    msg.textContent = '';
+    document.getElementById('beheerLogin').style.display = 'none';
+    document.getElementById('beheerApp').style.display = '';
+    document.body.classList.add('beheer-ingelogd');
+    beheerLaad();
+  }catch(e){ msg.textContent = e.message; }
+  finally{ btn.disabled = false; }
+}
+function beheerUitloggen(){
+  document.getElementById('adminPassword').value = '';
+  document.getElementById('beheerApp').style.display = 'none';
+  document.getElementById('beheerLogin').style.display = '';
+  document.body.classList.remove('beheer-ingelogd');
+  BEHEER.data = null; BEHEER.lijst = []; BEHEER.gekozen.clear();
+}
+function beheerTab(t){
+  document.querySelectorAll('.beheer-tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === t));
+  document.querySelectorAll('.beheer-pane').forEach(p => p.style.display = p.dataset.pane === t ? '' : 'none');
+}
+function beheerToon(t, fout){
+  const m = document.getElementById('beheerMsg'); m.textContent = t || ''; m.classList.toggle('fout', !!fout);
+}
+async function beheerLaad(){
+  const btn = document.getElementById('beheerRefresh'); btn.disabled = true;
+  beheerToon('Gegevens laden…');
+  try{
+    const d = await beheerApi('overview');
+    BEHEER.data = d;
+    // deelnemers uit losse records + deelnemers uit bestellingen die (nog) geen eigen record hebben
+    const perToken = new Map();
+    (d.participants || []).forEach(p => perToken.set(p.token, { ...p }));
+    (d.orders || []).forEach(o => (o.roster || []).forEach((e, i) => {
+      const extra = { orderId:o.id, orderEmail:o.email, company:o.company, pkg: e.pkg || o.pkg, withPasje: e.withPasje ?? o.withPasje };
+      if(e.token && perToken.has(e.token)){ const t = perToken.get(e.token); Object.keys(extra).forEach(k => { if(t[k]==null || t[k]==='') t[k] = extra[k]; }); }
+      else if(e.first || e.last){ perToken.set(e.token || (o.id + '#' + i), { ...e, ...extra, token: e.token || null, viaBestelling:true }); }
+    }));
+    BEHEER.lijst = Array.from(perToken.values()).sort((a,b) => String(b.passDate || b.createdAt || '').localeCompare(String(a.passDate || a.createdAt || '')));
+    beheerToon('');
+    beheerRenderAlles();
+  }catch(e){ beheerToon(e.message, true); }
+  finally{ btn.disabled = false; }
+}
+function beheerPasjes(){ return BEHEER.lijst.filter(p => p.status === 'passed' && p.pasNumber); }
+function beheerRenderAlles(){ beheerRenderOverzicht(); beheerRenderPasjes(); beheerRenderDeelnemers(); }
+function beheerRij(p, metCheck){
+  const naam = `${p.first||''} ${p.last||''}`.trim() || '—';
+  const st = p.status || 'ready';
+  const pkgNaam = (PACKAGES[p.pkg] && PACKAGES[p.pkg].name) || '';
+  const meta = [pkgNaam, p.company, p.buyerEmail || p.orderEmail].filter(Boolean).map(beheerEsc).join(' · ');
+  const nrs = [p.certNumber, p.pasNumber].filter(Boolean).map(beheerEsc).join(' · ');
+  const id = beheerEsc(p.token || '');
+  const check = metCheck ? `<input type="checkbox" class="bh-chk" data-token="${id}" ${BEHEER.gekozen.has(p.token)?'checked':''} onchange="beheerKies(this)" ${p.token?'':'disabled title="Geen deelnemersrecord"'}>` : '';
+  const geprint = p.pasPrintedAt ? `<span class="bh-tag ok">Geprint ${beheerEsc(formatDateNL(p.pasPrintedAt))}</span>` : (p.pasNumber ? '<span class="bh-tag todo">Te printen</span>' : '');
+  const score = (st==='passed' || st==='failed') && p.pct!=null ? ` ${beheerEsc(p.pct)}%` : '';
+  return `<div class="bh-row">${check}<div class="bh-main"><b>${beheerEsc(naam)}</b><span>${meta || '&nbsp;'}</span>${nrs?`<span class="bh-nr">${nrs}</span>`:''}</div>
+    <div class="bh-side"><span class="bh-tag st-${beheerEsc(st)}">${beheerEsc(STATUS_NL[st] || st)}${score}</span>${metCheck?geprint:''}</div></div>`;
+}
+function beheerRenderOverzicht(){
+  const L = BEHEER.lijst, d = BEHEER.data || {};
+  const tel = s => L.filter(p => (p.status||'ready') === s).length;
+  const todo = beheerPasjes().filter(p => !p.pasPrintedAt).length;
+  const tiles = [
+    ['Deelnemers', L.length, ''], ['Geslaagd', tel('passed'), 'ok'], ['Bezig / niet gestart', tel('progress') + tel('ready'), ''],
+    ['Gezakt', tel('failed'), 'bad'], ['Pasjes te printen', todo, 'hot', "beheerTab('pasjes')"], ['Bestellingen', (d.orders||[]).length, ''], ['Klantaccounts', d.accounts || 0, ''],
+  ];
+  document.getElementById('beheerTiles').innerHTML = tiles.map(t => `<div class="bh-tile ${t[2]}" ${t[3]?`onclick="${t[3]}" style="cursor:pointer"`:''}><b>${t[1]}</b><span>${t[0]}</span></div>`).join('');
+  document.getElementById('btPasCount').textContent = todo ? todo : '';
+  const rec = L.slice(0, 8);
+  document.getElementById('beheerRecent').innerHTML = rec.length ? rec.map(p => beheerRij(p,false)).join('') : '<p class="bh-leeg">Nog geen deelnemers.</p>';
+}
+function beheerRenderPasjes(){
+  const f = document.getElementById('beheerPasFilter').value;
+  let L = beheerPasjes();
+  if(f === 'todo') L = L.filter(p => !p.pasPrintedAt);
+  if(f === 'done') L = L.filter(p => p.pasPrintedAt);
+  BEHEER.zichtbaar = L;
+  const zicht = new Set(L.map(p => p.token));
+  Array.from(BEHEER.gekozen).forEach(t => { if(!zicht.has(t)) BEHEER.gekozen.delete(t); });
+  document.getElementById('beheerPasList').innerHTML = L.length ? L.map(p => beheerRij(p,true)).join('') :
+    `<p class="bh-leeg">${f==='todo' ? 'Geen pasjes meer te printen.' : 'Geen pasjes gevonden.'}</p>`;
+  beheerUpdateKnop();
+}
+function beheerKies(el){ if(el.checked) BEHEER.gekozen.add(el.dataset.token); else BEHEER.gekozen.delete(el.dataset.token); beheerUpdateKnop(); }
+function beheerSelectAll(aan){
+  (BEHEER.zichtbaar || []).forEach(p => { if(!p.token) return; if(aan) BEHEER.gekozen.add(p.token); else BEHEER.gekozen.delete(p.token); });
+  document.querySelectorAll('#beheerPasList .bh-chk').forEach(c => { if(!c.disabled) c.checked = aan; });
+  beheerUpdateKnop();
+}
+function beheerUpdateKnop(){
+  const n = BEHEER.gekozen.size, b = document.getElementById('beheerPrintBtn');
+  b.disabled = !n; b.textContent = n ? `Print ${n} pasje${n===1?'':'s'} op Badgy` : 'Print selectie op Badgy';
+  const all = document.getElementById('beheerPasAll'); const zicht = (BEHEER.zichtbaar||[]).filter(p=>p.token);
+  all.checked = zicht.length > 0 && zicht.every(p => BEHEER.gekozen.has(p.token));
+}
+function beheerPrintSelectie(){
+  const L = BEHEER.lijst.filter(p => p.token && BEHEER.gekozen.has(p.token));
+  if(!L.length) return;
+  printPassen(L);
+  BEHEER.laatstGeprint = L.map(p => p.token);
+  document.getElementById('beheerPasConfirmTxt').textContent = `${L.length} pasje${L.length===1?'':'s'} naar de printer gestuurd. Zijn ze goed geprint?`;
+  document.getElementById('beheerPasConfirm').style.display = '';
+}
+function beheerVerbergConfirm(){ document.getElementById('beheerPasConfirm').style.display = 'none'; }
+async function beheerMarkeer(undo){
+  const tokens = BEHEER.laatstGeprint || [];
+  if(!tokens.length) return;
+  try{
+    await beheerApi('markPrinted', { tokens, undo: !!undo });
+    const nu = new Date().toISOString();
+    BEHEER.lijst.forEach(p => { if(tokens.includes(p.token)) p.pasPrintedAt = undo ? null : nu; });
+    BEHEER.gekozen.clear(); beheerVerbergConfirm(); beheerRenderAlles();
+    beheerToon(`${tokens.length} pasje${tokens.length===1?'':'s'} gemarkeerd als geprint.`);
+  }catch(e){ beheerToon(e.message, true); }
+}
+function beheerRenderDeelnemers(){
+  const q = (document.getElementById('beheerZoek').value || '').toLowerCase().trim();
+  const st = document.getElementById('beheerStatus').value;
+  const L = BEHEER.lijst.filter(p => (!st || (p.status||'ready') === st) &&
+    (!q || [p.first,p.last,p.buyerEmail,p.orderEmail,p.company,p.certNumber,p.pasNumber].filter(Boolean).join(' ').toLowerCase().includes(q)));
+  document.getElementById('beheerDeelnemers').innerHTML = L.length ? L.slice(0,300).map(p => beheerRij(p,false)).join('') : '<p class="bh-leeg">Geen deelnemers gevonden.</p>';
+}
+
 /* ============ COOKIEMELDING ============ */
 async function initCookieNotice(){
   try{
@@ -4201,6 +4484,7 @@ async function dismissCookieNotice(){
 
   const params = new URLSearchParams(window.location.search);
 
+  if(BEHEER_APP){ document.body.classList.add('beheer-app'); goTo('admin'); return; }
   if(params.get('admin')){
     // Geheime beheerpagina — alleen bereikbaar met de juiste link, niet gelinkt in het menu.
     goTo('admin');
@@ -4629,6 +4913,7 @@ function prefillAdminEmail(){
   const el = document.getElementById('adminEmailLogin');
   if(!el || el.value) return;
   try{ el.value = localStorage.getItem('skb-beheer-email') || ''; }catch(e){}
+  if(!el.value && typeof BEHEER_APP!=='undefined' && BEHEER_APP) el.value = 'info@oibase.nl';
 }
 
 /* ============ BEHEER: klantaccount aanmaken na contante betaling ============ */
@@ -4801,7 +5086,7 @@ async function initFromParticipantLink(token){
 <a class="wa-knop" href="https://wa.me/31624626638?text=Hallo%20SKB%20BHV%2C%20" target="_blank" rel="noopener" aria-label="Stuur ons een WhatsApp-bericht"><svg width="26" height="26" viewBox="0 0 32 32" fill="#fff" aria-hidden="true"><path d="M16 3C9 3 3.3 8.6 3.3 15.6c0 2.3.6 4.5 1.8 6.4L3 29l7.2-1.9c1.8 1 3.8 1.5 5.8 1.5 7 0 12.7-5.7 12.7-12.6S23 3 16 3zm0 23.1c-1.9 0-3.7-.5-5.3-1.4l-.4-.2-4.3 1.1 1.1-4.2-.3-.4a10.4 10.4 0 01-1.6-5.5C5.2 9.8 10 5.1 16 5.1s10.8 4.7 10.8 10.5S22 26.1 16 26.1zm5.9-7.8c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.2-.2-.3 0-.5.1-.7l.5-.6c.2-.2.2-.4.3-.6.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.3 3.6 5.7 5 .8.3 1.4.5 1.9.7.8.3 1.5.2 2.1.1.6-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4z"/></svg><span>WhatsApp</span></a>
 <script id="stoer-thema-js">
 (function(){
-  var PUBLIEK={home:1,why:1,'why-business':1,'why-individuals':1,faq:1,about:1,contact:1,terms:1,privacy:1,pricing:1,login:1,certificate:1,pas:1};
+  var PUBLIEK={home:1,why:1,'why-business':1,'why-individuals':1,faq:1,about:1,contact:1,terms:1,privacy:1,pricing:1,login:1,certificate:1,pas:1,admin:1};
   var b=document.body;
   function zet(){b.classList.toggle('stoer',!!PUBLIEK[b.dataset.view]);if(b.classList.contains('stoer'))scan();}
   var io=null;

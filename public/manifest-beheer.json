@@ -1,0 +1,31 @@
+{
+  "name": "SKB BHV Beheer",
+  "short_name": "SKB Beheer",
+  "id": "/beheer",
+  "start_url": "/beheer",
+  "scope": "/beheer",
+  "display": "standalone",
+  "background_color": "#0B0D10",
+  "theme_color": "#0B0D10",
+  "lang": "nl",
+  "icons": [
+    {
+      "src": "/icon-beheer-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-beheer-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-beheer-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
