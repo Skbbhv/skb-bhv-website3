@@ -1,72 +1,76 @@
 // api/_lib/kv.js
-// Kleine koppeling met de Redis-database van Vercel (Storage → Redis), via REDIS_URL.
-// Biedt dezelfde functies als @vercel/kv (get, set, del, incr, expire, sadd, srem, scard, smembers),
+// Opslag via Supabase (vervangt de oude Redis-koppeling, die tweemaal verdween).
+// Biedt dezelfde functies als voorheen (get, set, del, incr, expire, sadd, srem, scard, smembers),
 // zodat de rest van de code niet hoeft te veranderen. Waarden worden als JSON bewaard.
 //
-// Vereist environment variable: REDIS_URL (wordt automatisch gezet door de Redis-koppeling)
+// Vereiste environment variables:
+//   SUPABASE_URL        bijv. https://xxxx.supabase.co
+//   SUPABASE_ANON_KEY   publishable/anon key van het project
+//   KV_SECRET           geheim dat de database-functies controleren (alleen server-side)
 
-import { createClient } from 'redis';
-
-let clientPromise = null;
-
-function getClient() {
-  if (!clientPromise) {
-         const url = process.env.REDIS_URL || process.env.Redis_REDIS_URL;  
-    if (!url) throw new Error('REDIS_URL ontbreekt: koppel de Redis-database aan dit project in Vercel.');
-    const client = createClient({ url });
-    client.on('error', (err) => console.error('Redis-fout:', err));
-    clientPromise = client.connect().then(() => client).catch((err) => {
-      clientPromise = null; // volgende aanroep probeert opnieuw
-      throw err;
-    });
+function cfg() {
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_ANON_KEY;
+  const secret = process.env.KV_SECRET;
+  if (!url || !key || !secret) {
+    throw new Error('Supabase-opslag niet ingesteld: SUPABASE_URL, SUPABASE_ANON_KEY en KV_SECRET zijn vereist.');
   }
-  return clientPromise;
+  return { url: url.replace(/\/$/, ''), key, secret };
 }
 
-function decode(raw) {
-  if (raw === null || raw === undefined) return null;
-  try { return JSON.parse(raw); } catch (e) { return raw; }
+async function rpc(fn, args) {
+  const { url, key, secret } = cfg();
+  const res = await fetch(`${url}/rest/v1/rpc/skbbhv_kv_${fn}`, {
+    method: 'POST',
+    headers: {
+      apikey: key,
+      Authorization: `Bearer ${key}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ p_secret: secret, ...args }),
+  });
+  const text = await res.text();
+  if (!res.ok) {
+    console.error(`Supabase-opslagfout (${fn}):`, res.status, text);
+    throw new Error(`Opslagfout ${res.status} bij ${fn}`);
+  }
+  return text ? JSON.parse(text) : null;
 }
 
 export const kv = {
   async get(key) {
-    const c = await getClient();
-    return decode(await c.get(key));
+    const v = await rpc('get', { p_key: key });
+    return v === undefined ? null : v;
   },
   // options: { nx: true } alleen zetten als hij nog niet bestaat, { ex: seconden } verlooptijd
   async set(key, value, options = {}) {
-    const c = await getClient();
-    const opts = {};
-    if (options.nx) opts.NX = true;
-    if (options.ex) opts.EX = options.ex;
-    return await c.set(key, JSON.stringify(value), opts); // 'OK' of null
+    const ok = await rpc('set', {
+      p_key: key,
+      p_value: value === undefined ? null : value,
+      p_nx: !!options.nx,
+      p_ex: options.ex ? Math.floor(options.ex) : null,
+    });
+    return ok ? 'OK' : null;
   },
   async del(key) {
-    const c = await getClient();
-    return await c.del(key);
+    return await rpc('del', { p_key: key });
   },
   async incr(key) {
-    const c = await getClient();
-    return await c.incr(key);
+    return Number(await rpc('incr', { p_key: key }));
   },
   async expire(key, seconds) {
-    const c = await getClient();
-    return await c.expire(key, seconds);
+    return (await rpc('expire', { p_key: key, p_seconds: Math.floor(seconds) })) ? 1 : 0;
   },
   async sadd(key, member) {
-    const c = await getClient();
-    return await c.sAdd(key, String(member));
+    return await rpc('sadd', { p_key: key, p_member: String(member) });
   },
   async srem(key, member) {
-    const c = await getClient();
-    return await c.sRem(key, String(member));
+    return await rpc('srem', { p_key: key, p_member: String(member) });
   },
   async scard(key) {
-    const c = await getClient();
-    return await c.sCard(key);
+    return Number(await rpc('scard', { p_key: key }));
   },
   async smembers(key) {
-    const c = await getClient();
-    return await c.sMembers(key);
+    return (await rpc('smembers', { p_key: key })) || [];
   },
 };
