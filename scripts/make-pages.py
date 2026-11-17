@@ -481,12 +481,49 @@ try{if(localStorage.getItem('skb-plan-open')==='1') open_();}catch(e){}
                 body, active='/bhv-plan', jsonld=[ORG], script=script)
 
 
+def fit_pagina():
+    body = '''
+<section class="hero"><div class="wrap" style="max-width:760px">
+  <span class="kicker">BHV-fit · 2 minuten</span><h1>Blijf <em>scherp</em></h1>
+  <p class="lead" id="intro">Drie korte vragen om je BHV-kennis op peil te houden.</p>
+</div></section>
+<section class="sectie" style="padding-top:0"><div class="wrap" style="max-width:760px"><div class="kaart" id="fit"><p>Laden…</p></div></div></section>'''
+    script = r'''<style>.optie{display:block;width:100%;text-align:left;background:#0E1115;border:1px solid #2A313B;color:#ECEFF3;border-radius:5px;padding:12px 14px;margin:7px 0;font:inherit;cursor:pointer}
+.optie.gekozen{border-color:#FF2D3D;background:rgba(255,45,61,.12)}.vraag{margin-bottom:18px}.goed{color:#19D36B}.fout{color:#FF6B76}</style>
+<script>
+var m=location.pathname.match(/^\\/fit\\/([A-Za-z0-9]{6,20})/), code=m?m[1]:new URLSearchParams(location.search).get('c'), maand=new URLSearchParams(location.search).get('m')||'';
+var keuze=[null,null,null], data=null;
+function esc(v){return String(v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]});}
+function toon(){
+  var f=document.getElementById('fit');
+  f.innerHTML=data.vragen.map(function(v,k){return '<div class="vraag"><h3 style="text-transform:none;letter-spacing:0;font-size:19px">'+(k+1)+'. '+esc(v.q)+'</h3>'+v.o.map(function(o,j){return '<button class="optie'+(keuze[k]===j?' gekozen':'')+'" onclick="kies('+k+','+j+')">'+esc(o)+'</button>';}).join('')+'</div>';}).join('')+
+   '<button class="knop rood" onclick="stuur()" '+(keuze.indexOf(null)>-1?'disabled':'')+'>Bekijk mijn score</button>';
+}
+function kies(k,j){keuze[k]=j;toon();}
+function uitslag(r){
+  document.getElementById('fit').innerHTML='<p class="klein" style="margin:0">Jouw score deze maand</p><div style="font-family:Archivo Black,Arial;font-size:60px;line-height:1;color:#fff">'+r.score+'/3</div>'+
+   '<p>'+(r.score===3?'<span class="goed">Top! Je bent BHV-fit.</span>':'<span class="fout">Goed om even op te frissen.</span>')+(r.alGedaan?' (Je had deze maand al meegedaan.)':'')+'</p>'+
+   r.uitleg.map(function(x){return '<p><b class="'+(x.goed?'goed':'fout')+'">'+(x.goed?'✓':'✗')+' '+esc(x.q)+'</b><br><span class="klein">Juist: '+esc(x.juist)+'. '+esc(x.u)+'</span></p>';}).join('')+
+   '<p style="margin-top:18px"><a class="knop rand" href="/oefentoets">Meer oefenen</a></p>';
+}
+function stuur(){fetch('/api/fit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:code,m:data.maand,antwoorden:keuze})}).then(function(r){return r.json()}).then(uitslag);}
+fetch('/api/fit?code='+encodeURIComponent(code||'')+'&m='+encodeURIComponent(maand)).then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.error);return j;});}).then(function(j){
+  data=j; document.getElementById('intro').textContent=(j.naam?'Hoi '+j.naam+', ':'')+'drie korte vragen om je BHV-kennis op peil te houden.';
+  if(j.gedaan){document.getElementById('fit').innerHTML='<h3>Al gedaan deze maand ✓</h3><p>Je scoorde '+j.gedaan.score+'/3. Volgende maand krijg je nieuwe vragen.</p>';return;}
+  toon();
+}).catch(function(e){document.getElementById('fit').innerHTML='<p class="fout">'+esc(e.message||'Link ongeldig.')+'</p>';});
+</script>'''
+    return page('fit', 'BHV-fit — maandelijkse opfrisvragen | SKB BHV', 'Drie korte vragen per maand om je BHV-kennis scherp te houden.',
+                body, jsonld=None, extra_head='<meta name="robots" content="noindex,nofollow">', script=script)
+
+
 if __name__ == '__main__':
     urls = [SITE + '/']
     urls.append(rekentool()); urls.append(oefentoets()); urls.append(echtheid()); urls.append(bhv_plan())
     urls.append(locatie_overzicht())
     for c in STEDEN:
         urls.append(stad_pagina(c))
+    fit_pagina()
     urls.append(SITE + '/check')
     sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + ''.join(
         f'  <url><loc>{u}</loc><lastmod>{TODAY}</lastmod></url>\n' for u in urls) + '</urlset>\n'

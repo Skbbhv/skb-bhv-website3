@@ -1486,6 +1486,10 @@ if(BEHEER_APP){
 }
 </script>
 <style id="beheer-app-stijl">
+.team-fit{display:flex;align-items:center;gap:8px;font-size:14px;color:#111;margin-left:auto;cursor:pointer;}
+.team-fit input{width:18px;height:18px;accent-color:#E0101F;}
+.team-fitscore{font-weight:700;color:#B35A00;} .team-fitscore.top{color:#0E7A3D;}
+
 .team-acties{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
 .team-logboek{margin-top:14px;border:1px solid var(--line);border-radius:10px;padding:16px;background:#FAFBFC;}
 .team-logboek h3{font-size:18px;margin:0 0 4px;color:#0B0D10;}
@@ -4077,6 +4081,7 @@ window.SKBQR={matrix:matrix,svg:svg,dataUrl:dataUrl};})();
       <div class="team-acties">
         <button class="btn btn-primary btn-sm" onclick="dossierMaken()">BHV-dossier (PDF)</button>
         <button class="btn btn-outline btn-sm" onclick="logboekToggle()">Logboek oefeningen &amp; controles</button>
+        <label class="team-fit"><input type="checkbox" id="teamFit" onchange="bhvFitZet(this.checked)"> <b>BHV-fit</b> — elke maand 3 opfrisvragen per BHV'er</label>
       </div>
       <div class="team-logboek" id="teamLogboek" style="display:none;">
         <h3>Logboek</h3>
@@ -6116,6 +6121,7 @@ function renderTeam(){
   const leden = (state.auth && !state.participantMode) ? teamLeden() : [];
   if(!leden.length){ box.style.display = 'none'; return; }
   box.style.display = '';
+  teamExtraLaden();
   const st = leden.map(e => ({ e, s: teamStatus(e) }));
   const tel = k => st.filter(x => x.s.k === k).length;
   document.getElementById('teamTiles').innerHTML = [
@@ -6143,7 +6149,9 @@ function renderTeam(){
     const naam = `${e.first||''} ${e.last||''}`.trim();
     const o = onderdelenVan({ ...e, pkg: e._pkg });
     const type = o ? o.pasType : ((PACKAGES[e._pkg] && PACKAGES[e._pkg].pasType) || '');
-    return `<div class="team-row"><span class="team-dot ${s.k}"></span><div class="team-naam"><b>${escapeHtmlSafe(naam)}</b><span>${escapeHtmlSafe(type)}${e.certNumber ? ' · ' + escapeHtmlSafe(e.certNumber) : ''}</span></div>
+    const fs = e.token && teamExtra.scores[e.token];
+    const fitTxt = fs ? ` · <span class="team-fitscore ${fs.score===3?'top':''}">BHV-fit ${fs.score}/${fs.van}</span>` : '';
+    return `<div class="team-row"><span class="team-dot ${s.k}"></span><div class="team-naam"><b>${escapeHtmlSafe(naam)}</b><span>${escapeHtmlSafe(type)}${e.certNumber ? ' · ' + escapeHtmlSafe(e.certNumber) : ''}${fitTxt}</span></div>
       <div class="team-st ${s.k}"><b>${escapeHtmlSafe(s.t)}</b><span>${s.d ? 'Geldig tot ' + fmt(s.d) : ''}</span></div></div>`;
   }).join('');
 }
@@ -6229,6 +6237,28 @@ function openDigitalePas(){
   const p = state.roster && state.roster[state.activeIndex];
   if(!p || !p.verifyCode){ showToast('De digitale pas is beschikbaar zodra het certificaat is uitgegeven.'); return; }
   window.open('/pas/' + encodeURIComponent(p.verifyCode), '_blank');
+}
+
+/* ============ BHV-FIT (werkgever) ============ */
+let teamExtra = { geladen:false, laden:false, fit:false, scores:{} };
+async function teamExtraLaden(){
+  if(teamExtra.geladen || teamExtra.laden || !state.auth) return;
+  teamExtra.laden = true;
+  try{
+    const [i, f] = await Promise.all([accountApi('instellingen', {}), accountApi('fitscores', {})]);
+    teamExtra.fit = !!(i.instellingen && i.instellingen.bhvFit); teamExtra.scores = f.scores || {};
+    teamExtra.geladen = true;
+    const cb = document.getElementById('teamFit'); if(cb) cb.checked = teamExtra.fit;
+    renderTeam();
+  }catch(e){}
+  finally{ teamExtra.laden = false; }
+}
+async function bhvFitZet(aan){
+  try{
+    await accountApi('instellingen', { zet:{ bhvFit: !!aan } });
+    teamExtra.fit = !!aan;
+    showToast(aan ? 'BHV-fit staat aan. Je BHV\'ers krijgen voortaan elke maand 3 opfrisvragen per mail.' : 'BHV-fit staat uit.');
+  }catch(e){ showToast(e.message); document.getElementById('teamFit').checked = !aan; }
 }
 
 /* ============ COOKIEMELDING ============ */

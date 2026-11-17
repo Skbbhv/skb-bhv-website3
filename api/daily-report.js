@@ -8,6 +8,8 @@ import { kv } from './_lib/kv.js';
 import { ADMIN_OWNER_EMAIL } from './_lib/admin.js';
 import { PACKAGE_NAMES, COMPANY_FOOTER_HTML, escapeHtml } from './_lib/accounts.js';
 import { certRecipients } from './_lib/certmail.js';
+import { huidigeMaand } from './_lib/fit.js';
+import { isValidEmail, normalizeEmail } from './_lib/accounts.js';
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 const FROM_EMAIL = process.env.FROM_EMAIL || 'SKB BHV <onboarding@resend.dev>';
@@ -91,6 +93,39 @@ async function stuurReviewVerzoeken(rows, now) {
   return { n, uit: false };
 }
 
+// BHV-fit: op de 1e van de maand (of de eerste run daarna) 3 opfrisvragen naar de BHV'ers
+// van werkgevers die BHV-fit hebben aangezet. Alleen naar het eigen e-mailadres van de deelnemer.
+async function stuurBhvFit(now, siteUrl) {
+  const maand = huidigeMaand(now);
+  const eerste = await kv.set(`fitsent:${maand}`, now.toString ? new Date(now).toISOString() : '1', { nx: true, ex: 60 * 60 * 24 * 40 });
+  if (!eerste) return 0;
+  const inst = await kv.scan('instellingen:', 2000);
+  let n = 0;
+  for (const r of inst) {
+    if (!r.value || !r.value.bhvFit) continue;
+    const werkgever = r.key.slice('instellingen:'.length);
+    const ids = (await kv.smembers(`account-orders:${werkgever}`)) || [];
+    const tokens = new Set();
+    for (const id of ids) {
+      const o = await kv.get(`order:${id}`);
+      (o && Array.isArray(o.roster) ? o.roster : []).forEach((e) => e && e.token && tokens.add(e.token));
+    }
+    for (const t of tokens) {
+      const p = await kv.get(`participant:${t}`);
+      if (!p || p.status !== 'passed' || !p.verifyCode || p.fitUit) continue;
+      const to = normalizeEmail(p.email);
+      if (!isValidEmail(to) || to === normalizeEmail(werkgever)) continue;
+      const link = `${siteUrl}/fit/${encodeURIComponent(p.verifyCode)}?m=${maand}`;
+      const html = mailKader(`${p.first ? 'Hoi ' + escapeHtml(p.first) + ', ' : ''}ben jij BHV-fit?`,
+        `<p>Drie korte vragen, 2 minuten. Zo blijft je BHV-kennis scherp voor het moment dat het ertoe doet.</p>${knop(link, 'START DE 3 VRAGEN')}
+         <p style="font-size:12px;color:#888;">Je ontvangt deze maandelijkse mail omdat je werkgever BHV-fit van SKB BHV heeft aangezet.</p>`);
+      try { await resend.emails.send({ from: FROM_EMAIL, to, subject: 'BHV-fit: 3 vragen van deze maand', html }); n++; }
+      catch (e) { console.error('bhv-fit mail mislukt', t, e); }
+    }
+  }
+  return n;
+}
+
 export default async function handler(req, res) {
   const secret = process.env.CRON_SECRET;
   const auth = req.headers.authorization || '';
@@ -106,6 +141,7 @@ export default async function handler(req, res) {
     const herinneringen = resend ? await stuurHerinneringen(rows, now, siteUrl0) : 0;
     const reviews = resend ? await stuurReviewVerzoeken(rows, now) : { n: 0, uit: true };
     if (herinneringen || reviews.n) rows = await kv.scan('participant:', 5000);
+    const fitVerstuurd = resend ? await stuurBhvFit(now, siteUrl0) : 0;
     const people = rows.map((r) => r.value).filter((v) => v && typeof v === 'object');
 
     const geslaagd = people
@@ -175,14 +211,14 @@ export default async function handler(req, res) {
         leads.map((l) => `<tr><td style="${td}"><a href="mailto:${escapeHtml(l.email)}">${escapeHtml(l.email)}</a>${l.extra && l.extra.nieuwsbrief ? ' <span style="color:#0a7a3a;font-size:12px">(wil tips)</span>' : ''}</td><td style="${td}">${escapeHtml(BRON[l.bron] || l.bron)}</td><td style="${td}">${escapeHtml(leadInfo(l))}</td></tr>`).join('')
       }</table>` : '<p style="color:#666">Geen nieuwe leads.</p>'}
       <h3 style="margin:22px 0 8px">Automatische mails</h3>
-      <p style="font-size:14px;margin:0">Verloopherinneringen verstuurd: <b>${herinneringen}</b><br>Review-verzoeken verstuurd: <b>${reviews.uit ? 'uit (stel GOOGLE_REVIEW_URL in)' : reviews.n}</b></p>
+      <p style="font-size:14px;margin:0">Verloopherinneringen verstuurd: <b>${herinneringen}</b><br>Review-verzoeken verstuurd: <b>${reviews.uit ? 'uit (stel GOOGLE_REVIEW_URL in)' : reviews.n}</b><br>BHV-fit mails verstuurd: <b>${fitVerstuurd}</b></p>
       <h3 style="margin:22px 0 8px">Back-up</h3>
       <p style="font-size:14px;margin:0">${backupInfo}</p>
       <p style="color:#888;font-size:12px;margin-top:26px">${COMPANY_FOOTER_HTML}</p></div>`;
 
     if (!resend) return res.status(500).json({ error: 'RESEND_API_KEY ontbreekt.' });
     await resend.emails.send({ from: FROM_EMAIL, to: ADMIN_OWNER_EMAIL, subject, html, attachments });
-    return res.status(200).json({ ok: true, geslaagd: geslaagd.length, tePrinten: tePrinten.length, gezakt, herinneringen, reviews: reviews.n, leads: leads.length, backup: attachments.length > 0 });
+    return res.status(200).json({ ok: true, geslaagd: geslaagd.length, tePrinten: tePrinten.length, gezakt, herinneringen, reviews: reviews.n, leads: leads.length, fit: fitVerstuurd, backup: attachments.length > 0 });
   } catch (err) {
     console.error('daily-report error:', err);
     return res.status(500).json({ error: 'Dagoverzicht mislukt.' });

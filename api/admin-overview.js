@@ -5,6 +5,7 @@
 import { kv } from './_lib/kv.js';
 import crypto from 'crypto';
 import { Resend } from 'resend';
+import Stripe from 'stripe';
 import { checkAdmin, ADMIN_OWNER_EMAIL } from './_lib/admin.js';
 import { hashPassword, COMPANY_FOOTER_HTML, PACKAGE_NAMES, isValidEmail, normalizeEmail } from './_lib/accounts.js';
 import { issueCertNumber, issuePasNumber, PASSED_TTL_SECONDS, newVerifyCode, ensureVerifyCode } from './_lib/numbers.js';
@@ -98,6 +99,58 @@ export default async function handler(req, res) {
           };
         });
       return res.status(200).json({ ok: true, participants, orders: orderList, accounts: accounts.length, at: new Date().toISOString() });
+    }
+
+    if (body.action === 'omzet') {
+      const maandVan = (ms) => new Date(ms).toLocaleDateString('sv-SE', { timeZone: 'Europe/Amsterdam' }).slice(0, 7);
+      const nu = new Date();
+      const maanden = [];
+      for (let k = 11; k >= 0; k--) { const d = new Date(nu.getFullYear(), nu.getMonth() - k, 15); maanden.push(d.toISOString().slice(0, 7)); }
+      const leeg = () => ({ stripeBruto: 0, stripeKosten: 0, stripeNetto: 0, terugbetaald: 0, handmatig: 0, handmatigPer: {}, bestellingen: 0 });
+      const per = Object.fromEntries(maanden.map((m) => [m, leeg()]));
+      const start = Math.floor(new Date(nu.getFullYear(), nu.getMonth() - 11, 1).getTime() / 1000);
+      let stripeOk = false, stripeFout = null;
+      if (process.env.STRIPE_SECRET_KEY) {
+        try {
+          const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+          let n = 0;
+          for await (const bt of stripe.balanceTransactions.list({ created: { gte: start }, limit: 100 })) {
+            if (++n > 5000) break;
+            const m = maandVan(bt.created * 1000);
+            if (!per[m]) continue;
+            if (bt.type === 'charge' || bt.type === 'payment') {
+              per[m].stripeBruto += bt.amount / 100; per[m].stripeKosten += bt.fee / 100; per[m].stripeNetto += bt.net / 100;
+            } else if (bt.type === 'refund' || bt.type === 'payment_refund') {
+              per[m].terugbetaald += -bt.amount / 100; per[m].stripeNetto += bt.net / 100; per[m].stripeKosten += bt.fee / 100;
+            }
+          }
+          stripeOk = true;
+        } catch (e) { console.error('stripe omzet', e); stripeFout = 'Stripe kon niet worden uitgelezen.'; }
+      } else stripeFout = 'STRIPE_SECRET_KEY ontbreekt.';
+      const orders = await kv.scan('order:', 5000);
+      for (const r of orders) {
+        const o = r.value; if (!o || !o.createdAt) continue;
+        const m = maandVan(new Date(o.createdAt).getTime()); if (!per[m]) continue;
+        per[m].bestellingen++;
+        const total = Number(o.order && o.order.total) || 0;
+        const handmatig = o.createdBy === 'admin' || String(o.id || '').startsWith('handmatig_');
+        if (handmatig) {
+          per[m].handmatig += total;
+          const pm = (o.order && o.order.paymentMethod) || 'contant';
+          per[m].handmatigPer[pm] = (per[m].handmatigPer[pm] || 0) + total;
+        } else if (!stripeOk) {
+          per[m].stripeBruto += total; // terugval: bedrag uit de bestelling
+        }
+      }
+      const rond = (x) => Math.round(x * 100) / 100;
+      const lijst = maanden.map((m) => {
+        const x = per[m];
+        const totaalIncl = x.stripeBruto - x.terugbetaald + x.handmatig;
+        return { maand: m, stripeBruto: rond(x.stripeBruto), stripeKosten: rond(x.stripeKosten), stripeNetto: rond(x.stripeNetto), terugbetaald: rond(x.terugbetaald),
+          handmatig: rond(x.handmatig), handmatigPer: Object.fromEntries(Object.entries(x.handmatigPer).map(([k, v]) => [k, rond(v)])),
+          bestellingen: x.bestellingen, totaalIncl: rond(totaalIncl), totaalExcl: rond(totaalIncl / 1.21), btw: rond(totaalIncl - totaalIncl / 1.21) };
+      });
+      return res.status(200).json({ ok: true, stripeOk, stripeFout, maanden: lijst });
     }
 
     if (body.action === 'markPrinted') {

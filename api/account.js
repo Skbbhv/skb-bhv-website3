@@ -47,6 +47,7 @@ export default async function handler(req, res) {
       case 'save-order': return await saveOrder(req, body, res);
       case 'logboek': return await logboek(req, body, res);
       case 'instellingen': return await instellingen(req, body, res);
+      case 'fitscores': return await fitscores(req, res);
       default: return res.status(400).json({ error: 'Onbekende actie.' });
     }
   } catch (err) {
@@ -253,4 +254,22 @@ async function instellingen(req, body, res) {
     await kv.set(key, inst);
   }
   return res.status(200).json({ ok: true, instellingen: inst });
+}
+
+// ---------- BHV-fit scores van het team (huidige en vorige maand) ----------
+async function fitscores(req, res) {
+  const email = await getSessionEmail(req);
+  if (!email) return res.status(401).json({ error: 'Niet ingelogd.' });
+  const orders = await getOrdersForEmail(email);
+  const tokens = [...new Set(orders.flatMap((o) => (o.roster || []).map((e) => e && e.token).filter(Boolean)))].slice(0, 300);
+  const nu = new Date();
+  const maanden = [0, 1, 2].map((k) => { const d = new Date(nu.getFullYear(), nu.getMonth() - k, 15); return d.toISOString().slice(0, 7); });
+  const scores = {};
+  for (const t of tokens) {
+    for (const m of maanden) {
+      const r = await kv.get(`fit:${t}:${m}`);
+      if (r) { scores[t] = { maand: m, score: r.score, van: r.van }; break; }
+    }
+  }
+  return res.status(200).json({ ok: true, scores });
 }
