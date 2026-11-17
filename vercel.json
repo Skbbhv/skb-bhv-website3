@@ -62,6 +62,10 @@
     {
       "source": "/c/:code",
       "destination": "/check"
+    },
+    {
+      "source": "/pas/:code",
+      "destination": "/pas"
     }
   ],
   "crons": [

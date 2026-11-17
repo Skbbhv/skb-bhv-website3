@@ -44,6 +44,8 @@ export async function sendCertificateMail(record, token) {
         <p style="text-align:center;margin:26px 0;">
           <a href="${certLink}" style="background:#E0101F;color:#fff;text-decoration:none;padding:13px 28px;border-radius:4px;font-weight:bold;display:inline-block;letter-spacing:.5px;">NAAR MIJN CERTIFICAAT</a>
         </p>
+        ${record.verifyCode ? `<p style="text-align:center;margin:-8px 0 22px;"><a href="${siteUrl}/pas/${encodeURIComponent(record.verifyCode)}" style="background:#0B0D10;color:#fff;text-decoration:none;padding:12px 24px;border-radius:4px;font-weight:bold;display:inline-block;letter-spacing:.5px;">📱 DIGITALE BHV-PAS OP JE TELEFOON</a></p>
+        <p style="font-size:13px;color:#666;text-align:center;margin-top:-10px;">Met QR-code waarmee iedereen kan controleren dat je certificaat echt is.</p>` : ''}
         <hr style="border:none;border-top:1px solid #E1E4E9;margin:24px 0;">
         <p style="font-size:12px;color:#8b939b;">${COMPANY_FOOTER_HTML}</p>
       </div>

@@ -1491,6 +1491,18 @@ if(BEHEER_APP){
 }
 </script>
 <style id="beheer-app-stijl">
+.team-acties{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+.team-logboek{margin-top:14px;border:1px solid var(--line);border-radius:10px;padding:16px;background:#FAFBFC;}
+.team-logboek h3{font-size:18px;margin:0 0 4px;color:#0B0D10;}
+.tl-uitleg{font-size:13.5px;color:#4A525B;margin:0 0 10px;}
+.tl-form{display:grid;grid-template-columns:180px 150px 1fr 150px auto;gap:8px;}
+.tl-form select,.tl-form input{padding:9px 10px;border:1.5px solid var(--line);border-radius:8px;font-size:14px;background:#fff;color:#111;}
+.tl-lijst{margin-top:12px;}
+.tl-rij{display:grid;grid-template-columns:96px 170px 1fr 30px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px;color:#111;}
+.tl-d{color:#4A525B;} .tl-t{font-weight:700;} .tl-o i{color:#6B7480;}
+.tl-rij button{background:none;border:none;color:#C8101F;cursor:pointer;font-size:15px;}
+@media(max-width:760px){.tl-form{grid-template-columns:1fr 1fr;} .tl-form input#lbTekst{grid-column:1/-1;} .tl-rij{grid-template-columns:80px 1fr 26px;} .tl-t{display:none;}}
+
 a.btn{text-decoration:none;}
 .home-echt{display:grid;grid-template-columns:1.05fr 1fr;gap:36px;align-items:center;}
 .home-echt img{width:100%;border-radius:6px;border:1px solid var(--line);}
@@ -4084,6 +4096,22 @@ window.SKBQR={matrix:matrix,svg:svg,dataUrl:dataUrl};})();
       </div>
       <div class="team-tiles" id="teamTiles"></div>
       <div class="team-advies" id="teamAdvies"></div>
+      <div class="team-acties">
+        <button class="btn btn-primary btn-sm" onclick="dossierMaken()">BHV-dossier (PDF)</button>
+        <button class="btn btn-outline btn-sm" onclick="logboekToggle()">Logboek oefeningen &amp; controles</button>
+      </div>
+      <div class="team-logboek" id="teamLogboek" style="display:none;">
+        <h3>Logboek</h3>
+        <p class="tl-uitleg">Leg ontruimingsoefeningen, AED-controles, keuringen van blusmiddelen en incidenten vast. Dit komt in je BHV-dossier.</p>
+        <div class="tl-form">
+          <select id="lbType"><option value="oefening">Ontruimingsoefening</option><option value="aed">AED-controle</option><option value="blusmiddel">Keuring blusmiddelen</option><option value="ehbo">Controle EHBO-koffer</option><option value="incident">Incident / inzet BHV</option><option value="overig">Overig</option></select>
+          <input id="lbDatum" type="date">
+          <input id="lbTekst" placeholder="Omschrijving, bijv. 'Ontruiming 3 min 40 s, 42 personen, geen bijzonderheden'">
+          <input id="lbDoor" placeholder="Door (naam)">
+          <button class="btn btn-primary btn-sm" onclick="logboekToevoegen()">Toevoegen</button>
+        </div>
+        <div id="lbLijst" class="tl-lijst"></div>
+      </div>
       <div class="team-list" id="teamList"></div>
     </div>
     <div class="exam-card" id="rosterView">
@@ -4313,6 +4341,7 @@ window.SKBQR={matrix:matrix,svg:svg,dataUrl:dataUrl};})();
         <button class="btn btn-primary" onclick="downloadPas(event)">Download pasje (PNG)</button>
         <button class="btn btn-primary" onclick="printPasBadgy()">Print op pasjesprinter (Badgy)</button>
         <button class="btn btn-outline" onclick="downloadPasBadgeStudio(event)">Download voor Badge Studio</button>
+        <button class="btn btn-outline" onclick="openDigitalePas()">📱 Digitale pas op telefoon</button>
         <button class="btn btn-outline" onclick="goTo('dashboard')">Terug naar dashboard</button>
       </div>
     </div>
@@ -6141,6 +6170,88 @@ function renderTeam(){
   }).join('');
 }
 function escapeHtmlSafe(v){ return String(v==null?'':v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ============ BHV-LOGBOEK & BHV-DOSSIER ============ */
+const LB_TYPES = { oefening:'Ontruimingsoefening', aed:'AED-controle', blusmiddel:'Keuring blusmiddelen', ehbo:'Controle EHBO-koffer', incident:'Incident / inzet BHV', overig:'Overig' };
+let lbCache = null;
+async function logboekLaden(){
+  try{ const r = await accountApi('logboek', { sub:'lijst' }); lbCache = r.logboek || []; }catch(e){ lbCache = lbCache || []; }
+  logboekTonen();
+  return lbCache;
+}
+function logboekTonen(){
+  const el = document.getElementById('lbLijst'); if(!el) return;
+  const L = lbCache || [];
+  el.innerHTML = L.length ? L.map(x => `<div class="tl-rij"><span class="tl-d">${escapeHtmlSafe(formatDateNL(x.datum))}</span><span class="tl-t">${escapeHtmlSafe(LB_TYPES[x.type]||x.type)}</span><span class="tl-o">${escapeHtmlSafe(x.tekst)}${x.door?` <i>— ${escapeHtmlSafe(x.door)}</i>`:''}</span><button onclick="logboekVerwijder('${escapeHtmlSafe(x.id)}')" aria-label="Verwijderen">✕</button></div>`).join('')
+    : '<p class="tl-uitleg">Nog geen registraties.</p>';
+}
+function logboekToggle(){
+  const b = document.getElementById('teamLogboek'); const open = b.style.display === 'none';
+  b.style.display = open ? '' : 'none';
+  if(open){ const d = document.getElementById('lbDatum'); if(!d.value) d.value = new Date().toISOString().slice(0,10); logboekLaden(); }
+}
+async function logboekToevoegen(){
+  const entry = { type: document.getElementById('lbType').value, datum: document.getElementById('lbDatum').value, tekst: document.getElementById('lbTekst').value, door: document.getElementById('lbDoor').value };
+  if(!entry.tekst.trim()){ showToast('Vul een omschrijving in.'); return; }
+  try{ const r = await accountApi('logboek', { sub:'toevoegen', entry }); lbCache = r.logboek; logboekTonen(); document.getElementById('lbTekst').value = ''; }
+  catch(e){ showToast(e.message); }
+}
+async function logboekVerwijder(id){
+  if(!confirm('Deze registratie verwijderen?')) return;
+  try{ const r = await accountApi('logboek', { sub:'verwijderen', id }); lbCache = r.logboek; logboekTonen(); }catch(e){ showToast(e.message); }
+}
+async function dossierMaken(){
+  const w = window.open('', '_blank');
+  if(!w){ showToast('Sta pop-ups toe om het dossier te openen.'); return; }
+  w.document.write('<p style="font-family:Arial;padding:30px">BHV-dossier wordt gemaakt…</p>');
+  const lb = await logboekLaden();
+  const leden = teamLeden().map(e => ({ e, s: teamStatus(e) }));
+  const bedrijf = (state.auth && state.auth.company) || (state.buyer && state.buyer.company) || '';
+  const contact = state.auth ? `${state.auth.first||''} ${state.auth.last||''}`.trim() : '';
+  const mw = parseInt((document.getElementById('teamMedewerkers')||{}).value, 10) || null;
+  const geldig = leden.filter(x => x.s.k === 'groen' || x.s.k === 'oranje').length;
+  const nodig = mw ? Math.max(1, Math.ceil(mw/50)) : null;
+  const fmt = d => d ? new Date(d).toLocaleDateString('nl-NL', { day:'2-digit', month:'2-digit', year:'numeric' }) : '—';
+  const kleur = { groen:'#0E7A3D', oranje:'#B35A00', rood:'#C8101F', grijs:'#6B7480' };
+  const rijen = leden.map(({e,s}) => {
+    const o = onderdelenVan({ ...e, pkg: e._pkg });
+    const qr = e.verifyCode ? `<img src="${skbQrDataUrl(e.verifyCode, 3)}" style="width:62px;height:62px">` : '';
+    return `<tr><td><b>${escapeHtmlSafe(`${e.first||''} ${e.last||''}`.trim())}</b><br><small>${escapeHtmlSafe(e.birthdate ? 'geb. ' + fmt(e.birthdate) : '')}</small></td>
+      <td>${escapeHtmlSafe(o ? o.pasType : ((PACKAGES[e._pkg]&&PACKAGES[e._pkg].pasType)||''))}</td><td>${escapeHtmlSafe(e.certNumber||'—')}</td>
+      <td>${fmt(e.passDate)}</td><td>${s.d ? fmt(s.d) : '—'}</td><td style="color:${kleur[s.k]};font-weight:700">${escapeHtmlSafe(s.t)}</td><td>${qr}</td></tr>`;
+  }).join('');
+  const lbRijen = (lb||[]).map(x => `<tr><td>${fmt(x.datum)}</td><td>${escapeHtmlSafe(LB_TYPES[x.type]||x.type)}</td><td>${escapeHtmlSafe(x.tekst)}</td><td>${escapeHtmlSafe(x.door||'')}</td></tr>`).join('');
+  const html = `<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><title>BHV-dossier${bedrijf?' '+escapeHtmlSafe(bedrijf):''}</title>
+<style>@page{size:A4;margin:14mm}body{font-family:Arial,sans-serif;color:#111;margin:0;padding:24px;font-size:12.5px}
+.kop{display:flex;justify-content:space-between;align-items:center;border-bottom:6px solid #E0101F;padding-bottom:12px}
+.kop img{height:54px}.kop .r{text-align:right;color:#444;font-size:11.5px}
+h1{font-size:26px;text-transform:uppercase;margin:20px 0 4px}h2{font-size:15px;text-transform:uppercase;letter-spacing:1px;border-left:5px solid #E0101F;padding-left:8px;margin:24px 0 8px}
+.tegels{display:flex;gap:10px;margin:14px 0}.tegel{flex:1;background:#F2F3F5;border-top:4px solid #999;padding:10px}.tegel b{display:block;font-size:22px}
+table{width:100%;border-collapse:collapse}th{background:#0B0D10;color:#fff;font-size:10px;letter-spacing:1px;text-transform:uppercase;text-align:left;padding:6px}
+td{border-bottom:1px solid #ddd;padding:6px;vertical-align:middle}small{color:#666}.noot{color:#555;font-size:11px;margin-top:8px}
+.knop{position:fixed;right:20px;top:20px;background:#E0101F;color:#fff;border:none;padding:12px 18px;border-radius:4px;font-weight:bold;cursor:pointer}@media print{.knop{display:none}}</style></head><body>
+<button class="knop" onclick="print()">Opslaan als PDF</button>
+<div class="kop"><img src="${SKB_LOGO_URI}"><div class="r">BHV-dossier opgesteld via SKB BHV<br>www.skbbhv.nl · info@skbbhv.nl<br>Datum: ${fmt(new Date())}</div></div>
+<h1>BHV-dossier${bedrijf?' — '+escapeHtmlSafe(bedrijf):''}</h1>
+<p>${contact?'Contactpersoon: <b>'+escapeHtmlSafe(contact)+'</b> · ':''}${state.auth&&state.auth.email?escapeHtmlSafe(state.auth.email):''}</p>
+<div class="tegels"><div class="tegel" style="border-top-color:#0E7A3D"><b>${geldig}</b>Geldige BHV'ers</div><div class="tegel" style="border-top-color:#C8101F"><b>${leden.filter(x=>x.s.k==='rood').length}</b>Verlopen</div>
+<div class="tegel"><b>${mw||'—'}</b>Medewerkers</div><div class="tegel" style="border-top-color:${nodig && geldig>=nodig?'#0E7A3D':'#C8101F'}"><b>${nodig||'—'}</b>Minimaal nodig (1 per 50)</div></div>
+<h2>1. BHV'ers en certificaten</h2>
+<table><tr><th>Naam</th><th>Opleiding</th><th>Certificaat</th><th>Behaald</th><th>Geldig tot</th><th>Status</th><th>Echtheid</th></tr>${rijen || '<tr><td colspan="7">Geen BHV\'ers.</td></tr>'}</table>
+<p class="noot">Elk certificaat is te controleren door de QR-code te scannen of via www.skbbhv.nl/check (certificaatnummer + geboortedatum).</p>
+<h2>2. Logboek oefeningen, controles en incidenten</h2>
+<table><tr><th>Datum</th><th>Soort</th><th>Omschrijving</th><th>Door</th></tr>${lbRijen || '<tr><td colspan="4">Nog geen registraties.</td></tr>'}</table>
+<h2>3. BHV-plan</h2><p>Het BHV- en ontruimingsplan van de organisatie is als bijlage toegevoegd. Een template is te vinden op www.skbbhv.nl/bhv-plan.</p>
+<p class="noot">De werkgever is volgens de Arbowet verantwoordelijk voor een BHV-organisatie die past bij de risico-inventarisatie (RI&amp;E). Dit dossier is een overzicht op basis van de gegevens in SKB BHV.</p>
+</body></html>`;
+  w.document.open(); w.document.write(html); w.document.close();
+}
+
+function openDigitalePas(){
+  const p = state.roster && state.roster[state.activeIndex];
+  if(!p || !p.verifyCode){ showToast('De digitale pas is beschikbaar zodra het certificaat is uitgegeven.'); return; }
+  window.open('/pas/' + encodeURIComponent(p.verifyCode), '_blank');
+}
 
 /* ============ COOKIEMELDING ============ */
 async function initCookieNotice(){

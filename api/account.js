@@ -45,6 +45,8 @@ export default async function handler(req, res) {
       case 'reset': return await resetPassword(body, res);
       case 'change-password': return await changePassword(req, body, res);
       case 'save-order': return await saveOrder(req, body, res);
+      case 'logboek': return await logboek(req, body, res);
+      case 'instellingen': return await instellingen(req, body, res);
       default: return res.status(400).json({ error: 'Onbekende actie.' });
     }
   } catch (err) {
@@ -209,4 +211,46 @@ async function sanitizeRoster(roster, previous, email) {
     }
     return e;
   }));
+}
+
+// ---------- BHV-logboek (oefeningen, controles, incidenten) voor het BHV-dossier ----------
+const LOG_TYPES = ['oefening', 'aed', 'blusmiddel', 'ehbo', 'incident', 'overig'];
+async function logboek(req, body, res) {
+  const email = await getSessionEmail(req);
+  if (!email) return res.status(401).json({ error: 'Niet ingelogd.' });
+  const key = `logboek:${email}`;
+  let lijst = (await kv.get(key)) || [];
+  if (!Array.isArray(lijst)) lijst = [];
+  const sub = String(body.sub || 'lijst');
+  if (sub === 'toevoegen') {
+    const e = body.entry || {};
+    const type = LOG_TYPES.includes(e.type) ? e.type : 'overig';
+    const datum = /^\d{4}-\d{2}-\d{2}$/.test(String(e.datum || '')) ? e.datum : new Date().toISOString().slice(0, 10);
+    const tekst = String(e.tekst || '').trim().slice(0, 600);
+    const door = String(e.door || '').trim().slice(0, 80);
+    if (!tekst) return res.status(400).json({ error: 'Vul een omschrijving in.' });
+    lijst.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), type, datum, tekst, door });
+    lijst = lijst.slice(-500);
+    await kv.set(key, lijst);
+  } else if (sub === 'verwijderen') {
+    lijst = lijst.filter((x) => x.id !== String(body.id || ''));
+    await kv.set(key, lijst);
+  }
+  lijst.sort((a, b) => String(b.datum).localeCompare(String(a.datum)));
+  return res.status(200).json({ ok: true, logboek: lijst });
+}
+
+// ---------- Instellingen werkgever (o.a. BHV-fit aan/uit) ----------
+async function instellingen(req, body, res) {
+  const email = await getSessionEmail(req);
+  if (!email) return res.status(401).json({ error: 'Niet ingelogd.' });
+  const key = `instellingen:${email}`;
+  let inst = (await kv.get(key)) || {};
+  if (body.zet && typeof body.zet === 'object') {
+    if ('bhvFit' in body.zet) inst.bhvFit = !!body.zet.bhvFit;
+    if ('alarmNaam' in body.zet) inst.alarmNaam = String(body.zet.alarmNaam || '').slice(0, 80);
+    inst.updatedAt = new Date().toISOString();
+    await kv.set(key, inst);
+  }
+  return res.status(200).json({ ok: true, instellingen: inst });
 }
