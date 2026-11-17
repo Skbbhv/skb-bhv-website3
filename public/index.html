@@ -1342,69 +1342,116 @@ body.stoer .stoer-ticker{margin:10px calc(50% - 50vw - 40px) 30px;}
 }
 </style>
 <style id="stoer-documenten">
-/* ===== STOER CERTIFICAAT & PASJE — html2canvas-veilig (geen text-stroke/backdrop/repeating-gradients) ===== */
+/* ===== STOER CERTIFICAAT (c3) & PASJE (p3) — html2canvas-veilig ===== */
 :root{--tape-rk:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAIAAAD9b0jDAAABNElEQVR42q3Vz0rDQBDH8e9MAmkDYqm9+1zV/hF8GkH0qeqh9SA+gS/gwTRVxM2Ohxbb2jSJZve6y4eB2fmNvPTOqTxfMEBm5qY+f4cI7MjLCDJsJInWin1kbu7ar5YQHxdjyLCJJLeaarV4hizMDX3+iu+APy6+YRNJ7jT9xOLqGhfmLn2+xFKkaCDmmAetEB/NXfg8w7qNRQMtRf8tehDgEG1ZI4doG1F2bjW4uEUDiht0/R9DiYD+zEwoEdBB0BoBDzozN/arZTixA9I/6YUSHfSQJyv0AzohxHW35+aGPo+jZtlTK667PfZ5hqkFEne7rcHFojSlWoolKdVe/I0GEffQUOIWDShu0LAioNFfprBh+miGTSW5rxMLOEUeGoiAjiS52d+FpdnThWeKK7+qFYFv51OVwsRH+98AAAAASUVORK5CYII=);--tape-rw:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAIAAAD9b0jDAAABb0lEQVR42q3WzUrDQBDA8ZlJYrfQJEWh6c0XEAQP2m9F36TVW8A3ElqUpFgQasHX8Z4UKxZySXY9mFJbahLs7Hn4sYedP4vv1WPIPGgYSRCUb65qkyFZJiAC4u7ROAZdXz49U74YzkW3VRs/UNXOENWPOPTCW5fyxFB0m85sTEeHIGWGiLq+HPlB38WS0HPu2Gk6U48sE6QEohxx4JJlAv0xtxIbzqtPtlVI7LtUqQARSElsopmKAEDs4jbKIm6gXOIaZRRTlFcEAFrtTJNLBABKgkC0L5ypxyUCEZWvLzlFTVNRhDKKUAgeUdflx6J0fkYoBCi1v4iGIcNQ9Fr12RhVsfbkikk4F+2GM/PJtohN7KTi7qD8U/z1Iold3FGp/cVtlEXcQLnENcoopiivCACo4hg0regWFusZKqWWQy8YuGSa2aWQi89yr1V7ecwWAQC/Rn54d4+iBJqWUTMVRQenJ/W3CVVtSBLQtIxfyDcUkbHCMG3oDQAAAABJRU5ErkJggg==);}
-/* ---------- certificaat ---------- */
-.cert-sheet.c2{background:#ffffff;border:none;border-radius:0;box-shadow:0 30px 80px rgba(0,0,0,.55);color:#0B0D10;}
-.cert-sheet.c2 .c2-band{height:22px;background-image:var(--tape-rk);background-size:28px 28px;background-repeat:repeat;}
-.cert-sheet.c2 .c2-band span{display:none;}
-.cert-sheet.c2 .c2-frame{border:none;outline:none;margin:0;padding:0 0 26px;position:relative;align-items:stretch;}
-.cert-sheet.c2 .c2-frame::before{content:"";position:absolute;left:0;top:0;bottom:0;width:14px;background:#E0101F;}
-.cert-sheet.c2 .c2-head{
-  background:#0B0D10;display:flex;align-items:center;gap:36px;padding:26px 70px 26px 70px;text-align:left;position:relative;
-}
-.cert-sheet.c2 .c2-logo{height:84px;margin:0;background:#fff;padding:10px 16px;border-radius:4px;box-shadow:6px 6px 0 #E0101F;}
-.cert-sheet.c2 .c2-title{font-family:'Archivo Black','Archivo',Arial,sans-serif;font-weight:400;font-size:76px;letter-spacing:2px;color:#ffffff;line-height:.95;}
-.cert-sheet.c2 .c2-subtitle{font-family:'Oswald','Archivo',Arial,sans-serif;font-weight:600;font-size:22px;letter-spacing:9px;color:#FF2D3D;margin-top:8px;}
-.cert-sheet.c2 .c2-main{margin-top:26px;padding:0 90px;text-align:center;position:relative;}
-.cert-sheet.c2 .c2-line{font-size:19px;color:#4A525B;}
-.cert-sheet.c2 .c2-line b{color:#0B0D10;}
-.cert-sheet.c2 .c2-name{
-  font-family:'Archivo Black','Archivo',Arial,sans-serif;font-weight:400;font-size:62px;text-transform:uppercase;letter-spacing:.5px;
-  color:#0B0D10;border-bottom:6px solid #E0101F;padding:0 40px 6px;margin:8px auto 10px;line-height:1.05;
-}
-.cert-sheet.c2 .c2-exam{font-family:'Archivo Black','Archivo',Arial,sans-serif;font-weight:400;font-size:32px;letter-spacing:1px;color:#E0101F;}
-.cert-sheet.c2 .c2-pass{
-  position:absolute;right:120px;top:150px;margin:0;background:transparent;color:#E0101F;border:6px solid #E0101F;border-radius:8px;
-  font-family:'Archivo Black','Archivo',Arial,sans-serif;font-weight:400;font-size:40px;letter-spacing:6px;padding:8px 26px;
-  transform:rotate(-12deg);opacity:.92;box-shadow:inset 0 0 0 3px #fff,inset 0 0 0 5px #E0101F;
-}
-.cert-sheet.c2 .c2-details{width:auto;margin:22px 70px 0;border:none;gap:12px;}
-.cert-sheet.c2 .c2-details > div{background:#0B0D10;border:none;border-top:5px solid #E0101F;padding:12px 8px 14px;}
-.cert-sheet.c2 .c2-details .k{color:#FF5A66;font-family:'Oswald','Archivo',Arial,sans-serif;font-weight:600;letter-spacing:3px;font-size:14px;}
-.cert-sheet.c2 .c2-details .v{color:#ffffff;font-family:'Archivo Black','Archivo',Arial,sans-serif;font-weight:400;font-size:22px;}
-.cert-sheet.c2 .c2-topics{margin:26px 70px 0;}
-.cert-sheet.c2 .c2-topic{background:#F2F3F5;padding:8px 14px;border-left:4px solid #E0101F;}
-.cert-sheet.c2 .c2-topics-label{color:#0B0D10;font-family:'Oswald','Archivo',Arial,sans-serif;letter-spacing:4px;font-size:14px;}
-.cert-sheet.c2 .c2-topic{color:#0B0D10;font-family:'Oswald','Archivo',Arial,sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;font-size:18px;}
-.cert-sheet.c2 .c2-topic svg{stroke:#E0101F;}
-.cert-sheet.c2 .c2-sign{padding:8px 90px 0;}
-.cert-sheet.c2 .c2-script{font-family:'Archivo Black','Archivo',Arial,sans-serif;font-style:normal;font-weight:400;font-size:30px;color:#0B0D10;letter-spacing:1px;}
-.cert-sheet.c2 .c2-sigline{height:3px;background:#0B0D10;}
-.cert-sheet.c2 .c2-sigcap{color:#4A525B;font-family:'Oswald','Archivo',Arial,sans-serif;letter-spacing:2px;text-transform:uppercase;font-size:14px;}
-.cert-sheet.c2 .c2-seal{border:5px solid #E0101F;background:#0B0D10;width:132px;height:132px;}
-.cert-sheet.c2 .c2-seal-inner{border:2px dashed #FF5A66;color:#fff;width:106px;height:106px;}
-.cert-sheet.c2 .c2-seal .t1{font-family:'Archivo Black','Archivo',Arial,sans-serif;font-weight:400;font-size:18px;color:#fff;}
-.cert-sheet.c2 .c2-seal .t2{color:#FF5A66;}
-.cert-sheet.c2 .c2-seal .t3{color:#fff;}
-.cert-sheet.c2 .c2-footer{background:#0B0D10;color:#C9CFD8;font-family:'Oswald','Archivo',Arial,sans-serif;letter-spacing:1.5px;font-size:15px;position:relative;border-top:10px solid #E0101F;}
+.cert-sheet.c3{position:relative;width:1500px;height:1030px;background:#fff;border:none;border-radius:0;overflow:hidden;
+  box-shadow:0 30px 80px rgba(0,0,0,.55);font-family:'Public Sans',Arial,sans-serif;color:#0B0D10;display:grid;grid-template-columns:400px 1fr;grid-template-rows:1fr 56px;text-align:left;}
+.c3 .c3-side{position:relative;background:#0B0D10;color:#fff;padding:40px 36px 30px;display:flex;flex-direction:column;overflow:hidden;
+  background-image:radial-gradient(420px 420px at 100% 0%,rgba(224,16,31,.45),rgba(224,16,31,0) 70%),linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);
+  background-size:auto,32px 32px,32px 32px;}
+.c3 .c3-side::after{content:"";position:absolute;right:0;top:0;bottom:0;width:14px;background:var(--tape-rk);background-size:28px 28px;}
+.c3 .c3-logo{align-self:flex-start;background:#fff;padding:10px 16px;border-radius:4px;box-shadow:6px 6px 0 #E0101F;}
+.c3 .c3-logo img{height:70px;width:auto;display:block;}
+.c3 .c3-big{font-family:'Archivo Black','Archivo',Arial,sans-serif;font-size:150px;line-height:.82;color:#E0101F;margin-top:30px;letter-spacing:-4px;}
+.c3 .c3-bigsub{font-family:'Oswald','Archivo',Arial,sans-serif;font-weight:600;font-size:21px;letter-spacing:4px;text-transform:uppercase;color:#fff;margin-top:10px;}
+.c3 .c3-stripe{height:10px;background:var(--tape-rw);background-size:28px 28px;margin:22px 0 20px;}
+.c3 .c3-skills-label{font-family:'Oswald','Archivo',Arial,sans-serif;font-size:14px;letter-spacing:4px;text-transform:uppercase;color:#FF5A66;margin-bottom:10px;}
+.c3 .c3-skill{display:flex;align-items:center;gap:14px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.12);}
+.c3 .c3-ico{width:46px;height:46px;flex-shrink:0;border-radius:4px;background:#E0101F;display:flex;align-items:center;justify-content:center;}
+.c3 .c3-sk{display:flex;flex-direction:column;flex:1;}
+.c3 .c3-sk b{font-family:'Oswald','Archivo',Arial,sans-serif;font-weight:600;font-size:19px;letter-spacing:1.5px;text-transform:uppercase;color:#fff;line-height:1.1;}
+.c3 .c3-sk i{font-style:normal;font-size:13px;color:#9AA4B1;}
+.c3 .c3-ok{width:26px;height:26px;border-radius:50%;border:2px solid #19D36B;display:flex;align-items:center;justify-content:center;}
+.c3 .c3-112{margin-top:auto;display:flex;align-items:center;gap:14px;border:2px solid #E0101F;border-radius:4px;padding:10px 14px;}
+.c3 .c3-112 .n{font-family:'Archivo Black','Archivo',Arial,sans-serif;font-size:40px;color:#fff;background:#E0101F;padding:2px 12px;border-radius:3px;line-height:1.1;}
+.c3 .c3-112 .t{font-family:'Oswald','Archivo',Arial,sans-serif;font-size:15px;letter-spacing:2px;text-transform:uppercase;color:#fff;line-height:1.25;}
+
+.c3 .c3-main{position:relative;padding:54px 80px 30px 70px;display:flex;flex-direction:column;overflow:hidden;}
+.c3 .c3-wm{position:absolute;right:-60px;bottom:40px;font-family:'Archivo Black','Archivo',Arial,sans-serif;font-size:430px;line-height:.8;color:#F3F4F6;transform:rotate(-10deg);z-index:0;letter-spacing:-10px;}
+.c3 .c3-main > *{position:relative;z-index:1;}
+.c3 .c3-main > .c3-wm{position:absolute;z-index:0;}
+.c3 .c3-kicker{display:flex;align-items:center;gap:14px;font-family:'Oswald','Archivo',Arial,sans-serif;font-weight:600;font-size:16px;letter-spacing:5px;text-transform:uppercase;color:#E0101F;}
+.c3 .c3-kicker span{width:46px;height:4px;background:#E0101F;display:inline-block;}
+.c3 .c3-title{font-family:'Archivo Black','Archivo',Arial,sans-serif;font-size:84px;line-height:.95;text-transform:uppercase;color:#0B0D10;letter-spacing:-1px;margin:8px 0 14px;}
+.c3 .c3-line{font-size:19px;color:#4A525B;margin:2px 0;}
+.c3 .c3-line b{color:#0B0D10;}
+.c3 .c3-name{font-family:'Archivo Black','Archivo',Arial,sans-serif;font-size:64px;line-height:1.02;text-transform:uppercase;color:#0B0D10;
+  border-left:12px solid #E0101F;padding:4px 0 4px 22px;margin:10px 0 12px;}
+.c3 .c3-exam{margin:10px 0 8px;}
+.c3 .c3-exam span{display:inline-block;background:#0B0D10;color:#fff;font-family:'Archivo Black','Archivo',Arial,sans-serif;font-size:26px;letter-spacing:1px;padding:10px 20px;box-shadow:6px 6px 0 #E0101F;}
+.c3 .c3-stamp{position:absolute;right:90px;top:290px;display:flex;flex-direction:column;align-items:center;border:7px solid #E0101F;border-radius:10px;padding:10px 26px 12px;
+  color:#E0101F;transform:rotate(-14deg);background:rgba(255,255,255,.85);box-shadow:inset 0 0 0 3px #fff,inset 0 0 0 6px #E0101F;}
+.c3 .c3-stamp .s1{font-family:'Archivo Black','Archivo',Arial,sans-serif;font-size:54px;letter-spacing:6px;text-transform:uppercase;line-height:1;}
+.c3 .c3-stamp .s2{font-family:'Oswald','Archivo',Arial,sans-serif;font-size:13px;letter-spacing:3px;text-transform:uppercase;margin-top:4px;}
+.c3 .c3-ecg{display:block;width:100%;height:64px;margin:14px 0 6px;}
+.c3 .c3-score{margin:0 0 16px;}
+.c3 .c3-score-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
+.c3 .c3-score-head span{font-family:'Oswald','Archivo',Arial,sans-serif;font-size:15px;letter-spacing:4px;text-transform:uppercase;color:#4A525B;}
+.c3 .c3-score-head b{font-family:'Archivo Black','Archivo',Arial,sans-serif;font-weight:400;font-size:24px;color:#0B0D10;}
+.c3 .c3-bar{position:relative;height:22px;background:#E9EBEE;border-radius:2px;}
+.c3 .c3-fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#B30F1C,#FF2D3D);border-radius:2px;}
+.c3 .c3-min{position:absolute;left:80%;top:-6px;bottom:-6px;width:3px;background:#0B0D10;}
+.c3 .c3-min i{position:absolute;top:36px;left:-30px;font-style:normal;font-family:'Oswald','Archivo',Arial,sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#0B0D10;white-space:nowrap;}
+.c3 .c3-details{display:grid;grid-template-columns:1fr 1fr 1.3fr;gap:12px;margin-top:20px;}
+.c3 .c3-details > div{background:#0B0D10;border-top:5px solid #E0101F;padding:12px 16px 14px;display:flex;flex-direction:column;gap:4px;}
+.c3 .c3-details > div.hot{background:#E0101F;border-top-color:#0B0D10;}
+.c3 .c3-details .k{font-family:'Oswald','Archivo',Arial,sans-serif;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:#FF7A84;}
+.c3 .c3-details .hot .k{color:#FFE1E4;}
+.c3 .c3-details .v{font-family:'Archivo Black','Archivo',Arial,sans-serif;font-size:22px;color:#fff;}
+.c3 .c3-sign{display:flex;justify-content:space-between;align-items:flex-end;margin-top:auto;}
+.c3 .c3-signature{width:360px;}
+.c3 .c3-script{font-family:'Archivo Black','Archivo',Arial,sans-serif;font-size:30px;color:#0B0D10;font-style:italic;transform:skewX(-8deg);}
+.c3 .c3-sigline{height:3px;background:#0B0D10;margin:6px 0 8px;}
+.c3 .c3-sigcap{font-family:'Oswald','Archivo',Arial,sans-serif;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#4A525B;}
+.c3 .c3-seal{width:136px;height:136px;border-radius:50%;background:#0B0D10;border:6px solid #E0101F;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 4px #fff,0 0 0 6px #0B0D10;}
+.c3 .c3-seal-in{width:104px;height:104px;border-radius:50%;border:2px dashed #FF5A66;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;}
+.c3 .c3-seal .t1{font-family:'Archivo Black','Archivo',Arial,sans-serif;font-size:24px;color:#fff;}
+.c3 .c3-seal .t2{font-family:'Archivo Black','Archivo',Arial,sans-serif;font-size:24px;color:#FF2D3D;}
+.c3 .c3-seal .t3{font-family:'Oswald','Archivo',Arial,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#fff;margin-top:4px;}
+.c3 .c3-footer{grid-column:1 / -1;background:#0B0D10;color:#C9CFD8;font-family:'Oswald','Archivo',Arial,sans-serif;letter-spacing:2px;font-size:15px;display:flex;align-items:center;justify-content:center;border-top:8px solid #E0101F;}
+.c3 .c3-tape{position:absolute;z-index:5;width:620px;height:44px;background:#E0101F;display:flex;align-items:center;justify-content:center;overflow:hidden;
+  border-top:6px solid #0B0D10;border-bottom:6px solid #0B0D10;box-shadow:0 8px 20px rgba(0,0,0,.25);}
+.c3 .c3-tape span{white-space:nowrap;font-family:'Archivo Black','Archivo',Arial,sans-serif;font-size:17px;letter-spacing:3px;color:#fff;}
+.c3 .c3-tape-tr{right:-170px;top:70px;transform:rotate(38deg);}
+.c3 .c3-tape-bl{display:none;}
 
 /* ---------- pasje ---------- */
-#pasCardSheet.pas-card{background:#0B0D10;border:none;border-radius:18px;box-shadow:0 30px 70px rgba(0,0,0,.6);color:#fff;}
-#pasCardSheet::before{content:"";position:absolute;right:-60px;top:70px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(224,16,31,.35),rgba(224,16,31,0) 70%);}
-#pasCardSheet .pas-topbar{background:#0B0D10 !important;border-bottom:none;padding:20px 26px 16px;position:relative;}
-#pasCardSheet .pas-logo{background:#fff;padding:6px 12px;border-radius:4px;box-shadow:4px 4px 0 #E0101F;}
-#pasCardSheet .pas-logo .skb-logo-img{height:36px !important;}
-#pasCardSheet .pas-type{background:#E0101F;color:#fff;border-radius:3px;font-family:'Oswald','Archivo',Arial,sans-serif;font-weight:600;font-size:15px;letter-spacing:3px;padding:7px 14px;}
-#pasCardSheet .pas-sweep{height:12px;background:var(--tape-rk);background-size:28px 28px;}
-#pasCardSheet .pas-body{position:relative;padding:22px 28px 10px;text-align:left;}
-#pasCardSheet .pas-name{font-family:'Archivo Black','Archivo',Arial,sans-serif;font-weight:400;font-size:34px;text-transform:uppercase;color:#fff;letter-spacing:.5px;margin-bottom:14px;line-height:1.05;}
-#pasCardSheet .pas-row{border-bottom:1px solid #242A33;font-size:15px;}
-#pasCardSheet .pas-row .k{color:#9AA4B1;font-family:'Oswald','Archivo',Arial,sans-serif;text-transform:uppercase;letter-spacing:2px;font-size:14px;}
-#pasCardSheet .pas-row .v{color:#FF4552;font-weight:800;font-family:'Archivo',Arial,sans-serif;}
-#pasCardSheet .pas-footer{background:#E0101F;border-top:none;padding:12px 28px;}
-#pasCardSheet .pas-number{color:#fff;font-family:'Archivo Black','Archivo',Arial,sans-serif;font-weight:400;font-size:16px;letter-spacing:1.5px;}
-#pasCardSheet .pas-web{color:#fff;font-family:'Oswald','Archivo',Arial,sans-serif;font-weight:600;letter-spacing:2px;font-size:14px;}
+.pas-card.p3{position:relative;width:640px;height:400px;border-radius:18px;overflow:hidden;border:none;color:#fff;text-align:left;
+  background:#0B0D10;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:24px 24px;
+  box-shadow:0 30px 70px rgba(0,0,0,.6),inset 0 0 0 1px rgba(255,255,255,.08);font-family:'Public Sans',Arial,sans-serif;}
+.p3 .p3-glow{position:absolute;right:-90px;top:-90px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(224,16,31,.55),rgba(224,16,31,0) 70%);}
+.p3 .p3-tape{position:absolute;z-index:4;right:-62px;top:32px;width:250px;height:30px;transform:rotate(40deg);background:#E0101F;border-top:4px solid #fff;border-bottom:4px solid #fff;display:flex;align-items:center;justify-content:center;}
+.p3 .p3-tape span{font-family:'Archivo Black','Archivo',Arial,sans-serif;font-size:12px;letter-spacing:3px;color:#fff;white-space:nowrap;}
+.p3 .p3-top{position:relative;display:flex;align-items:center;gap:18px;padding:18px 22px 14px;}
+.p3 .p3-logo{background:#fff;padding:6px 12px;border-radius:4px;box-shadow:4px 4px 0 #E0101F;}
+.p3 .p3-logo img{height:34px;width:auto;display:block;}
+.p3 .p3-title{display:flex;flex-direction:column;line-height:1.05;}
+.p3 .p3-title b{font-family:'Archivo Black','Archivo',Arial,sans-serif;font-weight:400;font-size:26px;text-transform:uppercase;letter-spacing:.5px;}
+.p3 .p3-title span{font-family:'Oswald','Archivo',Arial,sans-serif;font-size:13px;letter-spacing:4px;text-transform:uppercase;color:#FF5A66;}
+.p3 .p3-stripe{height:10px;background:var(--tape-rk);background-size:28px 28px;}
+.p3 .p3-body{position:relative;display:flex;gap:20px;padding:16px 22px 0;}
+.p3 .p3-emblem{position:relative;width:150px;height:186px;flex-shrink:0;border-radius:8px;overflow:hidden;
+  background:linear-gradient(160deg,#FF2D3D,#A80D19);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:44px;box-shadow:inset 0 0 0 2px rgba(255,255,255,.25);}
+.p3 .p3-chip{position:absolute;left:12px;top:12px;width:34px;height:26px;border-radius:5px;background:linear-gradient(135deg,#F8E08E,#C9A43A);display:flex;flex-direction:column;justify-content:space-around;padding:3px 0;}
+.p3 .p3-chip i{display:block;height:1.5px;background:rgba(110,80,10,.6);}
+.p3 .p3-cross{margin-top:0;line-height:0;}
+.p3 .p3-em-bhv{font-family:'Archivo Black','Archivo',Arial,sans-serif;font-size:42px;line-height:1;color:#fff;letter-spacing:-1px;margin-top:2px;}
+.p3 .p3-type{position:absolute;left:0;right:0;bottom:0;text-align:center;background:#0B0D10;color:#fff;font-family:'Oswald','Archivo',Arial,sans-serif;font-weight:600;font-size:10.5px;letter-spacing:1.2px;padding:7px 4px;border-radius:0;white-space:nowrap;}
+.p3 .p3-info{flex:1;min-width:0;}
+.p3 .p3-name{font-family:'Archivo Black','Archivo',Arial,sans-serif;font-weight:400;font-size:30px;line-height:1.02;text-transform:uppercase;color:#fff;margin:0 0 10px;}
+.p3 .p3-rows{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;}
+.p3 .p3-rows > div{display:flex;flex-direction:column;border-left:3px solid #E0101F;padding:1px 0 1px 9px;}
+.p3 .p3-rows .k{font-family:'Oswald','Archivo',Arial,sans-serif;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:#9AA4B1;}
+.p3 .p3-rows .v{font-family:'Archivo',Arial,sans-serif;font-weight:800;font-size:16px;color:#fff;}
+.p3 .p3-rows .hot .v{color:#FF4552;}
+.p3 .p3-icons{display:flex;gap:6px;margin-top:12px;}
+.p3 .p3-ic{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:3px;padding:4px 7px;}
+.p3 .p3-ic i{font-style:normal;font-family:'Oswald','Archivo',Arial,sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#E3E7EC;}
+.p3 .p3-foot{position:absolute;left:0;right:0;bottom:0;height:46px;background:#E0101F;display:flex;align-items:center;justify-content:space-between;padding:0 22px;}
+.p3 .p3-num{font-family:'Archivo Black','Archivo',Arial,sans-serif;font-weight:400;font-size:17px;letter-spacing:1.5px;color:#fff;}
+.p3 .p3-112{font-family:'Oswald','Archivo',Arial,sans-serif;font-weight:600;font-size:14px;letter-spacing:3px;color:#fff;background:#0B0D10;padding:4px 10px;border-radius:3px;}
+.p3 .p3-112 b{font-family:'Archivo Black','Archivo',Arial,sans-serif;font-weight:400;color:#FF4552;margin-left:4px;}
+.p3 .p3-web{font-family:'Oswald','Archivo',Arial,sans-serif;font-weight:600;font-size:14px;letter-spacing:2px;color:#fff;}
 </style>
 </head>
 <body data-view="home">
@@ -2590,57 +2637,44 @@ body.stoer .stoer-ticker{margin:10px calc(50% - 50vw - 40px) 30px;}
         <h2>Gefeliciteerd, je bent geslaagd</h2>
       </div>
       <div class="cert-outer">
-        <div class="cert-sheet c2" id="certificateSheet">
-          <div class="c2-band"><span class="r"></span><span class="w"></span><span class="g"></span></div>
-          <div class="c2-frame">
-            <div class="c2-head">
-              <img class="skb-logo-img c2-logo" alt="SKB BHV logo">
-              <div class="c2-title">Certificaat</div>
-              <div class="c2-subtitle">Bedrijfshulpverlening</div>
+        <div class="cert-sheet c3" id="certificateSheet">
+          <div class="c3-tape c3-tape-tr"><span>BHV ✚ GECERTIFICEERD ✚ BHV ✚ GECERTIFICEERD ✚ BHV ✚ GECERTIFICEERD</span></div>
+          <div class="c3-tape c3-tape-bl"><span>SKB BHV ✚ BEDRIJFSHULPVERLENING ✚ SKB BHV ✚ BEDRIJFSHULPVERLENING</span></div>
+          <aside class="c3-side">
+            <div class="c3-logo"><img class="skb-logo-img" alt="SKB BHV logo"></div>
+            <div class="c3-big">BHV</div>
+            <div class="c3-bigsub">Certificaat van bekwaamheid</div>
+            <div class="c3-stripe"></div>
+            <div class="c3-skills-label">Getoetst &amp; behaald</div>
+            <div class="c3-skill"><span class="c3-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.6 1-1.1a5.5 5.5 0 0 0 0-7.7z"/><path d="M12 9v6M9 12h6"/></svg></span><span class="c3-sk"><b>EHBO</b><i>Levensreddende eerste hulp</i></span><span class="c3-ok"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#19D36B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></div><div class="c3-skill"><span class="c3-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h8l-1 8 9-12h-8l1-8z"/></svg></span><span class="c3-sk"><b>Reanimatie &amp; AED</b><i>Borstcompressies en AED</i></span><span class="c3-ok"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#19D36B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></div><div class="c3-skill"><span class="c3-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span><span class="c3-sk"><b>Brandbestrijding</b><i>Beginnende brand blussen</i></span><span class="c3-ok"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#19D36B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></div><div class="c3-skill"><span class="c3-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg></span><span class="c3-sk"><b>Ontruiming</b><i>Veilig evacueren</i></span><span class="c3-ok"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#19D36B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></div><div class="c3-skill"><span class="c3-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18"/><path d="M6 21h12"/><path d="M3 7h18"/><path d="m6 7-3 7a3 3 0 0 0 6 0Z"/><path d="m18 7-3 7a3 3 0 0 0 6 0Z"/></svg></span><span class="c3-sk"><b>Wet- &amp; regelgeving</b><i>Arbowet en BHV-plan</i></span><span class="c3-ok"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#19D36B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></div>
+            <div class="c3-112"><span class="n">112</span><span class="t">In nood: altijd eerst 112 bellen</span></div>
+          </aside>
+          <section class="c3-main">
+            <div class="c3-wm">BHV</div>
+            <div class="c3-kicker"><span></span>Officieel bewijs van bekwaamheid</div>
+            <div class="c3-title">Certificaat</div>
+            <div class="c3-line">Hierbij verklaart SKB BHV dat</div>
+            <div class="c3-name" id="certName">Voornaam Achternaam</div>
+            <div class="c3-line">geboren op <b id="certBirthdate">—</b>, met goed gevolg het examen</div>
+            <div class="c3-exam"><span id="certExamTitle">BHV BASISOPLEIDING</span></div>
+            <div class="c3-line">heeft afgelegd en daarmee bevoegd is als <b>bedrijfshulpverlener</b>.</div>
+            <div class="c3-stamp"><span class="s1">Geslaagd</span><span class="s2">SKB BHV · examencommissie</span></div>
+            <svg class="c3-ecg" viewBox="0 0 1000 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 50 H330 L345 50 L355 30 L366 66 L380 6 L394 74 L406 40 L415 50 H600 L615 50 L625 30 L636 66 L650 6 L664 74 L676 40 L685 50 H1000" fill="none" stroke="#E0101F" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></svg>
+            <div class="c3-score">
+              <div class="c3-score-head"><span>Examenscore</span><b id="certScore">—</b></div>
+              <div class="c3-bar"><div class="c3-fill" id="certScoreBar" style="width:90%"></div><div class="c3-min"><i>Min. 80%</i></div></div>
             </div>
-
-            <div class="c2-main">
-              <div class="c2-line">Hierbij verklaart SKB BHV dat</div>
-              <div class="c2-name" id="certName">Voornaam Achternaam</div>
-              <div class="c2-line">geboren op <b id="certBirthdate">—</b></div>
-              <div class="c2-line" style="margin-top:18px;">met goed gevolg het examen</div>
-              <div class="c2-exam" id="certExamTitle">BHV BASISOPLEIDING</div>
-              <div class="c2-line">heeft afgelegd en is</div>
-              <div class="c2-pass">GESLAAGD</div>
-            </div>
-
-            <div class="c2-details">
-              <div><span class="k">Score</span><span class="v" id="certScore">—</span></div>
+            <div class="c3-details">
               <div><span class="k">Datum afgifte</span><span class="v" id="certDate">—</span></div>
               <div><span class="k">Geldig tot</span><span class="v" id="certValid">—</span></div>
-              <div><span class="k">Certificaatnummer</span><span class="v" id="certNumberEl">—</span></div>
+              <div class="hot"><span class="k">Certificaatnummer</span><span class="v" id="certNumberEl">—</span></div>
             </div>
-
-            <div class="c2-topics">
-              <span class="c2-topics-label">Getoetste onderdelen</span>
-              <span class="c2-topic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00953C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> EHBO</span>
-              <span class="c2-topic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00953C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Reanimatie &amp; AED</span>
-              <span class="c2-topic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00953C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Brandbestrijding</span>
-              <span class="c2-topic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00953C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Ontruiming</span>
-              <span class="c2-topic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00953C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Wet- &amp; regelgeving</span>
+            <div class="c3-sign">
+              <div class="c3-signature"><div class="c3-script">SKB BHV</div><div class="c3-sigline"></div><div class="c3-sigcap">Examinator · namens SKB BHV</div></div>
+              <div class="c3-seal"><div class="c3-seal-in"><span class="t1">SKB</span><span class="t2">BHV</span><span class="t3">Gecertificeerd</span></div></div>
             </div>
-
-            <div class="c2-sign">
-              <div class="c2-signature">
-                <div class="c2-script">SKB BHV</div>
-                <div class="c2-sigline"></div>
-                <div class="c2-sigcap">Namens SKB BHV · Examinator</div>
-              </div>
-              <div class="c2-seal">
-                <div class="c2-seal-inner">
-                  <span class="t1">SKB BHV</span>
-                  <span class="t2">Gecertificeerd</span>
-                  <span class="t3">1 jaar geldig</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="c2-footer">SKB BHV — onderdeel van Oibase B.V. · Goordelaan 19, 9591 CB Onstwedde · KVK 42117378 · www.skbbhv.nl</div>
+          </section>
+          <div class="c3-footer">SKB BHV — onderdeel van Oibase B.V. · Goordelaan 19, 9591 CB Onstwedde · KVK 42117378 · www.skbbhv.nl</div>
         </div>
       </div>
       <div style="margin-top:26px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
@@ -2660,23 +2694,36 @@ body.stoer .stoer-ticker{margin:10px calc(50% - 50vw - 40px) 30px;}
         <h2>Jouw persoonlijke BHV-pasje</h2>
       </div>
       <div class="pas-outer">
-        <div class="pas-card" id="pasCardSheet">
-          <div class="pas-topbar">
-            <div class="pas-logo">
-              <img class="skb-logo-img" alt="SKB BHV logo" style="height:40px;width:auto;">
+        <div class="pas-card p3" id="pasCardSheet">
+          <div class="p3-glow"></div>
+          <div class="p3-tape"><span>BHV ✚ BHV ✚ BHV ✚ BHV ✚ BHV</span></div>
+          <div class="p3-top">
+            <div class="p3-logo"><img class="skb-logo-img" alt="SKB BHV logo"></div>
+            <div class="p3-title"><b>BHV-pas</b><span>Bedrijfshulpverlener</span></div>
+          </div>
+          <div class="p3-stripe"></div>
+          <div class="p3-body">
+            <div class="p3-emblem">
+              <div class="p3-chip"><i></i><i></i><i></i></div>
+              <div class="p3-cross"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16M4 12h16"/></svg></div>
+              <div class="p3-em-bhv">BHV</div>
+              <div class="pas-type p3-type" id="pasType">THEORIE</div>
             </div>
-            <div class="pas-type" id="pasType">THEORIE</div>
+            <div class="p3-info">
+              <div class="pas-name p3-name" id="pasName">Voornaam Achternaam</div>
+              <div class="p3-rows">
+                <div><span class="k">Geboren</span><span class="v" id="pasBirthdate">—</span></div>
+                <div><span class="k">Behaald</span><span class="v" id="pasBehaald">—</span></div>
+                <div class="hot"><span class="k">Geldig tot</span><span class="v" id="pasGeldig">—</span></div>
+                <div><span class="k">Certificaat</span><span class="v" id="pasCertNr">—</span></div>
+              </div>
+              <div class="p3-icons"><span class="p3-ic" title="EHBO"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.6 1-1.1a5.5 5.5 0 0 0 0-7.7z"/><path d="M12 9v6M9 12h6"/></svg><i>EHBO</i></span><span class="p3-ic" title="AED"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h8l-1 8 9-12h-8l1-8z"/></svg><i>AED</i></span><span class="p3-ic" title="Brand"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg><i>Brand</i></span><span class="p3-ic" title="Ontruiming"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg><i>Ontruiming</i></span></div>
+            </div>
           </div>
-          <div class="pas-sweep"></div>
-          <div class="pas-body">
-            <div class="pas-name" id="pasName">Voornaam Achternaam</div>
-            <div class="pas-row"><span class="k">Geboortedatum</span><span class="v" id="pasBirthdate">—</span></div>
-            <div class="pas-row"><span class="k">Behaald op</span><span class="v" id="pasBehaald">—</span></div>
-            <div class="pas-row"><span class="k">Geldig tot</span><span class="v" id="pasGeldig">—</span></div>
-          </div>
-          <div class="pas-footer">
-            <div class="pas-number" id="pasNumberEl">SKB-P-000000</div>
-            <div class="pas-web">www.skbbhv.nl</div>
+          <div class="p3-foot">
+            <div class="pas-number p3-num" id="pasNumberEl">SKB-P-000000</div>
+            <div class="p3-112">IN NOOD <b>112</b></div>
+            <div class="p3-web">skbbhv.nl</div>
           </div>
         </div>
       </div>
@@ -3970,6 +4017,7 @@ function renderCertificate(correct, total, pct){
   document.getElementById('certDate').textContent = formatDateNL(issueDate);
   document.getElementById('certValid').textContent = formatDateNL(validUntil) + ' (1 jaar)';
   document.getElementById('certNumberEl').textContent = (participant && participant.certNumber) || '—';
+  { const bar=document.getElementById('certScoreBar'); if(bar) bar.style.width = Math.max(0,Math.min(100,Number(pct)||0))+'%'; }
 
   fitCertificate();
 }
@@ -4018,6 +4066,7 @@ function renderPasCard(){
   document.getElementById('pasBehaald').textContent = formatDateNL(issueDate);
   document.getElementById('pasGeldig').textContent = formatDateNL(validUntil);
   document.getElementById('pasNumberEl').textContent = p.pasNumber || '—';
+  { const c=document.getElementById('pasCertNr'); if(c) c.textContent = p.certNumber || '—'; }
 
   fitPasCard();
 }
