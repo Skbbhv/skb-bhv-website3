@@ -1474,6 +1474,12 @@ if(BEHEER_APP){
 }
 </script>
 <style id="beheer-app-stijl">
+.beheer-ok{border:1px solid #19D36B;background:rgba(25,211,107,.1);border-radius:6px;padding:12px 14px;color:#E3E7EC;}
+.beheer-ok a{color:#FF4552;font-weight:700;}
+.bh-acts{display:flex;gap:6px;}
+.bh-acts a,.bh-acts button{font-size:12px;font-weight:700;color:#fff;background:#1A1E25;border:1px solid #2E3540;border-radius:3px;padding:4px 8px;text-decoration:none;cursor:pointer;}
+.bh-acts a:hover,.bh-acts button:hover{border-color:#E0101F;}
+
 .beheer-install{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:0 0 26px;padding:14px 16px;border:1px solid #E0101F;border-radius:6px;background:linear-gradient(120deg,rgba(224,16,31,.22),rgba(224,16,31,.06));}
 .beheer-install div{display:flex;flex-direction:column;gap:2px;flex:1;min-width:200px;}
 .beheer-install b{color:#fff;font-family:'Oswald','Archivo',Arial,sans-serif;text-transform:uppercase;letter-spacing:.08em;font-size:16px;}
@@ -2310,6 +2316,37 @@ body.beheer-app .beheer-badge{display:inline-flex;align-items:center;font-family
         </div>
 
         <div class="beheer-pane" data-pane="nieuw" style="display:none;">
+      <div class="panel beheer-geslaagd" style="margin-bottom:20px;">
+        <h2 style="font-size:22px;margin-bottom:6px;">Deelnemer toevoegen als geslaagd</h2>
+        <p style="font-size:14px;margin:0 0 18px;line-height:1.55;">Voor iemand die het examen of de praktijk bij jou heeft gehaald. Het certificaat en (optioneel) het pasje worden direct aangemaakt en de deelnemer krijgt een mail met de link naar zijn certificaat. Het pasje staat daarna klaar bij <b>Pasjes printen</b>.</p>
+        <div class="field-row">
+          <div class="field"><label for="ngFirst">Voornaam</label><input id="ngFirst" type="text" autocomplete="off"></div>
+          <div class="field"><label for="ngLast">Achternaam</label><input id="ngLast" type="text" autocomplete="off"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label for="ngBirth">Geboortedatum</label><input id="ngBirth" type="date"></div>
+          <div class="field"><label for="ngEmail">E-mailadres (hier gaat het certificaat heen)</label><input id="ngEmail" type="email" placeholder="naam@voorbeeld.nl" autocomplete="off"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label for="ngPkg">Opleiding</label>
+            <select id="ngPkg">
+              <option value="combi">BHV Theorie + Praktijk</option>
+              <option value="basis">BHV Basisexamen (theorie)</option>
+              <option value="herhaling">BHV Herhaling</option>
+            </select>
+          </div>
+          <div class="field"><label for="ngDate">Geslaagd op</label><input id="ngDate" type="date"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label for="ngPct">Score in % (optioneel)</label><input id="ngPct" type="number" min="0" max="100" placeholder="bijv. 88"></div>
+          <div class="field" style="display:flex;flex-direction:column;justify-content:flex-end;gap:10px;">
+            <label class="beheer-check"><input type="checkbox" id="ngPasje" checked> BHV-pasje aanmaken</label>
+            <label class="beheer-check"><input type="checkbox" id="ngMail" checked> Certificaat direct mailen</label>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-block" id="ngBtn" onclick="beheerVoegGeslaagdToe()">Toevoegen als geslaagd →</button>
+        <div id="ngResult" style="margin-top:16px;font-size:14px;line-height:1.6;"></div>
+      </div>
 
 
       <!-- Klantaccount voor contante betaling -->
@@ -4180,14 +4217,14 @@ function renderCertificate(correct, total, pct){
 
   const pkg = state.order.pkg ? PACKAGES[state.order.pkg] : PACKAGES.basis;
   document.getElementById('certExamTitle').textContent = pkg.certTitle;
-  document.getElementById('certScore').textContent = `${pct}% (${correct}/${total} goed)`;
+  document.getElementById('certScore').textContent = (pct == null || pct === '') ? 'Behaald' : (total ? `${pct}% (${correct}/${total} goed)` : `${pct}%`);
 
   const issueDate = (participant && participant.passDate) ? new Date(participant.passDate) : new Date();
   const validUntil = new Date(issueDate); validUntil.setFullYear(validUntil.getFullYear()+1);
   document.getElementById('certDate').textContent = formatDateNL(issueDate);
   document.getElementById('certValid').textContent = formatDateNL(validUntil) + ' (1 jaar)';
   document.getElementById('certNumberEl').textContent = (participant && participant.certNumber) || '—';
-  { const bar=document.getElementById('certScoreBar'); if(bar) bar.style.width = Math.max(0,Math.min(100,Number(pct)||0))+'%'; }
+  { const bar=document.getElementById('certScoreBar'); if(bar) bar.style.width = ((pct == null || pct === '') ? 100 : Math.max(0,Math.min(100,Number(pct)||0)))+'%'; }
 
   fitCertificate();
 }
@@ -4384,6 +4421,7 @@ function beheerUitloggen(){
   BEHEER.data = null; BEHEER.lijst = []; BEHEER.gekozen.clear();
 }
 function beheerTab(t){
+  if(t === 'nieuw'){ const d = document.getElementById('ngDate'); if(d && !d.value) d.value = new Date().toISOString().slice(0,10); }
   document.querySelectorAll('.beheer-tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === t));
   document.querySelectorAll('.beheer-pane').forEach(p => p.style.display = p.dataset.pane === t ? '' : 'none');
 }
@@ -4423,7 +4461,7 @@ function beheerRij(p, metCheck){
   const geprint = p.pasPrintedAt ? `<span class="bh-tag ok">Geprint ${beheerEsc(formatDateNL(p.pasPrintedAt))}</span>` : (p.pasNumber ? '<span class="bh-tag todo">Te printen</span>' : '');
   const score = (st==='passed' || st==='failed') && p.pct!=null ? ` ${beheerEsc(p.pct)}%` : '';
   return `<div class="bh-row">${check}<div class="bh-main"><b>${beheerEsc(naam)}</b><span>${meta || '&nbsp;'}</span>${nrs?`<span class="bh-nr">${nrs}</span>`:''}</div>
-    <div class="bh-side"><span class="bh-tag st-${beheerEsc(st)}">${beheerEsc(STATUS_NL[st] || st)}${score}</span>${metCheck?geprint:''}</div></div>`;
+    <div class="bh-side"><span class="bh-tag st-${beheerEsc(st)}">${beheerEsc(STATUS_NL[st] || st)}${score}</span>${metCheck?geprint:''}${(!metCheck && st==='passed' && p.token) ? `<span class="bh-acts"><a href="/?p=${encodeURIComponent(p.token)}" target="_blank" rel="noopener">Certificaat</a><button type="button" onclick="beheerMailOpnieuw('${id}', this)">Mail opnieuw</button></span>` : ''}</div></div>`;
 }
 function beheerRenderOverzicht(){
   const L = BEHEER.lijst, d = BEHEER.data || {};
@@ -4569,6 +4607,33 @@ async function beheerInstalleer(){
     return;
   }
   txt.innerHTML = 'Tik rechtsboven op <b>⋮</b> → <b>App installeren</b> of <b>Toevoegen aan startscherm</b>.';
+}
+
+async function beheerVoegGeslaagdToe(){
+  const v = id => document.getElementById(id).value.trim();
+  const out = document.getElementById('ngResult'), btn = document.getElementById('ngBtn');
+  const data = { first:v('ngFirst'), last:v('ngLast'), birthdate:v('ngBirth'), email:v('ngEmail'), pkg:v('ngPkg'),
+    passDate:v('ngDate'), pct:v('ngPct'), withPasje:document.getElementById('ngPasje').checked, sendMail:document.getElementById('ngMail').checked };
+  out.style.color = '';
+  if(!data.first || !data.last || !data.birthdate || !data.email){ out.style.color = '#FF6B76'; out.textContent = 'Vul voornaam, achternaam, geboortedatum en e-mailadres in.'; return; }
+  btn.disabled = true; out.textContent = 'Bezig…';
+  try{
+    const r = await beheerApi('addPassed', data);
+    const mail = r.mailSent ? `Certificaatmail verstuurd naar <b>${beheerEsc(data.email)}</b>.` : `Geen mail verstuurd${r.mailReason ? ' (' + beheerEsc(r.mailReason) + ')' : ''}.`;
+    out.innerHTML = `<div class="beheer-ok"><b>${beheerEsc(data.first)} ${beheerEsc(data.last)} staat op geslaagd.</b><br>
+      Certificaat: <b>${beheerEsc(r.certNumber)}</b>${r.pasNumber ? ` · Pasje: <b>${beheerEsc(r.pasNumber)}</b> (staat klaar bij Pasjes printen)` : ''}<br>${mail}<br>
+      <a href="${beheerEsc(r.link)}" target="_blank" rel="noopener">Bekijk certificaat</a></div>`;
+    ['ngFirst','ngLast','ngBirth','ngEmail','ngPct'].forEach(id => document.getElementById(id).value = '');
+    beheerLaad();
+  }catch(e){ out.style.color = '#FF6B76'; out.textContent = e.message; }
+  finally{ btn.disabled = false; }
+}
+async function beheerMailOpnieuw(token, el){
+  if(!confirm('Certificaatmail opnieuw versturen?')) return;
+  el.disabled = true;
+  try{ const r = await beheerApi('resendCert', { token }); beheerToon(r.mailSent ? 'Certificaatmail opnieuw verstuurd.' : ('Niet verstuurd: ' + (r.mailReason || ''))); }
+  catch(e){ beheerToon(e.message, true); }
+  finally{ el.disabled = false; }
 }
 
 /* ============ COOKIEMELDING ============ */
@@ -5172,7 +5237,7 @@ async function initFromParticipantLink(token){
     state.roster = [{
       first: data.first, last: data.last, birthdate: data.birthdate,
       status: data.status || 'ready',
-      correct: data.correct || 0, total: data.total || 75, pct: data.pct || 0,
+      correct: data.correct ?? null, total: data.total ?? (data.pct == null && data.status === 'passed' ? null : 75), pct: (data.pct == null && data.status === 'passed') ? null : (data.pct || 0),
       certNumber: data.certNumber || null, pasNumber: data.pasNumber || null, passDate: data.passDate || null,
       token: token,
     }];

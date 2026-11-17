@@ -6,7 +6,9 @@ import { kv } from './_lib/kv.js';
 import crypto from 'crypto';
 import { Resend } from 'resend';
 import { checkAdmin, ADMIN_OWNER_EMAIL } from './_lib/admin.js';
-import { hashPassword, COMPANY_FOOTER_HTML } from './_lib/accounts.js';
+import { hashPassword, COMPANY_FOOTER_HTML, PACKAGE_NAMES, isValidEmail, normalizeEmail } from './_lib/accounts.js';
+import { issueCertNumber, issuePasNumber, PASSED_TTL_SECONDS } from './_lib/numbers.js';
+import { sendCertificateMail } from './_lib/certmail.js';
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 const FROM_EMAIL = process.env.FROM_EMAIL || 'SKB BHV <onboarding@resend.dev>';
@@ -103,6 +105,52 @@ export default async function handler(req, res) {
         if (await kv.update(`participant:${t}`, { ...rec, pasPrintedAt: now })) n++;
       }
       return res.status(200).json({ ok: true, updated: n });
+    }
+
+    if (body.action === 'addPassed') {
+      const clean = (v, max = 60) => String(v ?? '').trim().slice(0, max);
+      const first = clean(body.first), last = clean(body.last);
+      const birthdate = clean(body.birthdate, 10);
+      const email = normalizeEmail(body.email);
+      const pkg = PACKAGE_NAMES[body.pkg] ? body.pkg : null;
+      if (!first || !last || !/^\d{4}-\d{2}-\d{2}$/.test(birthdate) || !pkg || !isValidEmail(email)) {
+        return res.status(400).json({ error: 'Vul voornaam, achternaam, geboortedatum, pakket en een geldig e-mailadres in.' });
+      }
+      let pct = body.pct === '' || body.pct == null ? null : Math.round(Number(body.pct));
+      if (pct != null && (!Number.isFinite(pct) || pct < 0 || pct > 100)) return res.status(400).json({ error: 'Score moet tussen 0 en 100 liggen.' });
+      const passDay = /^\d{4}-\d{2}-\d{2}$/.test(String(body.passDate || '')) ? String(body.passDate) : null;
+      const passDate = passDay ? new Date(passDay + 'T12:00:00Z').toISOString() : new Date().toISOString();
+
+      const token = crypto.randomBytes(9).toString('base64url');
+      const record = {
+        token, first, last, birthdate, pkg,
+        withPasje: !!body.withPasje, onLocation: false,
+        buyerEmail: email, email,
+        status: 'passed',
+        correct: pct != null ? Math.round(75 * pct / 100) : null, total: pct != null ? 75 : null, pct,
+        certNumber: null, pasNumber: null, passDate, finishedAt: passDate,
+        attempts: 0, createdAt: new Date().toISOString(), createdBy: 'admin-geslaagd',
+      };
+      record.certNumber = await issueCertNumber(token);
+      if (record.withPasje) record.pasNumber = await issuePasNumber();
+      await kv.set(`participant:${token}`, record, { ex: PASSED_TTL_SECONDS });
+
+      let mail = { sent: false, reason: 'Niet verstuurd (uitgezet).' };
+      if (body.sendMail !== false) {
+        try { mail = await sendCertificateMail(record, token); await kv.set(`certmail:${token}`, 1, { ex: PASSED_TTL_SECONDS }); }
+        catch (e) { console.error('certificaatmail (beheer) mislukt:', e); mail = { sent: false, reason: 'Versturen mislukt.' }; }
+      }
+      const siteUrl = (process.env.SITE_URL || `https://${req.headers.host}`).replace(/\/$/, '');
+      return res.status(200).json({ ok: true, token, certNumber: record.certNumber, pasNumber: record.pasNumber,
+        link: `${siteUrl}/?p=${token}`, mailSent: !!mail.sent, mailReason: mail.reason || null });
+    }
+
+    if (body.action === 'resendCert') {
+      const token = String(body.token || '').slice(0, 40);
+      const rec = token ? await kv.get(`participant:${token}`) : null;
+      if (!rec || rec.status !== 'passed' || !rec.certNumber) return res.status(404).json({ error: 'Geen geslaagde deelnemer gevonden.' });
+      const mail = await sendCertificateMail(rec, token);
+      return res.status(200).json({ ok: true, mailSent: !!mail.sent, mailReason: mail.reason || null });
     }
 
     return res.status(400).json({ error: 'Onbekende actie.' });

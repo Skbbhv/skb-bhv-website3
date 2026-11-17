@@ -27,6 +27,7 @@
 
 import crypto from 'crypto';
 import { kv } from './_lib/kv.js';
+import { issueCertNumber, issuePasNumber, PASSED_TTL_SECONDS } from './_lib/numbers.js';
 import { Resend } from 'resend';
 import {
   getSessionEmail, isValidEmail, normalizeEmail, escapeHtml, PACKAGE_NAMES, COMPANY_FOOTER_HTML,
@@ -34,8 +35,6 @@ import {
 import { buildExam, gradeExam } from './_lib/examen.js';
 
 const TTL_SECONDS = 60 * 60 * 24 * 90; // links blijven 90 dagen geldig
-const PASSED_TTL_SECONDS = 60 * 60 * 24 * 365 * 2; // certificaatgegevens 2 jaar bewaren
-const PAS_OFFSET = 10000; // server-side pasnummers beginnen boven de oude (browser-)nummers
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 const FROM_EMAIL = process.env.FROM_EMAIL || 'SKB BHV <onboarding@resend.dev>';
 
@@ -61,22 +60,6 @@ async function saveRecord(record) {
   await kv.set(`participant:${record.token}`, record, { ex: ttl });
 }
 
-// Uniek certificaatnummer in het bestaande formaat SKB-BHV-<jaar>-<4 cijfers>.
-async function issueCertNumber(token) {
-  const year = new Date().getFullYear();
-  for (let attempt = 0; attempt < 25; attempt++) {
-    const digits = attempt < 20 ? crypto.randomInt(1000, 10000) : crypto.randomInt(10000, 100000);
-    const number = `SKB-BHV-${year}-${digits}`;
-    const ok = await kv.set(`certnr:${number}`, token, { nx: true });
-    if (ok) return number;
-  }
-  throw new Error('Kon geen uniek certificaatnummer uitgeven.');
-}
-
-async function issuePasNumber() {
-  const n = await kv.incr('counter:pasnummer');
-  return `SKB-P-${String(PAS_OFFSET + n).padStart(6, '0')}`;
-}
 
 async function sendExamLinkEmail(record, req) {
   if (!resend || !record.email) return false;
