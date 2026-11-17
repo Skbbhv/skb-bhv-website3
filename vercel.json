@@ -52,24 +52,16 @@
   ],
   "rewrites": [
     {
-      "source": "/beheer",
-      "destination": "/beheer.html"
-    },
-    {
       "source": "/beheer/",
-      "destination": "/beheer.html"
-    },
-    {
-      "source": "/check",
-      "destination": "/check.html"
+      "destination": "/beheer"
     },
     {
       "source": "/check/:code",
-      "destination": "/check.html"
+      "destination": "/check"
     },
     {
       "source": "/c/:code",
-      "destination": "/check.html"
+      "destination": "/check"
     }
   ],
   "crons": [
@@ -77,5 +69,6 @@
       "path": "/api/daily-report",
       "schedule": "0 6 * * *"
     }
-  ]
+  ],
+  "cleanUrls": true
 }

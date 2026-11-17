@@ -8,12 +8,16 @@
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" href="/icon-beheer-192.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon-beheer.png">
+<link rel="canonical" href="https://www.skbbhv.nl/">
 <link rel="manifest" href="/manifest-beheer.json">
 <meta name="theme-color" content="#0B0D10">
 <meta name="apple-mobile-web-app-title" content="SKB Beheer">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Public+Sans:wght@400;500;600;700&family=Archivo+Black&family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap">
+
 <meta property="og:title" content="SKB BHV — Online BHV-examen">
 <meta property="og:description" content="Behaal je BHV-certificaat online: 75 examenvragen, direct een digitaal certificaat en optioneel een praktijkdag op locatie.">
 <meta property="og:url" content="https://www.skbbhv.nl">
@@ -47,7 +51,6 @@
 }
 </script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Public+Sans:wght@400;500;600;700&family=Archivo+Black&family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
 
   :root{
     --blue:#0A5CA8;
@@ -1488,6 +1491,18 @@ if(BEHEER_APP){
 }
 </script>
 <style id="beheer-app-stijl">
+a.btn{text-decoration:none;}
+.home-echt{display:grid;grid-template-columns:1.05fr 1fr;gap:36px;align-items:center;}
+.home-echt img{width:100%;border-radius:6px;border:1px solid var(--line);}
+.home-echt h2{font-size:clamp(28px,3.6vw,44px);line-height:1;margin:10px 0 14px;}
+.home-echt p{font-size:17px;margin:0 0 20px;}
+a.home-tool{text-decoration:none;color:inherit;display:block;}
+.home-steden{display:flex;flex-wrap:wrap;gap:10px;}
+.home-steden a{text-decoration:none;font-family:'Oswald','Archivo',Arial,sans-serif;font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:15px;padding:10px 16px;border-radius:4px;border:1px solid var(--line);color:var(--ink);background:var(--white);}
+.home-steden a:hover{border-color:var(--hot,#E0101F);}
+.home-steden a.alle{border-color:var(--hot,#E0101F);color:var(--hot,#E0101F);}
+@media(max-width:860px){.home-echt{grid-template-columns:1fr;}}
+
 .team-panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px 26px;margin-bottom:22px;}
 .team-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:16px;}
 .team-head h2{font-size:24px;margin:2px 0 0;color:#0B0D10;}
@@ -2845,6 +2860,7 @@ return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+s+' '+s+'" shape-
 function dataUrl(text,opt){return "data:image/svg+xml;base64,"+btoa(svg(text,opt));}
 window.SKBQR={matrix:matrix,svg:svg,dataUrl:dataUrl};})();
 </script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "EducationalOrganization", "@id": "https://www.skbbhv.nl/#org", "name": "SKB BHV", "url": "https://www.skbbhv.nl", "logo": "https://www.skbbhv.nl/icon-512.png", "email": "info@skbbhv.nl", "telephone": "+31624626638", "parentOrganization": {"@type": "Organization", "name": "Oibase B.V."}, "address": {"@type": "PostalAddress", "streetAddress": "Goordelaan 19", "postalCode": "9591 CB", "addressLocality": "Onstwedde", "addressCountry": "NL"}}, {"@type": "WebSite", "url": "https://www.skbbhv.nl", "name": "SKB BHV"}, {"@type": "Course", "name": "BHV Basisexamen (online)", "description": "Online BHV-theorie-examen: 75 vragen over EHBO, reanimatie & AED, brandbestrijding, ontruiming en wet- en regelgeving.", "provider": {"@id": "https://www.skbbhv.nl/#org"}, "offers": {"@type": "Offer", "price": "79.00", "priceCurrency": "EUR", "category": "Paid"}, "hasCourseInstance": {"@type": "CourseInstance", "courseMode": "online"}}, {"@type": "Course", "name": "BHV Theorie + Praktijk", "description": "Online BHV-examen plus praktijkdag: reanimatie, AED-gebruik en blussen, ook op locatie.", "provider": {"@id": "https://www.skbbhv.nl/#org"}, "offers": {"@type": "Offer", "price": "179.00", "priceCurrency": "EUR", "category": "Paid"}, "hasCourseInstance": {"@type": "CourseInstance", "courseMode": "blended"}}, {"@type": "Course", "name": "BHV Herhaling (online)", "description": "Online BHV-herhalingsexamen voor wie al eerder een BHV-certificaat behaalde.", "provider": {"@id": "https://www.skbbhv.nl/#org"}, "offers": {"@type": "Offer", "price": "49.00", "priceCurrency": "EUR", "category": "Paid"}, "hasCourseInstance": {"@type": "CourseInstance", "courseMode": "online"}}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Wat gebeurt er als ik het examen niet haal?", "acceptedAnswer": {"@type": "Answer", "text": "Je kunt direct en zonder extra kosten opnieuw beginnen — er is geen wachttijd. Bij elke nieuwe poging krijg je een andere volgorde van vragen en onderdelen, dus je oefent telkens met een net iets andere set."}}, {"@type": "Question", "name": "Hoe lang is mijn certificaat geldig?", "acceptedAnswer": {"@type": "Answer", "text": "Je certificaat is 1 jaar geldig. Jaarlijkse herhaling wordt door de Arbeidsinspectie aanbevolen om kennis en vaardigheden actueel te houden — daarvoor kun je het herhalingspakket gebruiken."}}, {"@type": "Question", "name": "Ik koop voor mijn hele team — hoe werkt dat?", "acceptedAnswer": {"@type": "Answer", "text": "Verhoog het aantal deelnemers op de prijzenpagina en reken in één keer af. Na betaling vul je in het dashboard per collega naam en geboortedatum in; iedereen maakt daarna zijn of haar eigen examen. Vanaf 10 deelnemers krijg je automatisch 5% korting, vanaf 25 deelnemers 10%."}}, {"@type": "Question", "name": "Kan ik een factuur krijgen voor de boekhouding?", "acceptedAnswer": {"@type": "Answer", "text": "Ja. Ga na je bestelling naar je dashboard en klik op \"Bekijk factuur\" om een overzichtelijke factuur te bekijken en als PDF te downloaden of printen."}}, {"@type": "Question", "name": "Wat is het verschil tussen het basispakket en het combipakket?", "acceptedAnswer": {"@type": "Answer", "text": "Het basispakket is een volledig online theorie-examen. Het combipakket voegt daar een praktijkdag aan toe — reanimatie, AED-gebruik en brandblussen onder begeleiding, desgewenst bij jullie op locatie."}}, {"@type": "Question", "name": "Heb ik recht op herroeping (bedenktijd) bij een online examen?", "acceptedAnswer": {"@type": "Answer", "text": "Voor digitale diensten die direct geleverd worden — zoals toegang tot een online examen — vervalt het wettelijke herroepingsrecht zodra je expliciet instemt met directe levering en de uitvoering start. Heb je toch een vraag over je bestelling, neem dan contact op; we denken graag met je mee."}}, {"@type": "Question", "name": "Hoe ontvang ik mijn BHV-pasje?", "acceptedAnswer": {"@type": "Answer", "text": "Heb je een BHV-pasje besteld, dan sturen we dat per post naar het verzendadres dat je bij het betalen hebt opgegeven, zodra het examen is behaald. In je omgeving vind je ook direct een digitale versie van het pasje."}}, {"@type": "Question", "name": "Wat gebeurt er met mijn voortgang als ik de pagina sluit?", "acceptedAnswer": {"@type": "Answer", "text": "Je bestelling, deelnemersgegevens en examenresultaten worden automatisch bewaard zodra je hebt betaald. Kom je later terug, dan vind je alles terug via \"Mijn dashboard\"."}}]}]}</script>
 </head>
 <body data-view="home">
 <!-- ═══════ OPENINGSANIMATIE (alleen in de geïnstalleerde app, 1x per keer openen) ═══════ -->
@@ -3017,6 +3033,41 @@ window.SKBQR={matrix:matrix,svg:svg,dataUrl:dataUrl};})();
           <h3 style="color:#fff;">Start vandaag nog</h3>
           <p style="color:#c3c9ce;">Bekijk de pakketten en begin binnen enkele minuten met oefenen.</p>
         </div>
+      </div>
+    </section>
+
+    <section id="echtheid-blok">
+      <div class="home-echt">
+        <div class="he-tekst">
+          <div class="eyebrow">Uniek: echtheidscheck</div>
+          <h2>Elk certificaat is te controleren met QR</h2>
+          <p>Op ieder SKB BHV-certificaat en -pasje staat een QR-code. Werkgever, inspecteur of opdrachtgever scant hem en ziet direct of de BHV'er echt en geldig gecertificeerd is. Geen gesjoemel met papiertjes.</p>
+          <a class="btn btn-primary" href="/echtheid">Zo werkt de echtheidscheck →</a>
+        </div>
+        <img src="/certificaat-pasje.jpg" alt="SKB BHV-certificaat en BHV-pasje met QR-code" loading="lazy" decoding="async">
+      </div>
+    </section>
+
+    <section id="gratis-tools" class="band-white">
+      <div class="section-head">
+        <div class="eyebrow">Gratis voor werkgevers</div>
+        <h2>Handige tools</h2>
+      </div>
+      <div class="grid-3">
+        <a class="feature home-tool" href="/rekentool"><div class="num">REKENTOOL</div><h3>Hoeveel BHV'ers heb je nodig?</h3><p>Aantal medewerkers invullen, direct het advies en de prijs met staffelkorting. Offerte als PDF.</p></a>
+        <a class="feature home-tool" href="/oefentoets"><div class="num">OEFENTOETS</div><h3>Test je BHV-kennis</h3><p>10 echte BHV-vragen over EHBO, reanimatie, brand en ontruiming. Gratis, met uitleg.</p></a>
+        <a class="feature home-tool" href="/bhv-plan"><div class="num">TEMPLATE</div><h3>BHV-plan template</h3><p>Een kant-en-klaar BHV- en ontruimingsplan. Online invullen en opslaan als PDF.</p></a>
+      </div>
+    </section>
+
+    <section id="op-locatie">
+      <div class="section-head">
+        <div class="eyebrow">Praktijk op locatie</div>
+        <h2>Wij komen naar jullie toe</h2>
+        <p>Vanaf 4 deelnemers geven we de praktijkdag op jullie eigen werkplek, in heel Noord-Nederland.</p>
+      </div>
+      <div class="home-steden">
+        <a href="/bhv-cursus-groningen">Groningen</a><a href="/bhv-cursus-assen">Assen</a><a href="/bhv-cursus-emmen">Emmen</a><a href="/bhv-cursus-stadskanaal">Stadskanaal</a><a href="/bhv-cursus-veendam">Veendam</a><a href="/bhv-cursus-winschoten">Winschoten</a><a href="/bhv-cursus-hoogezand">Hoogezand</a><a href="/bhv-cursus-hoogeveen">Hoogeveen</a><a href="/bhv-cursus-leeuwarden">Leeuwarden</a><a href="/bhv-cursus-zwolle">Zwolle</a><a href="/bhv-cursus-westerwolde">Westerwolde</a><a href="/bhv-cursus-op-locatie" class="alle">Alle plaatsen →</a>
       </div>
     </section>
 
@@ -4279,6 +4330,13 @@ window.SKBQR={matrix:matrix,svg:svg,dataUrl:dataUrl};})();
         <a href="#" onclick="goTo('terms');return false;" style="color:#aeb5bb;text-decoration:none;">Algemene voorwaarden</a>
         <a href="#" onclick="goTo('privacy');return false;" style="color:#aeb5bb;text-decoration:none;">Privacy</a>
       </div>
+    </div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13.5px;">
+      <a href="/rekentool" style="color:#aeb5bb;text-decoration:none;">Rekentool</a>
+      <a href="/oefentoets" style="color:#aeb5bb;text-decoration:none;">Gratis oefentoets</a>
+      <a href="/bhv-plan" style="color:#aeb5bb;text-decoration:none;">BHV-plan template</a>
+      <a href="/echtheid" style="color:#aeb5bb;text-decoration:none;">Echtheidscheck</a>
+      <a href="/bhv-cursus-op-locatie" style="color:#aeb5bb;text-decoration:none;">BHV op locatie</a>
     </div>
     <div style="width:100%;border-top:1px solid rgba(255,255,255,0.12);padding-top:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;font-size:12px;color:#8a9198;">
       <span>SKB BHV is onderdeel van Oibase B.V. · vestiging Goordelaan 19, 9591 CB Onstwedde · KVK 42117378 · BTW NL869807729B01</span>

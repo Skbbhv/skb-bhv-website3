@@ -1,0 +1,99 @@
+/* SKB BHV — gedeelde stijl voor de losse pagina's (stoer thema) */
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:#08090B;color:#ECEFF3;font-family:'Public Sans',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;font-size:16.5px;line-height:1.6;
+  background-image:radial-gradient(900px 500px at 85% -10%,rgba(255,45,61,.16),transparent 60%),linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:auto,48px 48px,48px 48px}
+a{color:#fff}
+img{max-width:100%}
+::selection{background:#FF2D3D;color:#fff}
+.wrap{max-width:1120px;margin:0 auto;padding:0 22px}
+/* header */
+.kop{position:sticky;top:0;z-index:50;background:rgba(8,9,11,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 1px 0 rgba(255,255,255,.07)}
+.kop .wrap{display:flex;align-items:center;gap:18px;padding-top:12px;padding-bottom:12px}
+.kop .logo{background:#fff;padding:5px 12px;border-radius:4px;transform:skewX(-8deg);box-shadow:4px 4px 0 #FF2D3D;display:inline-flex;flex-shrink:0}
+.kop .logo img{height:34px;transform:skewX(8deg);display:block}
+.kop nav{display:flex;gap:0;flex-wrap:nowrap;flex:1}
+.kop nav a{color:#C9CFD8;text-decoration:none;font-family:'Oswald',Arial,sans-serif;font-weight:500;font-size:14.5px;letter-spacing:.05em;text-transform:uppercase;padding:8px 8px;border-radius:3px;position:relative;white-space:nowrap}
+.kop nav a:hover,.kop nav a.actief{color:#fff}
+.kop nav a.actief:after{content:"";position:absolute;left:10px;right:10px;bottom:3px;height:3px;background:#FF2D3D;box-shadow:0 0 10px #FF2D3D}
+.kop .menu{display:none;background:none;border:1px solid #2A313B;border-radius:4px;color:#fff;padding:8px 10px;cursor:pointer;margin-left:auto}
+.lint{height:8px;background:repeating-linear-gradient(-45deg,#FF2D3D 0 14px,#fff 14px 28px)}
+@media(max-width:1240px){
+  .kop nav{display:none;position:absolute;left:0;right:0;top:100%;background:#0B0D10;flex-direction:column;padding:10px 22px 16px;border-bottom:1px solid #242A33}
+  .kop nav.open{display:flex}
+  .kop .menu{display:block}
+  .kop .knop-kop{display:none}
+}
+/* knoppen */
+.knop{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:4px;font-family:'Oswald',Arial,sans-serif;font-weight:600;font-size:16px;letter-spacing:.08em;text-transform:uppercase;padding:13px 22px;text-decoration:none;cursor:pointer;transition:transform .18s,box-shadow .25s}
+.knop.rood{background:linear-gradient(180deg,#FF3B4A,#E0101F);color:#fff;box-shadow:0 0 0 1px rgba(255,45,61,.6),0 10px 30px -6px rgba(255,45,61,.65)}
+.knop.rood:hover{transform:translateY(-2px)}
+.knop.rand{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.28)}
+.knop.rand:hover{border-color:#fff}
+.knop:disabled{opacity:.55;cursor:default;transform:none}
+/* hero */
+.hero{padding:64px 0 40px;position:relative}
+.kicker{font-family:'Oswald',Arial,sans-serif;font-weight:600;font-size:14px;letter-spacing:.22em;text-transform:uppercase;color:#FF2D3D;display:inline-flex;align-items:center;gap:12px}
+.kicker:before{content:"";width:28px;height:3px;background:#FF2D3D}
+h1,h2{font-family:'Archivo Black','Archivo',Arial,sans-serif;font-weight:400;text-transform:uppercase;color:#fff;letter-spacing:-.01em;margin:0}
+h1{font-size:clamp(36px,6vw,72px);line-height:.95;margin:14px 0 18px}
+h1 em{font-style:normal;background:linear-gradient(90deg,#FF2D3D,#FF6A1A);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+h2{font-size:clamp(26px,3.6vw,42px);line-height:1;margin:10px 0 14px}
+h3{font-family:'Oswald',Arial,sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:.03em;color:#fff;font-size:21px;margin:0 0 8px}
+.lead{font-size:19px;color:#B9C2CE;max-width:680px}
+p{color:#AEB7C3}
+.sectie{padding:56px 0}
+.sectie.donker{background:#0C0E12;box-shadow:0 0 0 100vmax #0C0E12;clip-path:inset(0 -100vmax)}
+/* kaarten */
+.raster{display:grid;gap:16px}
+.raster.r2{grid-template-columns:repeat(2,1fr)} .raster.r3{grid-template-columns:repeat(3,1fr)} .raster.r4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:860px){.raster.r3,.raster.r4{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.raster.r2,.raster.r3,.raster.r4{grid-template-columns:1fr}}
+.kaart{background:linear-gradient(180deg,#13161C,#0E1115);border:1px solid #242A33;border-radius:6px;padding:24px;position:relative;overflow:hidden;transition:transform .25s,border-color .25s}
+.kaart:before{content:"";position:absolute;left:0;top:0;height:3px;width:0;background:linear-gradient(90deg,#FF2D3D,#FF6A1A);transition:width .35s}
+a.kaart{text-decoration:none;color:inherit;display:block}
+a.kaart:hover,.kaart.hover:hover{transform:translateY(-5px);border-color:rgba(255,45,61,.55)}
+a.kaart:hover:before{width:100%}
+.kaart .nr{font-family:'Archivo Black',Arial,sans-serif;font-size:44px;line-height:1;color:#FF2D3D;margin-bottom:8px}
+.kaart p{margin:0;font-size:15px}
+.kaart .meer{display:inline-block;margin-top:14px;font-family:'Oswald',Arial,sans-serif;font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:14px;color:#FF4552}
+.prijs{font-family:'Archivo Black',Arial,sans-serif;font-size:44px;color:#fff;line-height:1}
+.prijs small{font-family:'Public Sans',Arial,sans-serif;font-size:13px;color:#9AA4B1;font-weight:600}
+.vink{list-style:none;padding:0;margin:14px 0 0}
+.vink li{padding:5px 0 5px 26px;position:relative;color:#C9CFD8;font-size:15px}
+.vink li:before{content:"✓";position:absolute;left:0;color:#19D36B;font-weight:800}
+/* formulieren */
+label.veld{display:block;font-size:13.5px;font-weight:600;color:#C9CFD8;margin:14px 0 6px}
+input,select,textarea{width:100%;background:#0B0D10;border:1px solid #2A313B;border-radius:4px;color:#fff;font:inherit;font-size:16px;padding:11px 12px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#FF2D3D;box-shadow:0 0 0 3px rgba(255,45,61,.2)}
+.check{display:flex;align-items:center;gap:10px;color:#C9CFD8;font-size:15px;cursor:pointer;margin:10px 0}
+.check input{width:20px;height:20px;accent-color:#FF2D3D}
+.melding{border-radius:6px;padding:14px 16px;margin:16px 0;font-size:15px;line-height:1.55}
+.melding.ok{background:rgba(25,211,107,.12);border:1px solid #19D36B;color:#DFF8EA}
+.melding.let{background:rgba(255,170,0,.1);border:1px solid #FFB020;color:#FFEBC2}
+.melding.fout{background:rgba(255,45,61,.1);border:1px solid #FF2D3D;color:#FFD9DC}
+.klein{font-size:13px;color:#8D97A4}
+/* faq */
+details{background:#111419;border:1px solid #242A33;border-radius:6px;padding:16px 20px;margin-bottom:10px}
+details[open]{border-color:rgba(255,45,61,.5)}
+summary{cursor:pointer;font-family:'Oswald',Arial,sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:#fff;font-size:17px;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary:after{content:"+";color:#FF2D3D;font-size:22px;line-height:1}
+details[open] summary:after{content:"–"}
+details p{margin:10px 0 0}
+/* cta-band */
+.cta{border-radius:6px;padding:34px;background:repeating-linear-gradient(-45deg,rgba(0,0,0,.14) 0 18px,transparent 18px 36px),linear-gradient(120deg,#E0101F,#FF4A1A);display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.cta h2{margin:0 0 6px;font-size:clamp(24px,3vw,34px)}
+.cta p{color:#FFE6E2;margin:0}
+.cta .knop{background:#fff;color:#0B0D10}
+/* footer */
+.voet{margin-top:40px;background:#050607;border-top:8px solid transparent;border-image:repeating-linear-gradient(-45deg,#FF2D3D 0 14px,#fff 14px 28px) 8;padding:34px 0 26px;color:#9AA4B1;font-size:14px}
+.voet .wrap{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:24px}
+.voet h4{font-family:'Oswald',Arial,sans-serif;text-transform:uppercase;letter-spacing:.1em;color:#fff;font-size:14px;margin:0 0 10px}
+.voet a{color:#C9CFD8;text-decoration:none;display:block;padding:3px 0}
+.voet a:hover{color:#fff}
+.voet .rechts{grid-column:1/-1;border-top:1px solid #1E232B;padding-top:16px;font-size:12.5px;color:#6B7480}
+@media(max-width:760px){.voet .wrap{grid-template-columns:1fr}}
+.wa{position:fixed;right:16px;bottom:16px;z-index:60;width:56px;height:56px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+@media print{.kop,.lint,.voet,.wa,.niet-printen{display:none !important}body{background:#fff !important;color:#000}}

@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://www.skbbhv.nl/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
+  <url><loc>https://www.skbbhv.nl/</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://www.skbbhv.nl/rekentool</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://www.skbbhv.nl/oefentoets</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://www.skbbhv.nl/echtheid</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://www.skbbhv.nl/bhv-plan</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://www.skbbhv.nl/bhv-cursus-op-locatie</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://www.skbbhv.nl/bhv-cursus-groningen</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://www.skbbhv.nl/bhv-cursus-assen</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://www.skbbhv.nl/bhv-cursus-emmen</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://www.skbbhv.nl/bhv-cursus-stadskanaal</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://www.skbbhv.nl/bhv-cursus-veendam</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://www.skbbhv.nl/bhv-cursus-winschoten</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://www.skbbhv.nl/bhv-cursus-hoogezand</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://www.skbbhv.nl/bhv-cursus-hoogeveen</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://www.skbbhv.nl/bhv-cursus-leeuwarden</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://www.skbbhv.nl/bhv-cursus-zwolle</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://www.skbbhv.nl/bhv-cursus-westerwolde</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://www.skbbhv.nl/check</loc><lastmod>2026-11-17</lastmod></url>
 </urlset>

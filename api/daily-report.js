@@ -116,6 +116,17 @@ export default async function handler(req, res) {
       .filter((p) => p.status === 'passed' && p.pasNumber && !p.pasPrintedAt)
       .sort((a, b) => String(a.passDate || '').localeCompare(String(b.passDate || '')));
 
+    // Nieuwe leads (oefentoets, BHV-plan, rekentool) van de afgelopen 24 uur
+    const leadRows = await kv.scan('lead:', 2000);
+    const leads = leadRows.map((r) => r.value).filter((v) => v && v.at && new Date(v.at).getTime() >= since);
+    const BRON = { oefentoets: 'Oefentoets', 'bhv-plan': 'BHV-plan template', rekentool: 'Rekentool' };
+    const leadInfo = (l) => {
+      const x = l.extra || {};
+      if (l.bron === 'oefentoets') return `score ${x.score}/${x.van}`;
+      if (l.bron === 'rekentool') return [x.bedrijf, x.mw && `${x.mw} medewerkers`, x.q && `${x.q} BHV'ers`, x.excl && `€${Number(x.excl).toFixed(2)} excl.`].filter(Boolean).join(' · ');
+      return '';
+    };
+
     // Back-up van alle gegevens als bijlage (JSON)
     let attachments = [];
     let backupInfo = 'Back-up mislukt — zie de logs.';
@@ -159,6 +170,10 @@ export default async function handler(req, res) {
       <h3 style="margin:18px 0 8px">Geslaagd in de afgelopen 24 uur</h3>${tabelGeslaagd}
       <h3 style="margin:22px 0 8px">Pasjes die je nog moet maken</h3>${tabelPrinten}
       ${tePrinten.length ? `<p style="margin:22px 0"><a href="${siteUrl}/beheer#pasjes" style="display:inline-block;background:#E0101F;color:#fff;padding:13px 24px;border-radius:4px;text-decoration:none;font-weight:bold">Pasjes printen in de beheer-app</a></p>` : ''}
+      <h3 style="margin:22px 0 8px">Nieuwe leads (${leads.length})</h3>
+      ${leads.length ? `<table style="border-collapse:collapse;width:100%"><tr><th style="${th}">E-mail</th><th style="${th}">Via</th><th style="${th}">Details</th></tr>${
+        leads.map((l) => `<tr><td style="${td}"><a href="mailto:${escapeHtml(l.email)}">${escapeHtml(l.email)}</a>${l.extra && l.extra.nieuwsbrief ? ' <span style="color:#0a7a3a;font-size:12px">(wil tips)</span>' : ''}</td><td style="${td}">${escapeHtml(BRON[l.bron] || l.bron)}</td><td style="${td}">${escapeHtml(leadInfo(l))}</td></tr>`).join('')
+      }</table>` : '<p style="color:#666">Geen nieuwe leads.</p>'}
       <h3 style="margin:22px 0 8px">Automatische mails</h3>
       <p style="font-size:14px;margin:0">Verloopherinneringen verstuurd: <b>${herinneringen}</b><br>Review-verzoeken verstuurd: <b>${reviews.uit ? 'uit (stel GOOGLE_REVIEW_URL in)' : reviews.n}</b></p>
       <h3 style="margin:22px 0 8px">Back-up</h3>
@@ -167,7 +182,7 @@ export default async function handler(req, res) {
 
     if (!resend) return res.status(500).json({ error: 'RESEND_API_KEY ontbreekt.' });
     await resend.emails.send({ from: FROM_EMAIL, to: ADMIN_OWNER_EMAIL, subject, html, attachments });
-    return res.status(200).json({ ok: true, geslaagd: geslaagd.length, tePrinten: tePrinten.length, gezakt, herinneringen, reviews: reviews.n, backup: attachments.length > 0 });
+    return res.status(200).json({ ok: true, geslaagd: geslaagd.length, tePrinten: tePrinten.length, gezakt, herinneringen, reviews: reviews.n, leads: leads.length, backup: attachments.length > 0 });
   } catch (err) {
     console.error('daily-report error:', err);
     return res.status(500).json({ error: 'Dagoverzicht mislukt.' });
