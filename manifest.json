@@ -1,4 +1,5 @@
 {
+  "id": "/",
   "name": "SKB BHV — Online BHV-cursus & examen",
   "short_name": "SKB BHV",
   "start_url": "/",
@@ -25,5 +26,6 @@
       "type": "image/png",
       "purpose": "maskable"
     }
-  ]
+  ],
+  "scope": "/"
 }

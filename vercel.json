@@ -53,7 +53,11 @@
   "rewrites": [
     {
       "source": "/beheer",
-      "destination": "/index.html"
+      "destination": "/beheer.html"
+    },
+    {
+      "source": "/beheer/",
+      "destination": "/beheer.html"
     }
   ]
 }
